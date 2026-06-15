@@ -2,8 +2,6 @@
     import { onMount } from "svelte";
     import "emoji-picker-element";
     import "./homepageSettingStyle/homepageSetting.scss";
-    import * as advanced from "./advanced";
-    import { showMessage } from "siyuan";
     import { pluginT as t } from "@/libs/i18n";
     import { getTutorialLink } from "@/data/tutorialLinks";
 
@@ -149,8 +147,7 @@
             tempCustomTitle =
                 savedConfig.customTitle || t(plugin, "homepage.title");
             tempStatsInfoText =
-                savedConfig.statsInfoText ??
-                t(plugin, "homepage.statsDefault");
+                savedConfig.statsInfoText ?? t(plugin, "homepage.statsDefault");
 
             // 恢复按钮配置
             if (savedConfig.buttonsList) {
@@ -510,7 +507,10 @@
                         <button
                             on:click={() => (settingsActiveTab = "styles")}
                             class:active={settingsActiveTab === "styles"}
-                            >{t(plugin, "settings.subtab.advancedStyles")}</button
+                            >{t(
+                                plugin,
+                                "settings.subtab.advancedStyles",
+                            )}</button
                         >
                     {/if}
                 </div>
@@ -688,9 +688,7 @@
                                             >{t(
                                                 plugin,
                                                 "settings.banner.bingApi",
-                                            )}<select
-                                                bind:value={bingApiType}
-                                            >
+                                            )}<select bind:value={bingApiType}>
                                                 <option value="POD_UHD"
                                                     >{t(
                                                         plugin,
@@ -743,7 +741,9 @@
                                         >
                                     </div>
                                 {:else}
-                                    <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
+                                    <h3>
+                                        {t(plugin, "common.vipBenefitTitle")}
+                                    </h3>
                                 {/if}
                             {/if}
                         {/if}
@@ -1218,7 +1218,10 @@
                                     type="checkbox"
                                     bind:checked={footerEnabled}
                                 />
-                                {t(plugin, "settings.styles.footerEnable")}</label
+                                {t(
+                                    plugin,
+                                    "settings.styles.footerEnable",
+                                )}</label
                             >
                             {#if footerEnabled}
                                 <label for="footer-content">
@@ -1347,20 +1350,14 @@
                                         id="mouse-global"
                                         type="checkbox"
                                         bind:checked={mouseGlobalEnabled}
-                                    />{t(
-                                        plugin,
-                                        "settings.styles.mouseGlobal",
-                                    )}
+                                    />{t(plugin, "settings.styles.mouseGlobal")}
                                 </label>
                                 <label for="mouse-trail">
                                     <input
                                         id="mouse-trail"
                                         type="checkbox"
                                         bind:checked={MouseTrailEnabled}
-                                    />{t(
-                                        plugin,
-                                        "settings.styles.mouseTrail",
-                                    )}
+                                    />{t(plugin, "settings.styles.mouseTrail")}
                                 </label>
                                 <label for="click-effect"
                                     ><input
@@ -1412,10 +1409,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="falling-icon">
-                                    {t(
-                                        plugin,
-                                        "settings.styles.fallingIcon",
-                                    )}
+                                    {t(plugin, "settings.styles.fallingIcon")}
                                     <select
                                         name="falling-icon"
                                         id="falling-icon"
@@ -1546,10 +1540,7 @@
                                     </select>
                                 </label>
                                 <label for=""
-                                    >{t(
-                                        plugin,
-                                        "settings.styles.fallingSpeed",
-                                    )}
+                                    >{t(plugin, "settings.styles.fallingSpeed")}
                                     <select bind:value={FallingSpeed}>
                                         <option value="low"
                                             >{t(plugin, "common.low")}</option
@@ -1594,7 +1585,7 @@
                                 {t(plugin, "settings.about.homepage")}
                             </p>
                             <a
-                                href="https://github.com/Glaube-TY/siyuan-homepage"
+                                href="https://github.com/darkmusic/siyuan-homepage"
                                 class="link">siyuan-homepage</a
                             >
                         </div>
@@ -1618,16 +1609,11 @@
                             <p class="label">
                                 {t(plugin, "settings.about.developer")}
                             </p>
-                            <a href="https://github.com/Glaube-TY" class="link"
+                            <a
+                                href="https://github.com/darkmusic"
+                                class="link"
                                 >{t(plugin, "settings.about.github")}</a
                             >
-                            <p>
-                                <a
-                                    href="https://ld246.com/member/GlaubeTY"
-                                    class="link"
-                                    >{t(plugin, "settings.about.ld246")}</a
-                                >
-                            </p>
                         </div>
                         <span class="icon">&nbsp;&nbsp;&nbsp;</span>
                         <span class="icon">⁉</span>
@@ -1637,36 +1623,10 @@
                             </p>
                             <p>
                                 <a
-                                    href="https://github.com/Glaube-TY/siyuan-homepage/issues"
+                                    href="https://github.com/darkmusic/siyuan-homepage/issues"
                                     class="link">Github Issues</a
                                 >
                             </p>
-                            <p>
-                                <a
-                                    href="https://pd.qq.com/s/2ks4079x0"
-                                    class="link"
-                                    >{t(
-                                        plugin,
-                                        "settings.about.tencentChannel",
-                                    )}</a
-                                >
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="about-card support-card">
-                        <div class="support-content">
-                            <p class="support-description">
-                                {t(plugin, "settings.about.supportDesc")}
-                            </p>
-                            <a
-                                href={getTutorialLink("vipThanks").url}
-                                class="link support-link"
-                            >
-                                <i class="fas fa-hand-holding-heart"></i>
-                                {t(plugin, "settings.about.sponsorNow")}
-                                <span class="sparkle">✨</span>
-                            </a>
                         </div>
                     </div>
                 </div>

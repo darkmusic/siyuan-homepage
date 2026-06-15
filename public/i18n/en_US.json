@@ -282,13 +282,9 @@
             "homepage": "Plugin Homepage:",
             "tutorial": "Plugin Tutorial:",
             "feishuDoc": "Feishu Doc",
-            "developer": "Developer: Glaube-TY",
+            "developer": "Developer: darkmusic",
             "github": "GitHub Profile",
-            "ld246": "Liandi Profile",
             "feedback": "Feedback & Suggestions:",
-            "tencentChannel": "Tencent Channel",
-            "supportDesc": "🌹 Your support keeps development going!",
-            "sponsorNow": "Sponsor Now",
             "thanks": "❤ Thank you for using this plugin. Enjoy a more efficient knowledge management experience!"
         },
         "widgetBlock": {
@@ -359,8 +355,8 @@
             "showMeta": "Show Document Info",
             "notebook": "Document Notebook:",
             "openAria": "Open favorite document: ${content}",
-            "createdTimeLabel": "Created: ${date}",
-            "updatedTimeLabel": "Updated: ${date}"
+            "createdTimeLabel": "Created: 📅${date}",
+            "updatedTimeLabel": "Updated: 📅${date}"
         },
         "latestDocs": {
             "docPrefix": "Document Prefix:",
@@ -375,7 +371,7 @@
             "includeOpen": "Include Open Documents",
             "showDetails": "Show Document Info",
             "notebook": "Specify Notebook:",
-            "today": "Today ${time}",
+            "today": "Today 🕒${time}",
             "daysAgo": "${n} days ago",
             "openAria": "Open recent document: ${content}",
             "updatedOn": "Updated: 📅${date}"
@@ -635,7 +631,7 @@
             "cityCodeHint": "City code is 6 digits, e.g. 110000 for Beijing (first 6 digits of local ID). If both are provided, city code takes priority for accuracy.",
             "title": "🌦 Weather in ${city}",
             "windLevel": "Level ${power}",
-            "updateTime": "Updated: ${time}",
+            "updateTime": "Updated: 🕒${time}",
             "humidity": "Humidity",
             "windDirection": "Wind Direction",
             "windPower": "Wind Power",

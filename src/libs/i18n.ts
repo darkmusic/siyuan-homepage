@@ -57,6 +57,21 @@ function resolveKey(i18n: I18nObject, key: string): string | undefined {
     return typeof flat === "string" ? flat : undefined;
 }
 
+function interpolate(
+    template: string,
+    vars: Record<string, string | number>,
+): string {
+    return template
+        .replace(/\$\{(\w+)\}/g, (_, name: string) => {
+            const value = vars[name];
+            return value == null ? "" : String(value);
+        })
+        .replace(/\{(\w+)\}/g, (_, name: string) => {
+            const value = vars[name];
+            return value == null ? "" : String(value);
+        });
+}
+
 export function t(
     i18n: I18nObject | undefined,
     key: string,
@@ -66,10 +81,7 @@ export function t(
     if (!vars) {
         return template;
     }
-    return template.replace(/\$\{(\w+)\}/g, (_, name: string) => {
-        const value = vars[name];
-        return value == null ? "" : String(value);
-    });
+    return interpolate(template, vars);
 }
 
 export function pluginT(

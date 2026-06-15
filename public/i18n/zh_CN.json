@@ -282,13 +282,9 @@
             "homepage": "插件主页：",
             "tutorial": "插件教程：",
             "feishuDoc": "飞书文档",
-            "developer": "开发者：Glaube-TY",
+            "developer": "开发者：darkmusic",
             "github": "Github 主页",
-            "ld246": "链滴主页",
             "feedback": "反馈&建议：",
-            "tencentChannel": "腾讯频道",
-            "supportDesc": "🌹 您的支持是持续开发的动力！",
-            "sponsorNow": "立即赞助",
             "thanks": "❤ 感谢您使用本插件，希望您享受更高效的知识管理体验！"
         },
         "widgetBlock": {
@@ -359,8 +355,8 @@
             "showMeta": "显示文档信息",
             "notebook": "文档笔记本：",
             "openAria": "打开收藏文档：${content}",
-            "createdTimeLabel": "创建时间：${date}",
-            "updatedTimeLabel": "更新时间：${date}"
+            "createdTimeLabel": "创建时间：📅${date}",
+            "updatedTimeLabel": "更新时间：📅${date}"
         },
         "latestDocs": {
             "docPrefix": "文档前缀：",
@@ -635,7 +631,7 @@
             "cityCodeHint": "城市编码为 6 位数字，例如：110000 为北京，即当地身份证前 6 位。若两个都填写，则优先用城市编码查询，因为这会更加精确。",
             "title": "🌦${city}的天气",
             "windLevel": "${power}级",
-            "updateTime": "更新时间：${time}",
+            "updateTime": "更新时间：🕒${time}",
             "humidity": "湿度",
             "windDirection": "风向",
             "windPower": "风力",
