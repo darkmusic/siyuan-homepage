@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-06-14
+
+### Changed
+
+- Updated author attribution in locale files and i18n generator from `Glaube-TY` to `darkmusic`.
+- Removed sponsor link and `common.sponsor` strings from the homepage footer and locale files.
+
+### Removed
+
+- Unused `getTutorialLink` import from `homepage.svelte`.
+
 ## [1.0.2] - 2026-06-14
 
 ### Added
