@@ -3,10 +3,15 @@
     import Sortable from "sortablejs";
     import { saveLayout, restoreLayout } from "./widget_layout";
     import { addCustomBlock } from "./block-creator";
+    import { pluginT } from "@/libs/i18n";
 
     import "./siderBar.scss";
 
     export let plugin: any;
+
+    function t(key: string, vars?: Record<string, string | number>): string {
+        return pluginT(plugin, key, vars);
+    }
 
     let currentBlockForSettings: HTMLElement | null = null;
     const currentBlockForSettingsRef = { value: currentBlockForSettings };
@@ -51,13 +56,13 @@
                 class="add-widget-btn"
                 on:click={() =>
                     addCustomBlock(plugin, currentBlockForSettingsRef)}
-                >➕添加组件</button
+                >{t("homepage.button.addWidget")}</button
             >
         </div>
     {:else}
         <div class="sidebar-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t("common.vipFeatureTitle")}</h2>
+            <h3>{t("common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

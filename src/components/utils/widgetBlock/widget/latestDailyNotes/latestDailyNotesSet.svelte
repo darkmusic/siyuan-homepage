@@ -1,4 +1,8 @@
 <script lang="ts">
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let docJournalLimit: number = 5;
     export let recentJournalsShowType: string = "list";
     export let recentJournalsCalendarIcon: string = "📝";
@@ -6,25 +10,37 @@
     export let showLatestDailyNotesFloatDoc: boolean = true;
     export let latestDailyNotesFloatDocShowTime: number = 0.1;
 
-    // 下拉选项
+    const tutorialLink = getTutorialLink("widgets.latestDailyNotes");
     const limitOptions = [5, 10, 15, 20, 50, 100];
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="content-panel recent-journals">
     <div>
-        <label for="recentJournalsShowType">选择显示模式：</label>
+        <label for="recentJournalsShowType"
+            >{t("widgets.latestDailyNotes.displayMode")}</label
+        >
         <select
             id="recentJournalsShowType"
             class="form-control"
             bind:value={recentJournalsShowType}
         >
-            <option value="list">列表模式</option>
-            <option value="calendar">日历模式</option>
+            <option value="list"
+                >{t("widgets.latestDailyNotes.listMode")}</option
+            >
+            <option value="calendar"
+                >{t("widgets.latestDailyNotes.calendarMode")}</option
+            >
         </select>
     </div>
     {#if recentJournalsShowType === "list"}
         <div class="form-group">
-            <label for="journal-limit">显示日记数：</label>
+            <label for="journal-limit"
+                >{t("widgets.latestDailyNotes.limit")}</label
+            >
             <select id="journal-limit" bind:value={docJournalLimit}>
                 {#each limitOptions as option}
                     <option value={option}>{option}</option>
@@ -35,7 +51,7 @@
     {#if recentJournalsShowType === "calendar"}
         <div class="form-group recent-journals-calendar">
             <label for="recentJournalsCalendarIcon">
-                日记图标：
+                {t("widgets.latestDailyNotes.icon")}
                 <input
                     id="recentJournalsCalendarIcon"
                     type="text"
@@ -43,7 +59,7 @@
                 />
             </label>
             <label for="recentJournalsCalendarIconSize">
-                图标大小：
+                {t("widgets.latestDailyNotes.iconSize")}
                 <input
                     id="recentJournalsCalendarIconSize"
                     min="10"
@@ -62,24 +78,24 @@
                 type="checkbox"
                 bind:checked={showLatestDailyNotesFloatDoc}
             />
-            显示预览弹窗
+            {t("common.showPreviewPopup")}
         </label>
         <label for="latest-daily-notes-float-doc-show-time">
-            悬停时间：
+            {t("common.hoverTime")}
             <input
                 type="number"
-                title="悬停多长时间显示预览弹窗"
+                title={t("common.hoverTimeTitle")}
                 bind:value={latestDailyNotesFloatDocShowTime}
             />
-            秒
+            {t("common.seconds")}
         </label>
     </div>
 
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/JeWrwUDxmiPX5lk0XbZcHI1bn5g?from=from_copylink"
-            target="_blank">最近日记</a
+        {t("common.componentDescription")}<a
+            href={tutorialLink.url}
+            target="_blank">{tutorialLink.label}</a
         >
     </div>
 </div>

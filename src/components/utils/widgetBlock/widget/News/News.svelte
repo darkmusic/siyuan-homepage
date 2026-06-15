@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -59,10 +60,10 @@
             {:else if NewsType === "daily-news-bulletin-v3"}
                 <img
                     src="https://v.api.aa1.cn/api/60s-v3/?cc=国内要闻"
-                    alt="国内要闻"
+                    alt={t(plugin, "widgets.news.domesticAlt")}
                 />
             {:else if NewsType === "daily-news-bulletin-weather"}
-                <img src="https://www.apii.cn/api/60s-v5/" alt="新闻天气" />
+                <img src="https://www.apii.cn/api/60s-v5/" alt={t(plugin, "widgets.news.weatherAlt")} />
             {:else if NewsType === "daily-news-zhihu"}
                 <div class="zhihu-content">
                     {#if newsList}
@@ -85,15 +86,15 @@
                             {/each}
                         </div>
                     {:else}
-                        <div class="loading">加载中...</div>
+                        <div class="loading">{t(plugin, "common.loading")}</div>
                     {/if}
                 </div>
             {/if}
         </div>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

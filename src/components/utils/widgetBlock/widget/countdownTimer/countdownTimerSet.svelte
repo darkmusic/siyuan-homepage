@@ -1,30 +1,40 @@
 <script lang="ts">
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let advancedEnabled: boolean = false;
     export let countdownTimerStyle: string = "default";
+
+    const tutorial = getTutorialLink("widgets.countdownTimer");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="content-display">
     {#if advancedEnabled}
         <div class="content-panel countdownTimer">
             <div class="form-group">
-                <label for="countdownTimerStyle">倒计时样式</label>
+                <label for="countdownTimerStyle">{t("widgets.countdownTimer.style")}</label>
                 <select
                     id="countdownTimerStyle"
                     bind:value={countdownTimerStyle}
                 >
-                    <option value="default">默认</option>
-                    <option value="ring1">圆环1</option>
+                    <option value="default">{t("common.default")}</option>
+                    <option value="ring1">{t("widgets.countdownTimer.ring1")}</option>
                 </select>
             </div>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t("common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ai.feishu.cn/wiki/R3bswPuXkiM8pYkUJ0VcSAben4c?from=from_copylink"
-            target="_blank">倒计时</a
+        {t("common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

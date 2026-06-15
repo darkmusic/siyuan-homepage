@@ -1,7 +1,11 @@
 import { addCustomBlock } from "./widgetBlock/utils/block-creator";
 import { svelteDialog } from "@/libs/dialog";
+import { pluginT as t } from "@/libs/i18n";
 import HomepageSetting from "./homepageSetting.svelte";
 import Mousetrap from "mousetrap";
+
+const ADD_WIDGET_BUTTON_ID = 1728000002000;
+const SETTINGS_BUTTON_ID = 1728000003000;
 
 type ExtendedKeyboardEvent = KeyboardEvent & {
     keyCode: number;
@@ -101,24 +105,33 @@ function isMac(): boolean {
     return /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 }
 
-function checkShortcutConflict(shortcut: string): boolean {
+function checkShortcutConflict(shortcut: string, plugin?: { i18n?: Record<string, unknown> }): boolean {
     const normalized = normalizeShortcut(shortcut);
 
     if (normalizedShortcuts.has(normalized)) {
         const originalShortcut = normalizedShortcuts.get(normalized);
-        console.warn(`快捷键 ${displayShortcut(shortcut)} 与 ${displayShortcut(originalShortcut!)} 冲突`);
+        console.warn(
+            t(plugin, "messages.shortcutConflict", {
+                shortcut1: displayShortcut(shortcut),
+                shortcut2: displayShortcut(originalShortcut!),
+            }),
+        );
         return true;
     }
 
     return false;
 }
 
-function registerShortcut(shortcut: string, button: ButtonItem): boolean {
+function registerShortcut(
+    shortcut: string,
+    button: ButtonItem,
+    plugin?: { i18n?: Record<string, unknown> },
+): boolean {
     if (!shortcut || !button) return false;
 
     const normalized = normalizeShortcut(shortcut);
 
-    if (checkShortcutConflict(shortcut)) {
+    if (checkShortcutConflict(shortcut, plugin)) {
         return false;
     }
 
@@ -140,14 +153,17 @@ export function unregisterAllShortcuts(): void {
     normalizedShortcuts.clear();
 }
 
-export function reRegisterAllShortcuts(buttonsList: ButtonItem[]): void {
+export function reRegisterAllShortcuts(
+    buttonsList: ButtonItem[],
+    plugin?: { i18n?: Record<string, unknown> },
+): void {
     Mousetrap.reset();
     registeredShortcuts.clear();
     normalizedShortcuts.clear();
 
     buttonsList.forEach(item => {
         if (item.shortcut && item.checked === false) {
-            registerShortcut(item.shortcut, item);
+            registerShortcut(item.shortcut, item, plugin);
         }
     });
 }
@@ -155,7 +171,7 @@ export function reRegisterAllShortcuts(buttonsList: ButtonItem[]): void {
 function createOpenHomepageSetting(plugin: any) {
     return function OpenHomepageSetting() {
         const dialog = svelteDialog({
-            title: "主页设置",
+            title: t(plugin, "homepage.dialog.settingsTitle"),
             constructor: (containerEl: HTMLElement) => {
                 return new HomepageSetting({
                     target: containerEl,
@@ -183,10 +199,10 @@ export function handleButtonClick(
 ): void {
     const OpenHomepageSetting = createOpenHomepageSetting(plugin);
 
-    if (item.label.includes("➕ 添加组件")) {
+    if (item.id === ADD_WIDGET_BUTTON_ID) {
         addCustomBlock(plugin, currentBlockForSettingsRef);
         saveLayoutFn(plugin);
-    } else if (item.label.includes("⚙ 主页设置")) {
+    } else if (item.id === SETTINGS_BUTTON_ID) {
         OpenHomepageSetting();
     } else if (item.shortcut) {
         triggerShortcut(item);

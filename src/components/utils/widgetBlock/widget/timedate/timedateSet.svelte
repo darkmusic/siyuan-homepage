@@ -1,8 +1,12 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
     export let plugin: any;
+
+    const tutorial = getTutorialLink("widgets.timedate");
 
     // 时间样式
     export let timeType: string = "classic";
@@ -230,20 +234,20 @@
 <div class="content-panel timedate">
     <div class="time-type-select">
         <label for="timeType"
-            >时间模式：
+            >{t(plugin, "widgets.timedate.mode")}
             <select id="timeType" bind:value={timeType}>
-                <option value="classic">经典</option>
-                <option value="simple1">简约1</option>
-                <option value="simple2">简约2</option>
-                <option value="dial1">表盘1</option>
-                <option value="dial2">表盘2</option>
-                <option value="dial3">表盘3👑</option>
-                <option value="dial4">表盘4👑</option>
-                <option value="dial5">表盘5👑</option>
-                <option value="dial6">表盘6👑</option>
-                <option value="dial7">中国风表盘1👑</option>
-                <option value="dial8">水墨表盘1👑</option>
-                <option value="dial9">卡通熊表盘👑</option>
+                <option value="classic">{t(plugin, "widgets.timedate.classic")}</option>
+                <option value="simple1">{t(plugin, "widgets.timedate.simple1")}</option>
+                <option value="simple2">{t(plugin, "widgets.timedate.simple2")}</option>
+                <option value="dial1">{t(plugin, "widgets.timedate.dial1")}</option>
+                <option value="dial2">{t(plugin, "widgets.timedate.dial2")}</option>
+                <option value="dial3">{t(plugin, "widgets.timedate.dial3")}</option>
+                <option value="dial4">{t(plugin, "widgets.timedate.dial4")}</option>
+                <option value="dial5">{t(plugin, "widgets.timedate.dial5")}</option>
+                <option value="dial6">{t(plugin, "widgets.timedate.dial6")}</option>
+                <option value="dial7">{t(plugin, "widgets.timedate.dial7")}</option>
+                <option value="dial8">{t(plugin, "widgets.timedate.dial8")}</option>
+                <option value="dial9">{t(plugin, "widgets.timedate.dial9")}</option>
             </select>
         </label>
     </div>
@@ -255,43 +259,43 @@
                 style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;"
             >
                 <label
-                    ><input type="checkbox" bind:checked={showSeconds} /> 显示秒数</label
+                    ><input type="checkbox" bind:checked={showSeconds} /> {t(plugin, "widgets.timedate.showSeconds")}</label
                 >
                 <label
-                    ><input type="checkbox" bind:checked={showDate} /> 显示日期</label
+                    ><input type="checkbox" bind:checked={showDate} /> {t(plugin, "widgets.timedate.showDate")}</label
                 >
                 <label
-                    ><input type="checkbox" bind:checked={showWeek} /> 显示星期</label
+                    ><input type="checkbox" bind:checked={showWeek} /> {t(plugin, "widgets.timedate.showWeek")}</label
                 >
                 <label
-                    ><input type="checkbox" bind:checked={showLunar} /> 显示农历</label
+                    ><input type="checkbox" bind:checked={showLunar} /> {t(plugin, "widgets.timedate.showLunar")}</label
                 >
                 <label
-                    ><input type="checkbox" bind:checked={showZodiac} /> 显示生肖</label
+                    ><input type="checkbox" bind:checked={showZodiac} /> {t(plugin, "widgets.timedate.showZodiac")}</label
                 >
                 <label
-                    ><input type="checkbox" bind:checked={showSolarTerm} /> 显示节气</label
+                    ><input type="checkbox" bind:checked={showSolarTerm} /> {t(plugin, "widgets.timedate.showSolarTerm")}</label
                 >
             </div>
 
             <div class="form-group">
                 {#if showDate}
-                    <label for="dateFormat">日期格式：</label>
+                    <label for="dateFormat">{t(plugin, "widgets.timedate.dateFormat")}</label>
                     <select id="dateFormat" bind:value={dateFormat}>
-                        <option value="YYYY年MM月DD日">YYYY年MM月DD日</option>
+                        <option value="YYYY年MM月DD日">{t(plugin, "widgets.timedate.dateFormatZh")}</option>
                         <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                         <option value="YYYY/MM/DD">YYYY/MM/DD</option>
                         <option value="YYYY.MM.DD">YYYY.MM.DD</option>
                     </select>
                 {/if}
                 <label for="timedate-fontSize">
-                    字体大小：
+                    {t(plugin, "widgets.timedate.fontSize")}
                     <input
                         type="number"
                         min="1"
                         max="10"
                         bind:value={timedateFontSize}
-                        placeholder="例如：3"
+                        placeholder={t(plugin, "widgets.timedate.fontSizePlaceholder")}
                     />
                 </label>
             </div>
@@ -320,7 +324,7 @@
             />
 
             <div class="form-group">
-                <h5>背景图片设置</h5>
+                <h5>{t(plugin, "widgets.timedate.bgSettings")}</h5>
 
                 <!-- 早晨 -->
                 <div class="background-option">
@@ -328,15 +332,15 @@
                         <!-- 左侧配置 -->
                         <div class="type-select-and-input">
                             <label for="morning-bg-select"
-                                >早晨：（6点 ~ 12点）</label
+                                >{t(plugin, "widgets.timedate.morning")}</label
                             >
                             <div class="type-select">
                                 <select
                                     id="morning-bg-select"
                                     bind:value={morningImageType}
                                 >
-                                    <option value="remote">远程图片</option>
-                                    <option value="local">本地图片</option>
+                                    <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                                    <option value="local">{t(plugin, "common.localImage")}</option>
                                 </select>
                             </div>
 
@@ -344,11 +348,11 @@
                                 <input
                                     type="text"
                                     bind:value={morningBgUrl}
-                                    placeholder="请输入早晨背景图URL"
+                                    placeholder={t(plugin, "widgets.timedate.morningUrlPlaceholder")}
                                 />
                             {:else}
                                 <button on:click={() => morningBgInput?.click()}
-                                    >上传图片</button
+                                    >{t(plugin, "common.uploadImage")}</button
                                 >
                             {/if}
                         </div>
@@ -356,9 +360,9 @@
                         <!-- 右侧预览 -->
                         <div class="image-preview">
                             {#if morningImageType === "remote" && morningBgUrl}
-                                <img src={morningBgImageData} alt="早晨预览" />
+                                <img src={morningBgImageData} alt={t(plugin, "widgets.timedate.morningPreview")} />
                             {:else if morningImageType === "local" && morningBgImage}
-                                <img src={morningBgImage} alt="早晨预览" />
+                                <img src={morningBgImage} alt={t(plugin, "widgets.timedate.morningPreview")} />
                             {/if}
                         </div>
                     </div>
@@ -370,15 +374,15 @@
                         <!-- 左侧配置 -->
                         <div class="type-select-and-input">
                             <label for="afternoon-bg-select"
-                                >中午：（12点 ~ 18点）</label
+                                >{t(plugin, "widgets.timedate.afternoon")}</label
                             >
                             <div class="type-select">
                                 <select
                                     id="afternoon-bg-select"
                                     bind:value={afternoonImageType}
                                 >
-                                    <option value="remote">远程图片</option>
-                                    <option value="local">本地图片</option>
+                                    <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                                    <option value="local">{t(plugin, "common.localImage")}</option>
                                 </select>
                             </div>
 
@@ -386,12 +390,12 @@
                                 <input
                                     type="text"
                                     bind:value={afternoonBgUrl}
-                                    placeholder="请输入中午背景图URL"
+                                    placeholder={t(plugin, "widgets.timedate.afternoonUrlPlaceholder")}
                                 />
                             {:else}
                                 <button
                                     on:click={() => afternoonBgInput?.click()}
-                                    >上传图片</button
+                                    >{t(plugin, "common.uploadImage")}</button
                                 >
                             {/if}
                         </div>
@@ -401,10 +405,10 @@
                             {#if afternoonImageType === "remote" && afternoonBgUrl}
                                 <img
                                     src={afternoonBgImageData}
-                                    alt="中午预览"
+                                    alt={t(plugin, "widgets.timedate.afternoonPreview")}
                                 />
                             {:else if afternoonImageType === "local" && afternoonBgImage}
-                                <img src={afternoonBgImage} alt="中午预览" />
+                                <img src={afternoonBgImage} alt={t(plugin, "widgets.timedate.afternoonPreview")} />
                             {/if}
                         </div>
                     </div>
@@ -416,15 +420,15 @@
                         <!-- 左侧配置 -->
                         <div class="type-select-and-input">
                             <label for="night-bg-select"
-                                >晚上：（18点 ~ 6点）</label
+                                >{t(plugin, "widgets.timedate.night")}</label
                             >
                             <div class="type-select">
                                 <select
                                     id="night-bg-select"
                                     bind:value={nightImageType}
                                 >
-                                    <option value="remote">远程图片</option>
-                                    <option value="local">本地图片</option>
+                                    <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                                    <option value="local">{t(plugin, "common.localImage")}</option>
                                 </select>
                             </div>
 
@@ -432,11 +436,11 @@
                                 <input
                                     type="text"
                                     bind:value={nightBgUrl}
-                                    placeholder="请输入晚上背景图URL"
+                                    placeholder={t(plugin, "widgets.timedate.nightUrlPlaceholder")}
                                 />
                             {:else}
                                 <button on:click={() => nightBgInput?.click()}
-                                    >上传图片</button
+                                    >{t(plugin, "common.uploadImage")}</button
                                 >
                             {/if}
                         </div>
@@ -444,9 +448,9 @@
                         <!-- 右侧预览 -->
                         <div class="image-preview">
                             {#if nightImageType === "remote" && nightBgUrl}
-                                <img src={nightBgImageData} alt="晚上预览" />
+                                <img src={nightBgImageData} alt={t(plugin, "widgets.timedate.nightPreview")} />
                             {:else if nightImageType === "local" && nightBgImage}
-                                <img src={nightBgImage} alt="晚上预览" />
+                                <img src={nightBgImage} alt={t(plugin, "widgets.timedate.nightPreview")} />
                             {/if}
                         </div>
                     </div>
@@ -456,29 +460,29 @@
     {:else if timeType === "simple1"}
         <div class="form-group">
             <label for=""
-                >时钟大小：
+                >{t(plugin, "widgets.timedate.clockSize")}
                 <input type="number" bind:value={simple1Size} />
             </label>
             <label for=""
-                >字体粗细：
+                >{t(plugin, "widgets.timedate.fontWeight")}
                 <input type="number" bind:value={simple1FontWeight} />
             </label>
         </div>
         <div class="form-group">
             <label for="">
                 <input type="checkbox" bind:checked={simple1ShowSecond} />
-                显示秒
+                {t(plugin, "widgets.timedate.showSecondsShort")}
             </label>
             <label for="">
                 <input type="checkbox" bind:checked={simple1ShowDate} />
-                显示日期
+                {t(plugin, "widgets.timedate.showDate")}
             </label>
         </div>
     {:else if timeType === "simple2"}
         <div class="form-group simple2BackgroundImg">
             <div class="type-select-and-input">
                 <label>
-                    背景设置：
+                    {t(plugin, "common.backgroundSettings")}
                     <select
                         bind:value={simple2BgSelect}
                         on:change={() => {
@@ -489,8 +493,8 @@
                             }
                         }}
                     >
-                        <option value="remote">远程图片</option>
-                        <option value="local">本地图片</option>
+                        <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                        <option value="local">{t(plugin, "common.localImage")}</option>
                     </select>
                 </label>
                 {#if simple2BgSelect === "remote"}
@@ -498,11 +502,11 @@
                         type="text"
                         bind:value={simple2RemoteBg}
                         on:change={getSimple2BgImage}
-                        placeholder="输入远程图片URL"
+                        placeholder={t(plugin, "widgets.timedate.remoteUrlPlaceholder")}
                     />
                 {:else}
                     <button on:click={() => simple2BgInput?.click()}>
-                        上传图片
+                        {t(plugin, "common.uploadImage")}
                     </button>
 
                     <input
@@ -516,9 +520,9 @@
             </div>
             <div class="image-preview">
                 {#if simple2BgSelect === "remote" && simple2BgImageData}
-                    <img src={simple2BgImageData} alt="简单时钟2背景预览" />
+                    <img src={simple2BgImageData} alt={t(plugin, "widgets.timedate.simple2BgPreview")} />
                 {:else if simple2BgSelect === "local" && simple2LocalBg}
-                    <img src={simple2LocalBg} alt="简单时钟2背景预览" />
+                    <img src={simple2LocalBg} alt={t(plugin, "widgets.timedate.simple2BgPreview")} />
                 {/if}
             </div>
         </div>
@@ -526,88 +530,88 @@
         <div class="form-group form-group-dial1">
             <label for="">
                 <input type="checkbox" bind:checked={dial1ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
             <label for="">
                 <input type="checkbox" bind:checked={dial1ShowMarkers} />
-                显示刻度数字
+                {t(plugin, "widgets.timedate.showMarkers")}
             </label>
             <label for="">
                 <input type="checkbox" bind:checked={dial1ShowDate} />
-                显示日期
+                {t(plugin, "widgets.timedate.showDate")}
             </label>
         </div>
     {:else if timeType === "dial2"}
         <div class="form-group form-group-dial2">
             <label for="">
                 <input type="checkbox" bind:checked={dial2ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
             <label for="">
                 <input type="checkbox" bind:checked={dial2ShowMarkers} />
-                显示刻度数字
+                {t(plugin, "widgets.timedate.showMarkers")}
             </label>
             <label for="">
                 <input type="checkbox" bind:checked={dial2ShowDate} />
-                显示日期
+                {t(plugin, "widgets.timedate.showDate")}
             </label>
         </div>
     {:else if timeType === "dial3" && advancedEnabled}
         <div class="form-group form-group-dial3">
             <label for="">
                 <input type="checkbox" bind:checked={dial3ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial4" && advancedEnabled}
         <div class="form-group form-group-dial4">
             <label for="">
                 <input type="checkbox" bind:checked={dial4ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial5" && advancedEnabled}
         <div class="form-group form-group-dial5">
             <label for="">
                 <input type="checkbox" bind:checked={dial5ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial6" && advancedEnabled}
         <div class="form-group form-group-dial6">
             <label for="">
                 <input type="checkbox" bind:checked={dial6ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial7" && advancedEnabled}
         <div class="form-group form-group-dial7">
             <label for="">
                 <input type="checkbox" bind:checked={dial7ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial8" && advancedEnabled}
         <div class="form-group form-group-dial8">
             <label for="">
                 <input type="checkbox" bind:checked={dial8ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {:else if timeType === "dial9" && advancedEnabled}
         <div class="form-group form-group-dial9">
             <label for="">
                 <input type="checkbox" bind:checked={dial9ShowSecond} />
-                显示秒针
+                {t(plugin, "widgets.timedate.showSecondHand")}
             </label>
         </div>
     {/if}
 
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/NlvZweO3LiUA2XkC2escjktKnXg?from=from_copylink"
-            target="_blank">时钟</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

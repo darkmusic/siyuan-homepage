@@ -3,6 +3,7 @@
 
     import Default from "./_default.svelte";
     import Ring1 from "./_ring1.svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -47,11 +48,11 @@
             <div class="content-not-started">
                 <div class="countdown-header">
                     <i class="fas fa-clock"></i>
-                    <h3>设置倒计时</h3>
+                    <h3>{t(plugin, "widgets.countdownTimer.setup")}</h3>
                 </div>
                 <div class="countdown-input-container">
                     <div class="time-input-group">
-                        <label for="hours">小时</label>
+                        <label for="hours">{t(plugin, "widgets.countdownTimer.hours")}</label>
                         <input
                             type="number"
                             name="hours"
@@ -61,11 +62,11 @@
                             max="99"
                             placeholder="0"
                         />
-                        <span class="time-unit">时</span>
+                        <span class="time-unit">{t(plugin, "widgets.countdownTimer.hourUnit")}</span>
                     </div>
                     <div class="time-separator">:</div>
                     <div class="time-input-group">
-                        <label for="minutes">分钟</label>
+                        <label for="minutes">{t(plugin, "widgets.countdownTimer.minutes")}</label>
                         <input
                             type="number"
                             name="minutes"
@@ -75,11 +76,11 @@
                             max="59"
                             placeholder="0"
                         />
-                        <span class="time-unit">分</span>
+                        <span class="time-unit">{t(plugin, "widgets.countdownTimer.minuteUnit")}</span>
                     </div>
                     <div class="time-separator">:</div>
                     <div class="time-input-group">
-                        <label for="seconds">秒钟</label>
+                        <label for="seconds">{t(plugin, "widgets.countdownTimer.seconds")}</label>
                         <input
                             type="number"
                             name="seconds"
@@ -89,7 +90,7 @@
                             max="59"
                             placeholder="0"
                         />
-                        <span class="time-unit">秒</span>
+                        <span class="time-unit">{t(plugin, "widgets.countdownTimer.secondUnit")}</span>
                     </div>
                 </div>
                 <button
@@ -98,14 +99,14 @@
                     disabled={hours === 0 && minutes === 0 && seconds === 0}
                 >
                     <i class="fas fa-play"></i>
-                    开始倒计时
+                    {t(plugin, "widgets.countdownTimer.startCountdown")}
                 </button>
             </div>
         {/if}
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

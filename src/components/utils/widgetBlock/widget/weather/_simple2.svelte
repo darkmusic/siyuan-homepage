@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let city: string;
     export let temperature: string;
@@ -253,7 +254,7 @@
                 y="86"
                 font-size="5"
                 fill="#2A2B2E"
-                text-anchor="middle">湿度</text
+                text-anchor="middle">{t(plugin, "widgets.weather.humidity")}</text
             >
 
             <text x="50" y="76" font-size="6" fill="black" text-anchor="middle"
@@ -264,24 +265,24 @@
                 y="86"
                 font-size="5"
                 fill="#2A2B2E"
-                text-anchor="middle">风向</text
+                text-anchor="middle">{t(plugin, "widgets.weather.windDirection")}</text
             >
 
             <text x="80" y="76" font-size="6" fill="black" text-anchor="middle"
-                >{wind_power}级</text
+                >{t(plugin, "widgets.weather.windLevel", { power: wind_power })}</text
             >
             <text
                 x="80"
                 y="86"
                 font-size="5"
                 fill="#2A2B2E"
-                text-anchor="middle">风力</text
+                text-anchor="middle">{t(plugin, "widgets.weather.windPower")}</text
             >
         </svg>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在"主页设置"→"会员服务"中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

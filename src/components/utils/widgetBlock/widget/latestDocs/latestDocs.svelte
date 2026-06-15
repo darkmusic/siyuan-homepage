@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { getLatestDocuments, type latestDocumentInfo } from "./latestDocs";
     import { openDocs } from "@/components/tools/openDocs";
+    import { pluginT } from "@/libs/i18n";
     import {
         createFloatingDocPopup,
         setMouseOnTrigger,
@@ -13,7 +14,9 @@
 
     const parsed = JSON.parse(contentTypeJson);
     const limit = parsed.data?.[0]?.limit || 5;
-    const title = parsed.data?.[0]?.latestDocsTitle || "🕒最近文档";
+    const title =
+        parsed.data?.[0]?.latestDocsTitle ||
+        pluginT(plugin, "widgets.defaults.latestDocsTitle");
     const prefix = parsed.data?.[0]?.latestDocsPrefix || "📄";
     const showLatestDocDetails = parsed.data?.[0]?.showLatestDocDetails ?? true;
     const showLatestDocFloatDoc =
@@ -21,14 +24,14 @@
     const latestDocsFloatDocShowTime =
         parsed.data?.[0]?.latestDocsFloatDocShowTime || 0.1;
 
-    // 文档数据源
     let documentList: latestDocumentInfo[] = [];
     let displayedDocs: latestDocumentInfo[] = [];
-    
-    // 悬浮窗定时器
     let floatDocTimeout: number | null = null;
 
-    // 模拟加载文档数据
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {
         documentList = await getLatestDocuments(
             parsed.data?.[0]?.docNotebookId,
@@ -37,7 +40,6 @@
         displayedDocs = documentList.slice(0, limit);
     });
 
-    // 获取时间差并格式化为“X天前”或“今天”
     function getTimeAgo(updated: string): string {
         const year = parseInt(updated.substring(0, 4));
         const month = parseInt(updated.substring(4, 6)) - 1;
@@ -55,10 +57,9 @@
 
         if (diffDays === 0) {
             const timeStr = `${updated.substring(8, 10)}:${updated.substring(10, 12)}`;
-            return `今天 ${timeStr}`;
-        } else {
-            return `${diffDays}天前`;
+            return t("widgets.latestDocs.today", { time: timeStr });
         }
+        return t("widgets.latestDocs.daysAgo", { n: diffDays });
     }
 </script>
 
@@ -80,11 +81,9 @@
                         }}
                         on:mouseenter={(e) => {
                             if (showLatestDocFloatDoc && !plugin.isMobile) {
-                                // 清除之前的定时器
                                 if (floatDocTimeout) {
                                     clearTimeout(floatDocTimeout);
                                 }
-                                // 设置新的定时器
                                 floatDocTimeout = window.setTimeout(() => {
                                     createFloatingDocPopup(doc, e, plugin);
                                     floatDocTimeout = null;
@@ -93,7 +92,6 @@
                         }}
                         on:mouseleave={() => {
                             if (showLatestDocFloatDoc && !plugin.isMobile) {
-                                // 清除悬浮窗显示定时器
                                 if (floatDocTimeout) {
                                     clearTimeout(floatDocTimeout);
                                     floatDocTimeout = null;
@@ -105,7 +103,9 @@
                         }}
                         role="button"
                         tabindex="0"
-                        aria-label="打开最近文档：{doc.content}"
+                        aria-label={t("widgets.latestDocs.openAria", {
+                            content: doc.content,
+                        })}
                     >
                         {prefix}
                         {doc.content}
@@ -113,14 +113,16 @@
                     {#if showLatestDocDetails}
                         <div class="document-updated-container">
                             <span class="document-updated">
-                                更新于：📅{getTimeAgo(doc.updated)}
+                                {t("widgets.latestDocs.updatedOn", {
+                                    date: getTimeAgo(doc.updated),
+                                })}
                             </span>
                         </div>
                     {/if}
                 </li>
             {/each}
         {:else}
-            <p>暂无文档</p>
+            <p>{t("common.noDocs")}</p>
         {/if}
     </ul>
 </div>

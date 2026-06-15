@@ -3,6 +3,7 @@
     import { openDocs } from "@/components/tools/openDocs";
     import { sql } from "@/api";
     import { formatDateShort } from "@/components/tools/formatDate";
+    import { pluginT } from "@/libs/i18n";
     import {
         createFloatingDocPopup,
         setMouseOnTrigger,
@@ -12,7 +13,9 @@
     export let plugin: any;
     export let contentTypeJson: string = "{}";
     const parsed = JSON.parse(contentTypeJson);
-    const childDocsTitle = parsed.data?.childDocsTitle || "📄子文档";
+    const childDocsTitle =
+        parsed.data?.childDocsTitle ||
+        pluginT(plugin, "widgets.defaults.childDocsTitle");
     const childDocsPrefix = parsed.data?.childDocsPrefix || "📄";
     const showChildDocsDetails = parsed.data?.showChildDocsDetails ?? true;
     const childDocsParentId = parsed.data?.childDocsParentId || "";
@@ -27,7 +30,10 @@
     // 悬浮窗定时器
     let floatDocTimeout: number | null = null;
 
-    // 模拟加载文档数据
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {
         advancedEnabled = plugin.ADVANCED;
         await getChildDocs();
@@ -93,7 +99,9 @@
                             }}
                             role="button"
                             tabindex="0"
-                            aria-label="打开最近文档：{doc.content}"
+                            aria-label={t("widgets.childDocs.openAria", {
+                                content: doc.content,
+                            })}
                         >
                             {childDocsPrefix}
                             {doc.content}
@@ -102,13 +110,17 @@
                             {#if childDocsSortOrder === "updated"}
                                 <div class="document-updated-container">
                                     <span class="document-updated">
-                                        更新于：📅{formatDateShort(doc.updated)}
+                                        {t("widgets.childDocs.updatedOn", {
+                                            date: formatDateShort(doc.updated),
+                                        })}
                                     </span>
                                 </div>
                             {:else if childDocsSortOrder === "created"}
                                 <div class="document-updated-container">
                                     <span class="document-updated">
-                                        创建于：📅{formatDateShort(doc.created)}
+                                        {t("widgets.childDocs.createdOn", {
+                                            date: formatDateShort(doc.created),
+                                        })}
                                     </span>
                                 </div>
                             {/if}
@@ -116,13 +128,13 @@
                     </li>
                 {/each}
             {:else}
-                <p>暂无文档</p>
+                <p>{t("common.noDocs")}</p>
             {/if}
         </ul>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t("common.vipFeatureTitle")}</h2>
+            <h3>{t("common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

@@ -6,13 +6,13 @@ import {
     shift
 } from "@floating-ui/dom";
 import { Protyle } from "siyuan";
+import { pluginT } from "@/libs/i18n";
 
 // 全局悬浮窗管理器
 class FloatingDocManager {
     private floatingElement: HTMLElement | null = null;
     private referenceElement: HTMLElement | null = null;
     private cleanupAutoUpdate: (() => void) | null = null;
-    private currentNote: any = null;
     private isMouseInPopup: boolean = false;
     private isMouseOnTrigger: boolean = false;
     private hideTimeout: number | null = null;
@@ -140,7 +140,7 @@ class FloatingDocManager {
                 // 降级显示简单内容
                 this.protyleContainer.innerHTML = `
                     <div style="padding: 20px; text-align: center; color: var(--b3-theme-on-surface-light);">
-                        <p>文档内容加载中...</p>
+                        <p>${pluginT(this.plugin, "common.loading")}</p>
                         <p style="font-size: 12px; margin-top: 10px;">ID: ${note.id}</p>
                     </div>
                 `;
@@ -201,7 +201,6 @@ class FloatingDocManager {
     }
 
     public async show(note: any, event: MouseEvent, plugin?: any): Promise<void> {
-        this.currentNote = note;
         this.referenceElement = event.currentTarget as HTMLElement;
         this.isMouseOnTrigger = true;
         this.plugin = plugin;
@@ -278,7 +277,6 @@ class FloatingDocManager {
             this.floatingElement.style.visibility = 'hidden';
         }
 
-        this.currentNote = null;
         this.protyleContainer = null;
 
         if (this.cleanupAutoUpdate) {
@@ -320,7 +318,6 @@ class FloatingDocManager {
         // 重置所有状态
         this.protyleContainer = null;
         this.plugin = null;
-        this.currentNote = null;
         this.referenceElement = null;
         this.isMouseInPopup = false;
         this.isMouseOnTrigger = false;

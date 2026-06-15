@@ -1,15 +1,21 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let visualChartType: string = "progressBar";
+
+    const tutorial = getTutorialLink("widgets.visualChart");
 </script>
 
 <div class="visualChart-settings">
     <div class="setting-item">
         <div class="form-group">
             <label for="visualChart-type">
-                图表类型：
+                {t(plugin, "widgets.visualChart.type")}
                 <select id="visualChart-type" bind:value={visualChartType}>
-                    <option value="progressBar">进度条</option>
-                    <option value="tagCloud">标签云图</option>
+                    <option value="progressBar">{t(plugin, "widgets.visualChart.progressBar")}</option>
+                    <option value="tagCloud">{t(plugin, "widgets.visualChart.tagCloud")}</option>
                 </select>
             </label>
         </div>
@@ -18,9 +24,9 @@
     <div class="component-help">
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/M7FzwiwMQiNdKXkrIrucpOtenxb?from=from_copylink"
-                target="_blank">可视化图表</a
+            {t(plugin, "common.componentDescription")}<a
+                href={tutorial.url}
+                target="_blank">{tutorial.label}</a
             >
         </div>
     </div>

@@ -68,7 +68,8 @@
     </div>
     <div style="margin: 1.5em 0; padding: 1.5em; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
         <h2 style="color: #2d8cf0; margin: 0 0 1em;">📅 Changelog</h2>
-        <p style="margin: 0.5em 0; color: black;">The update log will no longer be displayed here. Please click the 👇 button below to view the full update log.</p>
+        <p style="margin: 0.5em 0; color: black;">The plugin UI is available in English when SiYuan is set to English.</p>
+        <p style="margin: 0.5em 0; color: black;">The update log will no longer be displayed here. Please click the 👇 button below to view the full update log. (Tutorial content is currently in Chinese.)</p>
         <div style="text-align: center;">
         <a href="https://ttl8ygt82u.feishu.cn/wiki/SsoTww8CFiDD4WkLsSwctgWqnAd?from=from_copylink" 
            style="display: inline-flex;
@@ -85,7 +86,7 @@
                   margin-top: 1.2em;
                   gap: 8px;">
             <span style="font-size: 1.1em; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));">📄</span>
-            <span style="font-weight: 500; letter-spacing: 0.5px;">Full Update Log</span>
+            <span style="font-weight: 500; letter-spacing: 0.5px;">Changelog</span>
         </a>
         </div>
     </div>
@@ -142,7 +143,7 @@
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(255,159,0,0.1)'"
                 onmousedown="this.style.transform='translateY(1px)'"
                 onmouseup="this.style.transform='translateY(-2px)'">
-                💻 Self-activation VIP tutorial
+                💻 Self-activation VIP Tutorial
             </a>
         </div>
         <p style="margin: 0.5em 0; color: black;">After activation by the above method, the subsequent updates need to be manually activated again and will not be permanently activated.</p>
@@ -164,7 +165,7 @@
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(255,159,0,0.1)'"
                 onmousedown="this.style.transform='translateY(1px)'"
                 onmouseup="this.style.transform='translateY(-2px)'">
-                👑 VIP Benefits
+                👑 Activate VIP
             </a>
         </div>
     </div>

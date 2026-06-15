@@ -1,72 +1,106 @@
 <script lang="ts">
-    export let TaskManPlusTitle: string = "📋任务管理Plus";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
+    export let TaskManPlusTitle: string = "";
     export let isCustomFilter: boolean = false;
     export let internalFilter: string = "all";
     export let customFilter: string = "";
     export let tasksSort: string = "startdate";
+
+    const tutorialLink = getTutorialLink("widgets.tasksPlus");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="tasks-plus-settings">
     <div class="setting-item">
-        <label for="task-plus-title">组件标题：</label>
+        <label for="task-plus-title">{t("common.widgetTitle")}</label>
         <input
+            id="task-plus-title"
             type="text"
             bind:value={TaskManPlusTitle}
-            placeholder="📋任务管理Plus"
+            placeholder={t("widgets.defaults.taskManPlusTitle")}
         />
     </div>
 
     <div class="setting-item">
         <label>
             <input type="checkbox" bind:checked={isCustomFilter} />
-            自定义筛选条件
+            {t("widgets.tasksPlus.customFilter")}
         </label>
     </div>
 
     {#if !isCustomFilter}
         <div class="setting-item">
-            <label for="internal-filter">筛选条件：</label>
-            <select bind:value={internalFilter}>
-                <option value="all">所有任务</option>
-                <option value="uncompleted">未完成任务</option>
-                <option value="completed">已完成任务</option>
-                <option value="today">今天任务</option>
-                <option value="tomorrow">明天任务</option>
-                <option value="mostImportant">❗❗❗❗任务</option>
+            <label for="internal-filter"
+                >{t("widgets.tasksPlus.filter")}</label
+            >
+            <select id="internal-filter" bind:value={internalFilter}>
+                <option value="all"
+                    >{t("widgets.tasksPlus.filterAll")}</option
+                >
+                <option value="uncompleted"
+                    >{t("widgets.tasksPlus.filterUncompleted")}</option
+                >
+                <option value="completed"
+                    >{t("widgets.tasksPlus.filterCompleted")}</option
+                >
+                <option value="today"
+                    >{t("widgets.tasksPlus.filterToday")}</option
+                >
+                <option value="tomorrow"
+                    >{t("widgets.tasksPlus.filterTomorrow")}</option
+                >
+                <option value="mostImportant"
+                    >{t("widgets.tasksPlus.filterMostImportant")}</option
+                >
             </select>
         </div>
     {:else}
         <div class="setting-item">
-            <label for="custom-filter">筛选语法：</label>
+            <label for="custom-filter"
+                >{t("widgets.tasksPlus.filterSyntax")}</label
+            >
             <textarea
                 id="custom-filter"
-                placeholder="输入筛选语法"
+                placeholder={t("widgets.tasksPlus.filterSyntaxPlaceholder")}
                 bind:value={customFilter}
             ></textarea>
             <p>
-                使用前请先了解<a
-                    href="https://ttl8ygt82u.feishu.cn/wiki/CCwfwq75Ziu8m5kQ0HXcnVbfnod?from=from_copylink"
-                    target="_blank">筛选语法</a
-                >，并根据需求进行调整。
+                {t("widgets.tasksPlus.filterSyntaxHintPrefix")}<a
+                    href={tutorialLink.url}
+                    target="_blank"
+                    >{t("widgets.tasksPlus.filterSyntaxLink")}</a
+                >{t("widgets.tasksPlus.filterSyntaxHintSuffix")}
             </p>
         </div>
     {/if}
 
     <div class="setting-item">
-        <label for="tasks-sort">排序方式：</label>
-        <select bind:value={tasksSort}>
-            <option value="startdate">开始日期</option>
-            <option value="deadline">截止日期</option>
-            <option value="priority">优先级❗</option>
+        <label for="tasks-sort">{t("widgets.tasksPlus.sort")}</label>
+        <select id="tasks-sort" bind:value={tasksSort}>
+            <option value="startdate"
+                >{t("widgets.tasksPlus.sortStartDate")}</option
+            >
+            <option value="deadline"
+                >{t("widgets.tasksPlus.sortDeadline")}</option
+            >
+            <option value="priority"
+                >{t("widgets.tasksPlus.sortPriority")}</option
+            >
         </select>
     </div>
 
     <div class="component-help">
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/CCwfwq75Ziu8m5kQ0HXcnVbfnod?from=from_copylink"
-                target="_blank">任务管理Plus</a
+            {t("common.componentDescription")}<a
+                href={tutorialLink.url}
+                target="_blank">{tutorialLink.label}</a
             >
         </div>
     </div>

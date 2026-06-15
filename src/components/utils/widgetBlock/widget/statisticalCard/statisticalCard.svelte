@@ -1,13 +1,14 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getStatisticalData } from "./statisticalAPI";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
 
     const parsedContent = JSON.parse(contentTypeJson);
     const statisticalCardTitle =
-        parsedContent.data?.statisticalCardTitle || "统计卡片";
+        parsedContent.data?.statisticalCardTitle || t(plugin, "widgets.defaults.statisticalCardTitle");
     const statisticalCardTitleSize =
         parsedContent.data?.statisticalCardTitleSize || 1;
     const statisticalCardTitleColor =
@@ -61,8 +62,8 @@
         </div>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

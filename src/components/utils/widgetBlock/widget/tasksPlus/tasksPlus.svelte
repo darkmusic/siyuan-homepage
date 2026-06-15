@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
+    import { pluginT } from "@/libs/i18n";
     import { openDocs } from "@/components/tools/openDocs";
     import { gettasksList, formatTasksList } from "./tasksPlus";
 
@@ -7,7 +8,9 @@
     export let contentTypeJson: string = "{}";
 
     const parsed = JSON.parse(contentTypeJson);
-    let TaskManPlusTitle = parsed.data?.TaskManPlusTitle || "📋任务管理Plus";
+    let TaskManPlusTitle =
+        parsed.data?.TaskManPlusTitle ||
+        pluginT(plugin, "widgets.defaults.taskManPlusTitle");
     let internalFilter = parsed.data?.internalFilter || "all";
     let isCustomFilter = parsed.data?.isCustomFilter || false;
     let customFilter = parsed.data?.customFilter || "";
@@ -15,6 +18,10 @@
     let tasksList: any[] = [];
     let tasksListFormat: any;
     let reminderCheckInterval: number | null = null;
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     function showSystemNotification(title: string, body: string) {
         if (!("Notification" in window)) {
@@ -87,7 +94,7 @@
                 // ✅ 只在第一次匹配的时候提醒
                 if (reminderStr === nowStr && !task.hasReminded) {
                     showSystemNotification(
-                        "任务提醒",
+                        t("widgets.tasksPlus.reminder"),
                         `${task.taskname}\n⏰ ${task.parsed.reminder}`,
                     );
                     task.hasReminded = true; // 标记为已提醒
@@ -350,7 +357,7 @@
                             class="task-name"
                             on:click={() => openDocs(plugin, task.id)}
                         >
-                            {task.taskname || "未命名任务"}
+                            {task.taskname || t("widgets.tasksPlus.unnamedTask")}
                         </button>
                     </label>
                     <div class="tasks-details">
@@ -415,7 +422,7 @@
                 </div>
             {/each}
         {:else}
-            <div class="empty-tips">暂无待办事项</div>
+            <div class="empty-tips">{t("widgets.tasksPlus.emptyTodos")}</div>
         {/if}
     </div>
 </div>

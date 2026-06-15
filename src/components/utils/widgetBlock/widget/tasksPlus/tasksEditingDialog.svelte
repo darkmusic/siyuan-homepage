@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { sql } from "@/api";
+    import { pluginT } from "@/libs/i18n";
 
     export let plugin: any;
     export let blockId: string;
@@ -27,6 +28,10 @@
 
     let useDateTime = true;
     let timePart = "";
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     function parseTaskMarkdown(markdown: string) {
         if (!markdown) return;
@@ -234,40 +239,40 @@
 
 <div class="content-display">
     <div class="task-name">
-        <label for="task-name"
-            >名称：
+        <label for="task-name">
+            {t("widgets.tasksPlus.edit.name")}
             <input
                 type="text"
                 id="task-name"
-                placeholder="输入任务名称"
+                placeholder={t("widgets.tasksPlus.edit.namePlaceholder")}
                 bind:value={taskData.taskname}
             />
         </label>
     </div>
     <div class="task-time">
         <label>
-            开始⌛：
+            {t("widgets.tasksPlus.edit.start")}
             <input type="date" bind:value={taskData.startDate} />
         </label>
 
         <label>
-            截止📅：
+            {t("widgets.tasksPlus.edit.deadline")}
             <input type="date" bind:value={taskData.deadline} />
         </label>
     </div>
     <div class="task-recurrence">
         <label>
-            重复🔄：
+            {t("widgets.tasksPlus.edit.recurrence")}
             <input
                 class="recurrence-input"
                 type="text"
                 bind:value={taskData.recurrence}
-                placeholder="例：每天、每周"
+                placeholder={t("widgets.tasksPlus.edit.recurrencePlaceholder")}
             />
         </label>
 
         <label>
-            提醒⏰：
+            {t("widgets.tasksPlus.edit.reminder")}
             {#if useDateTime}
                 <input
                     type="datetime-local"
@@ -288,36 +293,42 @@
                     bind:checked={useDateTime}
                     on:change={handleTimeTypeChange}
                 />
-                日期
+                {t("widgets.tasksPlus.edit.date")}
             </label>
         </label>
     </div>
     <div class="task-location">
         <label>
-            地点📍：
+            {t("widgets.tasksPlus.edit.location")}
             <input
                 type="text"
                 bind:value={taskData.location}
-                placeholder="输入任务地点"
+                placeholder={t("widgets.tasksPlus.edit.locationPlaceholder")}
             />
         </label>
         <label>
-            优先级❗：
+            {t("widgets.tasksPlus.edit.priority")}
             <select bind:value={taskData.priority}>
-                <option value="">无</option>
-                <option value="❗">低</option>
-                <option value="❗❗">中</option>
-                <option value="❗❗❗">高</option>
-                <option value="❗❗❗❗">紧急</option>
+                <option value="">{t("common.none")}</option>
+                <option value="❗">{t("common.low")}</option>
+                <option value="❗❗">{t("common.medium")}</option>
+                <option value="❗❗❗">{t("common.high")}</option>
+                <option value="❗❗❗❗"
+                    >{t("widgets.tasksPlus.edit.urgent")}</option
+                >
             </select>
         </label>
     </div>
     <div class="task-tags">
-        <span> 标签 </span>
+        <span>{t("widgets.tasksPlus.edit.tags")}</span>
         <div class="tag-item-container">
             {#each taskData.tags as tag, index}
                 <div class="tag-item">
-                    <input type="text" bind:value={tag} placeholder="标签" />
+                    <input
+                        type="text"
+                        bind:value={tag}
+                        placeholder={t("widgets.tasksPlus.edit.tagPlaceholder")}
+                    />
                     <button
                         on:click={() =>
                             (taskData.tags = taskData.tags.filter(
@@ -333,12 +344,12 @@
             class="add-tag-button"
             on:click={() => (taskData.tags = [...taskData.tags, ""])}
         >
-            添加标签
+            {t("widgets.tasksPlus.edit.addTag")}
         </button>
     </div>
     <div class="task-confirm">
         <div class="task-confirm">
-            <button on:click={updateBlock}>确认</button>
+            <button on:click={updateBlock}>{t("common.confirmAlt")}</button>
         </div>
     </div>
 </div>

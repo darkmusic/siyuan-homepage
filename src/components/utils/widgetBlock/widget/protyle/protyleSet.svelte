@@ -1,32 +1,42 @@
 <script lang="ts">
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let isRandomDoc: boolean = false;
     export let customBlockID: string = "";
+
+    const tutorial = getTutorialLink("widgets.protyle");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="content-panel custom-protyle">
     <div class="form-group">
         <label for="">
             <input type="checkbox" bind:checked={isRandomDoc} />
-            随机漫游文档
+            {t("widgets.protyle.random")}
         </label>
     </div>
     {#if !isRandomDoc}
         <div class="form-group">
-            <label for="protyle-block-id">输入想要显示的文档块 ID：</label>
+            <label for="protyle-block-id">{t("widgets.protyle.blockId")}</label>
             <input
                 id="protyle-block-id"
                 type="text"
                 bind:value={customBlockID}
-                placeholder="例如：20250310094404-1yla4zz"
+                placeholder={t("widgets.protyle.blockIdPlaceholder")}
             />
         </div>
     {/if}
 
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/XQV7wtEtsihu2IkbYpWcOWSunKf?from=from_copylink"
-            target="_blank">文档编辑器</a
+        {t("common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

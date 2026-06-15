@@ -2,12 +2,13 @@
     import { sql } from "@/api";
     import { onMount } from "svelte";
     import { openDocs } from "@/components/tools/openDocs";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
 
     const parsed = JSON.parse(contentTypeJson);
-    let sqlTitle = parsed.data?.sqlTitle || "🔍SQL 查询结果";
+    let sqlTitle = parsed.data?.sqlTitle || t(plugin, "widgets.defaults.sqlTitle");
     const sqlInput = parsed.data?.sqlInput || "";
     const columnOrder =
         parsed.data?.columnOrder
@@ -26,49 +27,63 @@
             .map((s) => s.trim()) || [];
     let hiddenProperties: Record<string, any> = {};
 
-    const fieldNameMap = {
-        id: "内容块ID",
-        parent_id: "上级块ID",
-        root_id: "顶层块ID",
-        box: "笔记本",
-        path: "文档路径（机器）",
-        hpath: "文档路径",
-        name: "内容块名称",
-        alias: "内容块别名",
-        memo: "内容块备注",
-        tag: "标签",
-        content: "内容",
-        fcontent: "首子块内容",
-        markdown: "Markdown内容",
-        length: "文本长度",
-        type: "类型",
-        subtype: "子类型",
-        ial: "内联属性",
-        sort: "排序权重",
-        created: "创建时间",
-        updated: "更新时间",
+    const fieldKeyMap: Record<string, string> = {
+        id: "id",
+        parent_id: "parentId",
+        root_id: "rootId",
+        box: "box",
+        path: "path",
+        hpath: "hpath",
+        name: "name",
+        alias: "alias",
+        memo: "memo",
+        tag: "tag",
+        content: "content",
+        fcontent: "fcontent",
+        markdown: "markdown",
+        length: "length",
+        type: "type",
+        subtype: "subtype",
+        ial: "ial",
+        sort: "sort",
+        created: "created",
+        updated: "updated",
     };
 
-    const typeMap = {
-        audio: "音频",
-        av: "属性表",
-        b: "引述",
-        c: "代码",
-        d: "文档",
-        h: "标题",
-        html: "HTML",
-        i: "列表项",
-        iframe: "iframe",
-        l: "列表",
-        m: "公式",
-        p: "段落",
-        query_embed: "嵌入",
-        s: "超级",
-        t: "表格",
-        tb: "分割线",
-        video: "视频",
-        widget: "挂件",
-    };
+    const blockTypeKeys = [
+        "audio",
+        "av",
+        "b",
+        "c",
+        "d",
+        "h",
+        "html",
+        "i",
+        "iframe",
+        "l",
+        "m",
+        "p",
+        "query_embed",
+        "s",
+        "t",
+        "tb",
+        "video",
+        "widget",
+    ] as const;
+
+    function getFieldName(key: string): string {
+        const i18nKey = fieldKeyMap[key];
+        return i18nKey
+            ? t(plugin, `widgets.sql.field.${i18nKey}`)
+            : key;
+    }
+
+    function getBlockTypeName(value: string): string {
+        if (blockTypeKeys.includes(value as (typeof blockTypeKeys)[number])) {
+            return t(plugin, `widgets.sql.blockType.${value}`);
+        }
+        return value;
+    }
 
     function processItem(item: any) {
         const notebookName =
@@ -95,15 +110,15 @@
 
         return Object.entries(visiblePart).reduce(
             (acc, [key, value]) => {
-                const chineseKey = fieldNameMap[key] || key;
+                const displayKey = getFieldName(key);
                 const formattedValue =
                     key === "created" || key === "updated"
                         ? formatTimestamp(value as string)
                         : value;
 
-                acc[chineseKey] =
+                acc[displayKey] =
                     key === "type"
-                        ? typeMap[value as string] || value
+                        ? getBlockTypeName(value as string)
                         : formattedValue;
                 return acc;
             },
@@ -132,7 +147,14 @@
         const minute = ts.substring(10, 12);
         const second = ts.substring(12, 14);
 
-        return `${year}年${month}月${day}日 ${hour}:${minute}:${second}`;
+        return t(plugin, "common.dateTimeFormat", {
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            second,
+        });
     }
 
     function openDocument(id: string) {
@@ -142,7 +164,7 @@
     function getSortedColumns(item: Record<string, any>) {
         const allKeys = Object.keys(item);
         const orderedKeys = columnOrder
-            .map((k) => fieldNameMap[k] || k)
+            .map((k) => getFieldName(k))
             .filter((k) => !hiddenFields.includes(k) && allKeys.includes(k));
         const remainingKeys = allKeys.filter(
             (k) => !orderedKeys.includes(k) && !hiddenFields.includes(k),
@@ -176,11 +198,11 @@
                         <tr>
                             {#each getSortedColumns(row) as key}
                                 <td
-                                    class={key === "文档路径"
+                                    class={key === getFieldName("hpath")
                                         ? "clickable-path"
                                         : ""}
-                                    on:click={key === "文档路径"
-                                        ? () => openDocument(row["内容块ID"])
+                                    on:click={key === getFieldName("hpath")
+                                        ? () => openDocument(row[getFieldName("id")])
                                         : null}
                                 >
                                     {row[key] || "-"}
@@ -191,7 +213,7 @@
                 </tbody>
             </table>
         {:else}
-            <p>无查询结果</p>
+            <p>{t(plugin, "widgets.sql.noResults")}</p>
         {/if}
     </div>
 </div>

@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { MD2HTML } from "@/components/tools/MD2HTML";
 
+    export let plugin: any;
     export let contentTypeJson: string = "{}";
 
     let customTextContent: string = "";

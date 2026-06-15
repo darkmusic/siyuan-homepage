@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { showMessage } from "siyuan";
+    import { pluginT } from "@/libs/i18n";
     import DOMPurify from "dompurify";
     import { MD2HTML } from "@/components/tools/MD2HTML";
 
@@ -8,13 +9,19 @@
     export let contentTypeJson: string = "{}";
     const parsed = JSON.parse(contentTypeJson);
 
-    const quickNotesTitle = parsed.data?.quickNotesTitle || "📝快速笔记";
+    const quickNotesTitle =
+        parsed.data?.quickNotesTitle ||
+        pluginT(plugin, "widgets.defaults.quickNotesTitle");
     const quickNotesSort = parsed.data?.quickNotesSort || "DOC_ASC";
 
     let quickNotesEnabled;
     let quickNotesPosition;
 
     let quickNotesList = [];
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     onMount(async () => {
         const homepageSettingConfig = await plugin.loadData(
@@ -105,26 +112,26 @@
     <h3 class="widget-title">{quickNotesTitle}</h3>
     <div class="quick-notes-content-container">
         {#if !quickNotesEnabled}
-            <p>当前未开启快速笔记功能，请到主页设置中开启。</p>
+            <p>{t("widgets.quickNotes.disabled")}</p>
         {:else if quickNotesList.length === 0}
-            <p class="empty-tip">暂无快速笔记，点击添加按钮开始记录</p>
+            <p class="empty-tip">{t("widgets.quickNotes.empty")}</p>
         {:else}
             <div class="notes-grid">
                 {#each quickNotesList as note}
                     <div class="note-card">
                         <button
                             class="delete-btn"
-                            title="删除该条笔记"
+                            title={t("widgets.quickNotes.deleteTitle")}
                             on:click={() => handleDelete(note.id)}
                         >
                             ×
                         </button>
                         <button
                             class="copy-btn"
-                            title="复制笔记"
+                            title={t("widgets.quickNotes.copyTitle")}
                             on:click={() => {
                                 navigator.clipboard.writeText(note.content);
-                                showMessage("复制成功");
+                                showMessage(t("messages.copySuccess"));
                             }}>C</button
                         >
                         <div class="note-content">

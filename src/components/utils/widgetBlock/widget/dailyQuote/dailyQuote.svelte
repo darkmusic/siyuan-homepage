@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -40,21 +41,21 @@
                     apiUrl =
                         "https://v.api.aa1.cn/api/api-wenan-qg/index.php?aa1=json";
                     responseData = await (await fetch(apiUrl)).json();
-                    dailyQuote = responseData[0]?.qinggan || "情感语录获取失败";
+                    dailyQuote = responseData[0]?.qinggan || t(plugin, "widgets.dailyQuote.errorEmotion");
                 } else if (dailyQuoteSource === "classic") {
                     apiUrl = "https://v.api.aa1.cn/api/yiyan/index.php";
                     const text = await (await fetch(apiUrl)).text();
                     const match = text.match(/<p>(.*?)<\/p>/);
-                    dailyQuote = match ? match[1] : "今日语录获取失败";
+                    dailyQuote = match ? match[1] : t(plugin, "widgets.dailyQuote.errorClassic");
                 } else if (dailyQuoteSource === "pyq") {
                     apiUrl = "https://v.api.aa1.cn/api/pyq/index.php?aa1=json";
                     responseData = await (await fetch(apiUrl)).json();
-                    dailyQuote = responseData?.pyq || "朋友圈语录获取失败";
+                    dailyQuote = responseData?.pyq || t(plugin, "widgets.dailyQuote.errorPyq");
                 } else if (dailyQuoteSource === "straybirdsZH") {
                     apiUrl =
                         "https://api.mu-jie.cc/stray-birds/range?type=json";
                     responseData = await (await fetch(apiUrl)).json();
-                    dailyQuote = responseData?.cn || "中文语录获取失败";
+                    dailyQuote = responseData?.cn || t(plugin, "widgets.dailyQuote.errorStraybirdsZH");
                 } else if (dailyQuoteSource === "straybirdsEN") {
                     apiUrl =
                         "https://api.mu-jie.cc/stray-birds/range?type=json";
@@ -64,17 +65,17 @@
                     apiUrl =
                         "https://v.api.aa1.cn/api/api-wenan-gaoxiao/index.php?aa1=json";
                     responseData = await (await fetch(apiUrl)).json();
-                    dailyQuote = responseData[0]?.gaoxiao || "搞笑语录获取失败";
+                    dailyQuote = responseData[0]?.gaoxiao || t(plugin, "widgets.dailyQuote.errorGaoxiao");
                 } else if (dailyQuoteSource === "lovegarden") {
                     apiUrl = "https://api.kuleu.com/api/aiqinggongyu";
                     responseData = await (await fetch(apiUrl)).json();
-                    dailyQuote = responseData?.data || "爱情公寓语录获取失败";
+                    dailyQuote = responseData?.data || t(plugin, "widgets.dailyQuote.errorLovegarden");
                 } else if (dailyQuoteSource === "celebrity") {
                     apiUrl =
                         "https://v.api.aa1.cn/api/api-wenan-mingrenmingyan/index.php?aa1=json";
                     responseData = await (await fetch(apiUrl)).json();
                     dailyQuote =
-                        responseData[0]?.mingrenmingyan || "名人名言获取失败";
+                        responseData[0]?.mingrenmingyan || t(plugin, "widgets.dailyQuote.errorCelebrity");
                 }
             } else if (dailyQuoteMode === "custom") {
                 const quotes = customDailyQuoteContent
@@ -84,11 +85,11 @@
                 dailyQuote =
                     quotes.length > 0
                         ? quotes[Math.floor(Math.random() * quotes.length)]
-                        : "请先自定义语录";
+                        : t(plugin, "widgets.dailyQuote.customizeFirst");
             }
         } catch (e) {
             console.error("获取每日一言失败:", e);
-            dailyQuote = "今日语录加载失败，请稍后再试";
+            dailyQuote = t(plugin, "widgets.dailyQuote.loadFailed");
         }
     }
 </script>
@@ -105,16 +106,16 @@
     <div class="overlay"></div>
     {#if advancedEnabled}
         <div class="daily-quote-content-container">
-            {dailyQuote || "每日一言加载中..."}
+            {dailyQuote || t(plugin, "widgets.dailyQuote.loading")}
         </div>
     {:else if dailyQuoteMode === "custom"}
         <div class="daily-quote-content-container">
-            {dailyQuote || "每日一言加载中..."}
+            {dailyQuote || t(plugin, "widgets.dailyQuote.loading")}
         </div>
     {:else if dailyQuoteMode === "remote"}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let hours: number = 0;
@@ -164,7 +165,9 @@
                 on:click={togglePause}
                 role="button"
                 tabindex={isRunning ? 0 : -1}
-                aria-label={isPaused ? "继续倒计时" : "暂停倒计时"}
+                aria-label={isPaused
+                    ? t(plugin, "widgets.countdownTimer.resume")
+                    : t(plugin, "widgets.countdownTimer.pause")}
                 on:keydown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
@@ -214,7 +217,7 @@
                 on:click={stopCountdown}
                 role="button"
                 tabindex="0"
-                aria-label="停止倒计时"
+                aria-label={t(plugin, "widgets.countdownTimer.stop")}
                 on:keydown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
@@ -250,8 +253,8 @@
         </svg>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在"主页设置"→"会员服务"中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

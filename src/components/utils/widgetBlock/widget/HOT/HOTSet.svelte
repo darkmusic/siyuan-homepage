@@ -1,71 +1,76 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let hotSource: string;
 
-    // 热搜平台分类选项
+    const tutorial = getTutorialLink("widgets.hot");
+
     const hotSourceCategories = [
         {
-            category: "视频/社区",
+            categoryKey: "widgets.hot.category.videoCommunity",
             sources: [
-                { value: "bilibili", label: "哔哩哔哩" },
-                { value: "acfun", label: "A站" },
-                { value: "weibo", label: "新浪微博" },
-                { value: "zhihu", label: "知乎" },
-                { value: "douyin", label: "抖音" },
-                { value: "kuaishou", label: "快手" },
-                { value: "douban-movie", label: "豆瓣电影" },
-                { value: "douban-group", label: "豆瓣小组" },
-                { value: "tieba", label: "百度贴吧" },
-                { value: "hupu", label: "虎扑" },
-                { value: "miyoushe", label: "米游社" },
-                { value: "ngabbs", label: "NGA" },
-                { value: "v2ex", label: "V2EX" },
-                { value: "52pojie", label: "吾爱破解" },
-                { value: "hostloc", label: "全球主机交流" },
-                { value: "coolapk", label: "酷安" },
+                { value: "bilibili", key: "widgets.hot.source.bilibili" },
+                { value: "acfun", key: "widgets.hot.source.acfun" },
+                { value: "weibo", key: "widgets.hot.source.weibo" },
+                { value: "zhihu", key: "widgets.hot.source.zhihu" },
+                { value: "douyin", key: "widgets.hot.source.douyin" },
+                { value: "kuaishou", key: "widgets.hot.source.kuaishou" },
+                { value: "douban-movie", key: "widgets.hot.source.doubanMovie" },
+                { value: "douban-group", key: "widgets.hot.source.doubanGroup" },
+                { value: "tieba", key: "widgets.hot.source.tieba" },
+                { value: "hupu", key: "widgets.hot.source.hupu" },
+                { value: "miyoushe", key: "widgets.hot.source.miyoushe" },
+                { value: "ngabbs", key: "widgets.hot.source.ngabbs" },
+                { value: "v2ex", key: "widgets.hot.source.v2ex" },
+                { value: "52pojie", key: "widgets.hot.source.pojie52" },
+                { value: "hostloc", key: "widgets.hot.source.hostloc" },
+                { value: "coolapk", key: "widgets.hot.source.coolapk" },
             ],
         },
         {
-            category: "新闻/资讯",
+            categoryKey: "widgets.hot.category.news",
             sources: [
-                { value: "baidu", label: "百度热搜" },
-                { value: "thepaper", label: "澎湃新闻" },
-                { value: "toutiao", label: "今日头条" },
-                { value: "qq-news", label: "腾讯新闻" },
-                { value: "sina", label: "新浪热搜" },
-                { value: "sina-news", label: "新浪新闻" },
-                { value: "netease-news", label: "网易新闻" },
-                { value: "huxiu", label: "虎嗅网" },
-                { value: "ifanr", label: "爱范儿" },
+                { value: "baidu", key: "widgets.hot.source.baidu" },
+                { value: "thepaper", key: "widgets.hot.source.thepaper" },
+                { value: "toutiao", key: "widgets.hot.source.toutiao" },
+                { value: "qq-news", key: "widgets.hot.source.qqNews" },
+                { value: "sina", key: "widgets.hot.source.sina" },
+                { value: "sina-news", key: "widgets.hot.source.sinaNews" },
+                { value: "netease-news", key: "widgets.hot.source.netease" },
+                { value: "huxiu", key: "widgets.hot.source.huxiu" },
+                { value: "ifanr", key: "widgets.hot.source.ifanr" },
             ],
         },
         {
-            category: "技术/IT",
+            categoryKey: "widgets.hot.category.tech",
             sources: [
-                { value: "sspai", label: "少数派" },
-                { value: "ithome", label: "IT之家" },
-                { value: "ithome-xijiayi", label: "IT之家·喜加一" },
-                { value: "juejin", label: "掘金" },
-                { value: "jianshu", label: "简书" },
-                { value: "guokr", label: "果壳" },
-                { value: "36kr", label: "36氪" },
-                { value: "51cto", label: "51CTO" },
-                { value: "csdn", label: "CSDN" },
-                { value: "nodeseek", label: "NodeSeek" },
-                { value: "hellogithub", label: "HelloGitHub" },
+                { value: "sspai", key: "widgets.hot.source.sspai" },
+                { value: "ithome", key: "widgets.hot.source.ithome" },
+                { value: "ithome-xijiayi", key: "widgets.hot.source.ithomeXijiayi" },
+                { value: "juejin", key: "widgets.hot.source.juejin" },
+                { value: "jianshu", key: "widgets.hot.source.jianshu" },
+                { value: "guokr", key: "widgets.hot.source.guokr" },
+                { value: "36kr", key: "widgets.hot.source.36kr" },
+                { value: "51cto", key: "widgets.hot.source.cto51" },
+                { value: "csdn", key: "widgets.hot.source.csdn" },
+                { value: "nodeseek", key: "widgets.hot.source.nodeseek" },
+                { value: "hellogithub", key: "widgets.hot.source.hellogithub" },
             ],
         },
         {
-            category: "游戏",
+            categoryKey: "widgets.hot.category.games",
             sources: [
-                { value: "lol", label: "英雄联盟" },
-                { value: "genshin", label: "原神" },
-                { value: "honkai", label: "崩坏3" },
-                { value: "starrail", label: "星穹铁道" },
+                { value: "lol", key: "widgets.hot.source.lol" },
+                { value: "genshin", key: "widgets.hot.source.genshin" },
+                { value: "honkai", key: "widgets.hot.source.honkai" },
+                { value: "starrail", key: "widgets.hot.source.starrail" },
             ],
         },
         {
-            category: "其他",
-            sources: [{ value: "weread", label: "微信读书" }],
+            categoryKey: "widgets.hot.category.other",
+            sources: [{ value: "weread", key: "widgets.hot.source.weread" }],
         },
     ];
 </script>
@@ -73,12 +78,12 @@
 <div class="hot-set">
     <div class="form-group">
         <label for="hot-source">
-            热搜平台：
+            {t(plugin, "widgets.hot.platform")}
             <select id="hot-source" bind:value={hotSource}>
                 {#each hotSourceCategories as category}
-                    <optgroup label={category.category}>
+                    <optgroup label={t(plugin, category.categoryKey)}>
                         {#each category.sources as source}
-                            <option value={source.value}>{source.label}</option>
+                            <option value={source.value}>{t(plugin, source.key)}</option>
                         {/each}
                     </optgroup>
                 {/each}
@@ -87,12 +92,12 @@
     </div>
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/W7u5wQCEOibCxhkyA7mc5mDWnWh?from=from_copylink"
-            target="_blank">热搜</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
-    <p>注：若某一热搜来源失效请联系我更新~</p>
+    <p>{t(plugin, "common.apiNote")}</p>
 </div>
 
 <style lang="scss">

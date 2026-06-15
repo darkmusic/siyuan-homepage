@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { showMessage } from "siyuan";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -177,14 +178,18 @@
     }
 
     function handleTimerEnd() {
-        const message = isBreak ? "休息时间结束！" : "专注时间结束！";
+        const message = isBreak
+            ? t(plugin, "widgets.focus.breakEnd")
+            : t(plugin, "widgets.focus.focusEnd");
         // 触发系统通知
         if (showSyNotif) {
             showSystemNotification(
-                isBreak ? "休息时间结束" : "专注时间结束",
                 isBreak
-                    ? "休息时间已经结束啦！"
-                    : "专注时间已完成，休息一下吧！",
+                    ? t(plugin, "widgets.focus.breakEndTitle")
+                    : t(plugin, "widgets.focus.focusEndTitle"),
+                isBreak
+                    ? t(plugin, "widgets.focus.breakEndBody")
+                    : t(plugin, "widgets.focus.focusEndBody"),
             );
         }
         showMessage(message);
@@ -203,12 +208,12 @@
 
     function formatDuration(seconds: number, limit: number = 2): string {
         const units = [
-            { limit: 31536000, label: "年" },
-            { limit: 2628000, label: "个月" },
-            { limit: 86400, label: "天" },
-            { limit: 3600, label: "小时" },
-            { limit: 60, label: "分钟" },
-            { limit: 1, label: "秒" },
+            { limit: 31536000, key: "year" },
+            { limit: 2628000, key: "months" },
+            { limit: 86400, key: "day" },
+            { limit: 3600, key: "hour" },
+            { limit: 60, key: "minute" },
+            { limit: 1, key: "second" },
         ];
 
         let result = [];
@@ -216,12 +221,16 @@
             const unit = units[i];
             const count = Math.floor(seconds / unit.limit);
             if (count > 0) {
-                result.push(`${count}${unit.label}`);
+                result.push(
+                    `${count}${t(plugin, `widgets.focus.durationUnit.${unit.key}`)}`,
+                );
                 seconds %= unit.limit;
             }
         }
 
-        return result.join("") || "0秒";
+        return (
+            result.join("") || t(plugin, "widgets.focus.durationUnit.zero")
+        );
     }
 
     function formatTime(seconds: number): string {
@@ -277,10 +286,10 @@
     {#if showSettings}
         <!-- 设置弹窗 -->
         <div class="settings-modal">
-            <h4>专注设置</h4>
+            <h4>{t(plugin, "widgets.focus.settings")}</h4>
             <div class="form-group">
                 <label
-                    >专注时长/分钟：
+                    >{t(plugin, "widgets.focus.duration")}
                     <input
                         type="number"
                         min="5"
@@ -291,7 +300,7 @@
             </div>
             <div class="form-group">
                 <label
-                    >休息时长/分钟：
+                    >{t(plugin, "widgets.focus.breakDuration")}
                     <input
                         type="number"
                         min="1"
@@ -300,22 +309,22 @@
                     />
                 </label>
             </div>
-            <h4>样式设置</h4>
+            <h4>{t(plugin, "widgets.focus.styleSettings")}</h4>
             <div class="form-group">
                 <label>
-                    倒计时样式：
+                    {t(plugin, "common.style")}
                     <select bind:value={selectedTimerStyle}>
-                        <option value="classic">经典样式</option>
-                        <option value="modern">现代简约</option>
-                        <option value="rounded">圆角卡片</option>
-                        <option value="digital-clock">数码时钟</option>
-                        <option value="circular-progress">环形进度</option>
+                        <option value="classic">{t(plugin, "widgets.focus.styleClassic")}</option>
+                        <option value="modern">{t(plugin, "widgets.focus.styleModern")}</option>
+                        <option value="rounded">{t(plugin, "widgets.focus.styleRounded")}</option>
+                        <option value="digital-clock">{t(plugin, "widgets.focus.styleDigital")}</option>
+                        <option value="circular-progress">{t(plugin, "widgets.focus.styleCircular")}</option>
                     </select>
                 </label>
             </div>
             <div class="form-group">
                 <label>
-                    倒计时大小：
+                    {t(plugin, "widgets.focus.timerSize")}
                     <input
                         type="number"
                         min="1"
@@ -331,7 +340,7 @@
                         id="timer-show-info"
                         type="checkbox"
                         bind:checked={showFocusInfo}
-                    />显示专注信息
+                    />{t(plugin, "widgets.focus.showInfo")}
                 </label>
             </div>
             <div class="form-group">
@@ -340,21 +349,21 @@
                         id="timer-show-sy-notif"
                         type="checkbox"
                         bind:checked={showSyNotif}
-                    />显示系统通知
+                    />{t(plugin, "widgets.focus.showNotification")}
                 </label>
             </div>
-            <h4>专注统计</h4>
+            <h4>{t(plugin, "widgets.focus.stats")}</h4>
             <div class="form-group">
                 <p>
-                    已专注次数：{totalFocusTimes}
+                    {t(plugin, "widgets.focus.focusCount")}{totalFocusTimes}
                 </p>
                 <p>
-                    已专注时间：{formatDuration(totalFocusTime, 10)}
+                    {t(plugin, "widgets.focus.focusTime")}{formatDuration(totalFocusTime, 10)}
                 </p>
             </div>
             <div class="modal-actions">
-                <button on:click={saveConfig}>保存</button>
-                <button on:click={() => (showSettings = false)}>取消</button>
+                <button on:click={saveConfig}>{t(plugin, "widgets.focus.save")}</button>
+                <button on:click={() => (showSettings = false)}>{t(plugin, "common.cancel")}</button>
             </div>
         </div>
     {:else}
@@ -428,14 +437,14 @@
 
                     <div class="timer-controls">
                         <button
-                            title="开始"
+                            title={t(plugin, "widgets.focus.start")}
                             on:click={startTimer}
                             disabled={isRunning}
                         >
                             <i class="fas fa-play"></i>
                         </button>
                         <button
-                            title="暂停"
+                            title={t(plugin, "widgets.focus.pause")}
                             on:click={() => {
                                 clearInterval(timer);
                                 isRunning = false;
@@ -444,7 +453,7 @@
                             <i class="fas fa-pause"></i>
                         </button>
                         <button
-                            title="停止"
+                            title={t(plugin, "widgets.focus.stop")}
                             on:click={() => {
                                 clearInterval(timer);
                                 isRunning = false;
@@ -454,7 +463,7 @@
                             <i class="fas fa-stop"></i>
                         </button>
                         <button
-                            title="设置"
+                            title={t(plugin, "widgets.focus.settingsBtn")}
                             on:click={() => {
                                 showSettings = true;
                                 resetTimer(isBreak ? "break" : "focus");
@@ -467,10 +476,10 @@
                 {#if showFocusInfo}
                     <div class="focus-info">
                         <p>
-                            已专注{totalFocusTimes}次，总时长{formatDuration(
-                                totalFocusTime,
-                                2,
-                            )}
+                            {t(plugin, "widgets.focus.focusSummary", {
+                                times: totalFocusTimes,
+                                duration: formatDuration(totalFocusTime, 2),
+                            })}
                         </p>
                     </div>
                 {/if}

@@ -1,43 +1,49 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let sqlTitle: string;
     export let sqlInput: string;
     export let columnOrder: string;
     export let hiddenFields: string;
+
+    const tutorial = getTutorialLink("widgets.sql");
 </script>
 
 <div class="content-panel sql">
     <div class="form-group">
         <label for="sql-title">
-            组件标题：
+            {t(plugin, "widgets.sql.title")}
             <input id="sql-title" type="text" bind:value={sqlTitle} />
         </label>
     </div>
     <div class="form-group">
-        <label for="sql-input">SQL 语句：</label>
+        <label for="sql-input">{t(plugin, "widgets.sql.input")}</label>
         <textarea
             id="sql-input"
             bind:value={sqlInput}
-            placeholder="请输入 SQL 语句"
+            placeholder={t(plugin, "widgets.sql.inputPlaceholder")}
         ></textarea>
     </div>
     <div class="form-group">
         <label for="column-order">
-            列排序（逗号分隔）：
+            {t(plugin, "widgets.sql.columnOrder")}
             <input
                 id="column-order"
                 type="text"
-                placeholder="例如：id,alias"
+                placeholder={t(plugin, "widgets.sql.columnOrderPlaceholder")}
                 bind:value={columnOrder}
             />
         </label>
     </div>
     <div class="form-group">
         <label for="hidden-fields">
-            隐藏字段（逗号分隔）：
+            {t(plugin, "widgets.sql.hiddenFields")}
             <input
                 id="hidden-fields"
                 type="text"
-                placeholder="例如：alias,path"
+                placeholder={t(plugin, "widgets.sql.hiddenFieldsPlaceholder")}
                 bind:value={hiddenFields}
             />
         </label>
@@ -45,9 +51,9 @@
 
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/QG5nw3GPkiKjk3kIG9lcYpzOn6g?from=from_copylink"
-            target="_blank">SQL查询</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

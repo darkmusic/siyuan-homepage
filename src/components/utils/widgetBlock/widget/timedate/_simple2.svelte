@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { getImage } from "@/components/tools/getImage";
+	import { pluginT as t } from "@/libs/i18n";
 
 	export let contentTypeJson: string = "{}";
+	export let plugin: any;
 	const parsed = JSON.parse(contentTypeJson);
 
 	let simple2RemoteBg =
@@ -18,11 +20,9 @@
 	let hour = date.getHours();
 	let minute = date.getMinutes();
 
-	// 将星期数字转换为中文
-	function getChineseWeek(weekNum: number): string {
-		const weekNames = ["日", "一", "二", "三", "四", "五", "六"];
-		return weekNames[weekNum];
-	}
+	$: weekDisplay = t(plugin, "widgets.timedate.weekDisplay", {
+		day: t(plugin, "common.weekdays").split(",")[week],
+	});
 
 	onMount(() => {
 		// 处理背景图片加载
@@ -110,7 +110,7 @@
 			font-weight="semibold"
 			fill="rgba(255, 255, 255, 0.8)"
 		>
-			星期{getChineseWeek(week)}
+			{weekDisplay}
 		</text>
 	</svg>
 </div>

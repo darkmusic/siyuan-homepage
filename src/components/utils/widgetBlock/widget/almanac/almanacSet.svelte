@@ -1,27 +1,37 @@
 <script lang="ts">
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let advancedEnabled: boolean;
     export let almanacStyle: string = "";
+
+    const tutorial = getTutorialLink("widgets.almanac");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="music-player-settings">
     {#if advancedEnabled}
         <div class="content-panel almanac">
             <div class="setting-item">
-                <label for="almanacStyle"> 黄历样式：</label>
+                <label for="almanacStyle">{t("widgets.almanac.style")}</label>
                 <select id="almanacStyle" bind:value={almanacStyle}>
-                    <option value="classic">经典</option>
-                    <option value="tradition1">传统1</option>
+                    <option value="classic">{t("widgets.almanac.classic")}</option>
+                    <option value="tradition1">{t("widgets.almanac.tradition1")}</option>
                 </select>
             </div>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t("common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ai.feishu.cn/wiki/LoLMwANVLibTQFkChB0csi2dnjb"
-            target="_blank">黄历</a
+        {t("common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

@@ -1,31 +1,37 @@
 <script lang="ts">
     import MultiSelect from "svelte-multiselect";
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let notebooks: any[] = [];
-
-    // 最近文档配置
     export let docLimit: number = 5;
     export let ensureOpenDocs: boolean = false;
     export let selectedNotebookIds: any[] = [];
     export let docNotebookId: string = "";
-    export let latestDocsTitle: string = "最近文档";
+    export let latestDocsTitle: string = "";
     export let latestDocsPrefix: string = "";
     export let showLatestDocDetails: boolean = true;
     export let showLatestDocFloatDoc: boolean = true;
     export let latestDocsFloatDocShowTime: number = 0.1;
 
-    let limitOptions = [
-        { value: 3, label: "3条" },
-        { value: 5, label: "5条" },
-        { value: 10, label: "10条" },
-        { value: 15, label: "15条" },
-        { value: 20, label: "20条" },
-        { value: 50, label: "50条" },
-        { value: 100, label: "100条" },
+    const tutorialLink = getTutorialLink("widgets.latestDocs");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
+    $: limitOptions = [
+        { value: 3, label: t("widgets.latestDocs.limit3") },
+        { value: 5, label: t("widgets.latestDocs.limit5") },
+        { value: 10, label: t("widgets.latestDocs.limit10") },
+        { value: 15, label: t("widgets.latestDocs.limit15") },
+        { value: 20, label: t("widgets.latestDocs.limit20") },
+        { value: 50, label: t("widgets.latestDocs.limit50") },
+        { value: 100, label: t("widgets.latestDocs.limit100") },
     ];
 
-    // 初始化选择状态
     function initializeSelectedNotebooks() {
         if (
             docNotebookId &&
@@ -51,7 +57,6 @@
         initializeSelectedNotebooks();
     });
 
-    // 监听变化，确保状态正确恢复
     $: if (docNotebookId && notebooks.length > 0) {
         initializeSelectedNotebooks();
     }
@@ -60,20 +65,20 @@
 <div class="latest-docs-settings">
     <div class="group1">
         <div class="setting-item">
-            <label for="latest-docs-title"
-                >组件标题：
+            <label for="latest-docs-title">
+                {t("common.widgetTitle")}
                 <input
                     id="latest-docs-title"
                     type="text"
                     bind:value={latestDocsTitle}
-                    placeholder="最近文档"
+                    placeholder={t("widgets.defaults.latestDocsTitle")}
                 />
             </label>
         </div>
 
         <div class="setting-item">
-            <label for="latest-docs-prefix"
-                >文档前缀：
+            <label for="latest-docs-prefix">
+                {t("widgets.latestDocs.docPrefix")}
                 <input
                     id="latest-docs-prefix"
                     type="text"
@@ -86,7 +91,7 @@
 
     <div class="group2">
         <div class="setting-item">
-            <label for="doc-limit">显示条目数：</label>
+            <label for="doc-limit">{t("widgets.latestDocs.limit")}</label>
             <select bind:value={docLimit}>
                 {#each limitOptions as option}
                     <option value={option.value}>{option.label}</option>
@@ -97,28 +102,28 @@
         <div class="setting-item">
             <label>
                 <input type="checkbox" bind:checked={ensureOpenDocs} />
-                包含打开的文档
+                {t("widgets.latestDocs.includeOpen")}
             </label>
         </div>
 
         <div class="setting-item">
             <label>
                 <input type="checkbox" bind:checked={showLatestDocDetails} />
-                显示文档信息
+                {t("widgets.latestDocs.showDetails")}
             </label>
         </div>
     </div>
 
     <div class="setting-item">
         <label for="doc-notebook-id">
-            指定笔记本：
+            {t("widgets.latestDocs.notebook")}
             <MultiSelect
                 bind:selected={selectedNotebookIds}
                 options={notebooks.map((notebook) => ({
                     label: notebook.name,
                     value: notebook.id,
                 }))}
-                placeholder="选择笔记本..."
+                placeholder={t("common.selectNotebook")}
             /></label
         >
     </div>
@@ -130,25 +135,25 @@
                 type="checkbox"
                 bind:checked={showLatestDocFloatDoc}
             />
-            显示预览弹窗
+            {t("common.showPreviewPopup")}
         </label>
         <label for="latest-docs-float-doc-show-time">
-            悬停时间：
+            {t("common.hoverTime")}
             <input
                 type="number"
-                title="悬停多长时间显示预览弹窗"
+                title={t("common.hoverTimeTitle")}
                 bind:value={latestDocsFloatDocShowTime}
             />
-            秒
+            {t("common.seconds")}
         </label>
     </div>
 
     <div class="component-help">
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/XQV7wtEtsihu2IkbYpWcOWSunKf?from=from_copylink"
-                target="_blank">最近文档</a
+            {t("common.componentDescription")}<a
+                href={tutorialLink.url}
+                target="_blank">{tutorialLink.label}</a
             >
         </div>
     </div>

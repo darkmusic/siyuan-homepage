@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { getLatestFavoritesNotes } from "./favorites";
     import { openDocs } from "@/components/tools/openDocs";
-
+    import { pluginT } from "@/libs/i18n";
     import {
         createFloatingDocPopup,
         setMouseOnTrigger,
@@ -16,7 +16,8 @@
 
     let favoritesNotes: any[] = [];
     const favoritiesTitle =
-        contentTypeJsonObj.data?.favoritiesTitle || "💖收藏文档";
+        contentTypeJsonObj.data?.favoritiesTitle ||
+        pluginT(plugin, "widgets.defaults.favoritesTitle");
     const showNoteMeta = contentTypeJsonObj.data?.showNoteMeta ?? true;
     const favoritiesDocPrefix =
         contentTypeJsonObj.data?.favoritiesDocPrefix || "❤";
@@ -24,15 +25,17 @@
     const favFloatDocShowTime =
         contentTypeJsonObj.data?.favFloatDocShowTime || 0.1;
 
-    // 时间戳格式化函数
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     function formatDate(raw: string): string {
         const year = raw.slice(0, 4);
         const month = raw.slice(4, 6);
         const day = raw.slice(6, 8);
-        return `${year}年${month}月${day}日`;
+        return t("common.dateFormatDisplay", { year, month, day });
     }
-    
-    // 悬浮窗定时器
+
     let floatDocTimeout: number | null = null;
 
     onMount(async () => {
@@ -59,11 +62,9 @@
                             }}
                             on:mouseenter={(e) => {
                                 if (showFavFloatDoc && !plugin.isMobile) {
-                                    // 清除之前的定时器
                                     if (floatDocTimeout) {
                                         clearTimeout(floatDocTimeout);
                                     }
-                                    // 设置新的定时器
                                     floatDocTimeout = window.setTimeout(() => {
                                         createFloatingDocPopup(note, e, plugin);
                                         floatDocTimeout = null;
@@ -72,19 +73,16 @@
                             }}
                             on:mouseleave={() => {
                                 if (showFavFloatDoc && !plugin.isMobile) {
-                                    // 清除悬浮窗显示定时器
                                     if (floatDocTimeout) {
                                         clearTimeout(floatDocTimeout);
                                         floatDocTimeout = null;
                                     }
-                                    // 使用配置的延迟时间，确保用户有足够时间查看弹窗
                                     setTimeout(() => {
                                         setMouseOnTrigger(false);
                                     }, 150);
                                 }
                             }}
                             on:click={() => {
-                                // 点击时立即隐藏弹窗并打开文档
                                 if (showFavFloatDoc && !plugin.isMobile) {
                                     hideImmediately();
                                 }
@@ -92,7 +90,9 @@
                             }}
                             role="button"
                             tabindex="0"
-                            aria-label="打开收藏文档：{note.content}"
+                            aria-label={t("widgets.favorites.openAria", {
+                                content: note.content,
+                            })}
                         >
                             {favoritiesDocPrefix}
                             {note.content}
@@ -100,9 +100,13 @@
                         {#if showNoteMeta}
                             <div class="note-meta">
                                 {#if contentTypeJsonObj.data?.favoritiesSortOrder === "created"}
-                                    创建时间：{formatDate(note.created)}
+                                    {t("widgets.favorites.createdTimeLabel", {
+                                        date: formatDate(note.created),
+                                    })}
                                 {:else}
-                                    更新时间：{formatDate(note.updated)}
+                                    {t("widgets.favorites.updatedTimeLabel", {
+                                        date: formatDate(note.updated),
+                                    })}
                                 {/if}
                             </div>
                         {/if}
@@ -110,7 +114,7 @@
                 {/each}
             </ul>
         {:else}
-            <p>暂无收藏的文档，可在文档树上右键选择收藏</p>
+            <p>{t("common.noFavorites")}</p>
         {/if}
     </div>
 </div>

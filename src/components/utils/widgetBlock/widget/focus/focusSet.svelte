@@ -1,5 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { getImage } from "@/components/tools/getImage";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
 
     // 专注设置相关变量
     export let focusImageType: string = "remote";
@@ -14,6 +19,8 @@
     // 预览图片数据
     export let focusBgImageData: string = "";
     export let breakBgImageData: string = "";
+
+    const tutorial = getTutorialLink("widgets.focus");
 
     // 文件输入引用
     let focusBgInput: HTMLInputElement | null = null;
@@ -100,12 +107,6 @@
         };
         reader.readAsDataURL(file);
     }
-
-    // 获取图片函数（假设存在）
-    async function getImage(url: string): Promise<string> {
-        // 这里应该是实际的图片获取逻辑
-        return url;
-    }
 </script>
 
 <div class="content-panel focus">
@@ -125,20 +126,20 @@
         style="display: none;"
     />
     <div class="form-group">
-        <h5>背景图片设置</h5>
+        <h5>{t(plugin, "widgets.focus.bgSettings")}</h5>
         <!-- 专注背景 -->
         <div class="background-option">
             <div class="background-row">
                 <!-- 左侧配置 -->
                 <div class="type-select-and-input">
-                    <label for="focus-bg-select">专注背景：</label>
+                    <label for="focus-bg-select">{t(plugin, "widgets.focus.focusBg")}</label>
                     <div class="type-select">
                         <select
                             id="focus-bg-select"
                             bind:value={focusImageType}
                         >
-                            <option value="remote">远程图片</option>
-                            <option value="local">本地图片</option>
+                            <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                            <option value="local">{t(plugin, "common.localImage")}</option>
                         </select>
                     </div>
 
@@ -146,11 +147,11 @@
                         <input
                             type="text"
                             bind:value={focusBgImage}
-                            placeholder="请输入专注背景图URL"
+                            placeholder={t(plugin, "widgets.focus.focusUrlPlaceholder")}
                         />
                     {:else}
                         <button on:click={() => focusBgInput.click()}
-                            >上传图片</button
+                            >{t(plugin, "common.uploadImage")}</button
                         >
                     {/if}
                 </div>
@@ -158,9 +159,9 @@
                 <!-- 右侧预览 -->
                 <div class="image-preview">
                     {#if focusImageType === "remote" && focusBgImage}
-                        <img src={focusBgImageData} alt="专注背景预览" />
+                        <img src={focusBgImageData} alt={t(plugin, "widgets.focus.focusBg")} />
                     {:else if focusImageType === "local" && focusLocalImage}
-                        <img src={focusLocalImage} alt="专注背景预览" />
+                        <img src={focusLocalImage} alt={t(plugin, "widgets.focus.focusBg")} />
                     {/if}
                 </div>
             </div>
@@ -171,14 +172,14 @@
             <div class="background-row">
                 <!-- 左侧配置 -->
                 <div class="type-select-and-input">
-                    <label for="break-bg-select">休息背景：</label>
+                    <label for="break-bg-select">{t(plugin, "widgets.focus.breakBg")}</label>
                     <div class="type-select">
                         <select
                             id="break-bg-select"
                             bind:value={breakImageType}
                         >
-                            <option value="remote">远程图片</option>
-                            <option value="local">本地图片</option>
+                            <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                            <option value="local">{t(plugin, "common.localImage")}</option>
                         </select>
                     </div>
 
@@ -186,11 +187,11 @@
                         <input
                             type="text"
                             bind:value={breakBgImage}
-                            placeholder="请输入休息背景图URL"
+                            placeholder={t(plugin, "widgets.focus.breakUrlPlaceholder")}
                         />
                     {:else}
                         <button on:click={() => breakBgInput.click()}
-                            >上传图片</button
+                            >{t(plugin, "common.uploadImage")}</button
                         >
                     {/if}
                 </div>
@@ -198,9 +199,9 @@
                 <!-- 右侧预览 -->
                 <div class="image-preview">
                     {#if breakImageType === "remote" && breakBgImage}
-                        <img src={breakBgImageData} alt="休息背景预览" />
+                        <img src={breakBgImageData} alt={t(plugin, "widgets.focus.breakBg")} />
                     {:else if breakImageType === "local" && breakLocalImage}
-                        <img src={breakLocalImage} alt="休息背景预览" />
+                        <img src={breakLocalImage} alt={t(plugin, "widgets.focus.breakBg")} />
                     {/if}
                 </div>
             </div>
@@ -209,9 +210,9 @@
 
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/R1KPw7ZqNi4iVJkjGdhcVYmtnkd?from=from_copylink"
-            target="_blank">番茄钟</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

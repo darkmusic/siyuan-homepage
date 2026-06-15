@@ -1,17 +1,23 @@
 <script lang="ts">
     import MultiSelect from "svelte-multiselect";
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let notebooks: any[] = [];
-
-    // 任务管理配置
-    export let TaskManTitle: string = "📋任务管理";
+    export let TaskManTitle: string = "";
     export let showCompletedTasks: boolean = false;
     export let showTasksDetails: boolean = false;
     export let selectedTasksNotebookIds: any[] = [];
     export let docNotebookId: string = "";
 
-    // 初始化选择状态
+    const tutorialLink = getTutorialLink("widgets.tasks");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     function initializeSelectedNotebooks() {
         if (
             docNotebookId &&
@@ -37,37 +43,37 @@
         initializeSelectedNotebooks();
     });
 
-    // 监听变化，确保状态正确恢复
     $: if (docNotebookId && notebooks.length > 0) {
         initializeSelectedNotebooks();
     }
 </script>
 
 <div class="content-panel TaskMan">
-    <!-- 任务管理设置区域 -->
     <div class="form-group">
         <label for="TaskMan-title">
-            组件标题：
+            {t("common.widgetTitle")}
             <input
                 id="TaskMan-title"
                 type="text"
                 bind:value={TaskManTitle}
-                placeholder="输入组件标题"
+                placeholder={t("common.widgetTitleInput")}
             />
         </label>
     </div>
     <div class="form-group TaskMan-checkbox">
         <label>
             <input type="checkbox" bind:checked={showCompletedTasks} />
-            显示已完成的任务
+            {t("widgets.tasks.showCompleted")}
         </label>
         <label>
             <input type="checkbox" bind:checked={showTasksDetails} />
-            显示任务详情
+            {t("widgets.tasks.showDetails")}
         </label>
     </div>
     <div class="form-group TaskMan-notebook-id">
-        <label for="TaskMan-notebook-id">任务笔记本：</label>
+        <label for="TaskMan-notebook-id"
+            >{t("widgets.tasks.notebook")}</label
+        >
         <MultiSelect
             id="TaskMan-notebook-id"
             bind:selected={selectedTasksNotebookIds}
@@ -75,14 +81,14 @@
                 label: notebook.name,
                 value: notebook.id,
             }))}
-            placeholder="选择笔记本..."
+            placeholder={t("common.selectNotebook")}
         />
     </div>
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/T18vwmZeqinQW2kxoxccpYVHndf?from=from_copylink"
-            target="_blank">任务管理</a
+        {t("common.componentDescription")}<a
+            href={tutorialLink.url}
+            target="_blank">{tutorialLink.label}</a
         >
     </div>
 </div>

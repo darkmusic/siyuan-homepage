@@ -22,6 +22,8 @@
     } from "./utils/quickButton";
     import { MD2HTML } from "@/components/tools/MD2HTML";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
     import "./style/homepage.scss";
 
@@ -41,22 +43,52 @@
     let currentBlockForSettings: HTMLElement | null = null;
     const currentBlockForSettingsRef = { value: currentBlockForSettings };
 
+    function defaultButtonsList(): ButtonItem[] {
+        return [
+            {
+                id: 1728000000000,
+                label: pluginT(plugin, "homepage.button.searchNotes"),
+                checked: true,
+                shortcut: "Ctrl+P",
+                order: 0,
+            },
+            {
+                id: 1728000001000,
+                label: pluginT(plugin, "homepage.button.todayJournal"),
+                checked: true,
+                shortcut: "Alt+5",
+                order: 1,
+            },
+            {
+                id: 1728000002000,
+                label: pluginT(plugin, "homepage.button.addWidget"),
+                checked: true,
+                order: 2,
+            },
+            {
+                id: 1728000003000,
+                label: pluginT(plugin, "homepage.button.settings"),
+                checked: true,
+                order: 3,
+            },
+        ];
+    }
+
     let statsData: StatsData = {
-        startDate: "(日期)",
+        startDate: pluginT(plugin, "common.datePlaceholder"),
         notesCount: 0,
         notebooksCount: 0,
         DocsCount: 0,
-        nowDate: "(日期)",
+        nowDate: pluginT(plugin, "common.datePlaceholder"),
     };
 
     let titleIconType: "emoji" | "image" = "emoji";
     let tempTitleIconEmoji = "🏠";
     let tempTitleIconImage: string | null = null;
-    let pageTitle = "思源笔记首页";
+    let pageTitle = pluginT(plugin, "homepage.title");
     let tempTitleIconStyle: string = "square";
 
-    let statsInfoText =
-        "自{{startDate}} 写下第一条笔记以来，你已累计记录笔记 {{notesCount}} 条。\n当前共有 {{notebooksCount}} 个笔记本和 {{DocsCount}} 篇笔记。\n感谢自己的坚持！❤";
+    let statsInfoText = pluginT(plugin, "homepage.statsDefault");
 
     let footerEnabled = true;
     let footerContent = "";
@@ -98,7 +130,7 @@
         }
 
         // 加载统计数据
-        statsData = await loadStatsData();
+        statsData = await loadStatsData(plugin?.i18n);
 
         // 初始化区块拖拽排序
         const observer = new MutationObserver(async () => {
@@ -549,10 +581,11 @@
         tempTitleIconEmoji = config.TitleIconEmoji;
         tempTitleIconImage = config.TitleIconImage;
         titleIconType = config.titleIconType || "emoji";
-        pageTitle = config.customTitle || "思源笔记首页";
+        pageTitle = config.customTitle || pluginT(plugin, "homepage.title");
         tempTitleIconStyle = config.tempTitleIconStyle || "square";
 
-        statsInfoText = config.statsInfoText;
+        statsInfoText =
+            config.statsInfoText ?? pluginT(plugin, "homepage.statsDefault");
 
         // 页脚配置
         footerEnabled = config.footerEnabled ?? true;
@@ -644,34 +677,7 @@
                 }
             }
         } else {
-            buttonsList = [
-                {
-                    id: 1728000000000,
-                    label: "🔍 搜索笔记",
-                    checked: true,
-                    shortcut: "Ctrl+P",
-                    order: 0,
-                },
-                {
-                    id: 1728000001000,
-                    label: "📅 今日日记",
-                    checked: true,
-                    shortcut: "Alt+5",
-                    order: 1,
-                },
-                {
-                    id: 1728000002000,
-                    label: "➕ 添加组件",
-                    checked: true,
-                    order: 2,
-                },
-                {
-                    id: 1728000003000,
-                    label: "⚙ 主页设置",
-                    checked: true,
-                    order: 3,
-                },
-            ];
+            buttonsList = defaultButtonsList();
         }
     }
 
@@ -683,7 +689,13 @@
         .replace("{{DocsCount}}", statsData.DocsCount.toString())
         .replace("{{nowDate}}", statsData.nowDate || "")
         .replace(/\$\$(.*?)\$\$/g, (_, expr) => {
-            return parseDurationExpression(expr.trim(), statsData) || "";
+            return (
+                parseDurationExpression(
+                    expr.trim(),
+                    statsData,
+                    plugin?.i18n,
+                ) || ""
+            );
         });
 
     // 过滤按钮列表，只显示未选中的按钮
@@ -722,7 +734,7 @@
                     plugin.saveData("bannerPosition.json", { scrollTop: 0 })
                 )}
                 class="img-button"
-                title="恢复默认位置"
+                title={pluginT(plugin, "homepage.restoreBannerPosition")}
             >
                 <svg
                     data-t="1749395442435"
@@ -766,7 +778,7 @@
                     {:else if titleIconType === "image" && tempTitleIconImage}
                         <img
                             src={tempTitleIconImage}
-                            alt="图标"
+                            alt={pluginT(plugin, "homepage.iconAlt")}
                             style="width: 32px; height: 32px; 
                border-radius: {tempTitleIconStyle === 'square'
                                 ? '0%'
@@ -788,7 +800,7 @@
         <div
             class="nav-bar"
             role="navigation"
-            aria-label="主菜单导航栏"
+            aria-label={pluginT(plugin, "homepage.navAriaLabel")}
             on:mouseenter={() => (isHoveringNavBar = true)}
             on:mouseleave={() => (isHoveringNavBar = false)}
         >
@@ -823,7 +835,7 @@
                         showMoreMenu = newShowMoreMenu;
                     }}
                 >
-                    更多
+                    {pluginT(plugin, "common.more")}
                 </button>
 
                 {#if showMoreMenu && filteredButtons.length > 0}
@@ -854,7 +866,7 @@
     <div
         class="section custom-content"
         role="region"
-        aria-label="自定义组件区域"
+        aria-label={pluginT(plugin, "homepage.widgetsAriaLabel")}
         style="grid-template-columns: repeat({widgetLayoutNumber}, 1fr);
         gap: {widgetGap}rem;"
     ></div>
@@ -865,12 +877,17 @@
             <div class="section plugin-footer">
                 <div class="plugin-info">
                     {#if footerContent === ""}
-                        <div class="plugin-name">🏠思源笔记主页插件</div>
-                        <div class="plugin-author">作者: Glaube-TY</div>
+                        <div class="plugin-name">
+                            {pluginT(plugin, "common.pluginName")}
+                        </div>
+                        <div class="plugin-author">
+                            {pluginT(plugin, "common.author")}
+                        </div>
                         <div class="plugin-support">
                             <a
-                                href="https://ttl8ygt82u.feishu.cn/wiki/Skg2woe9DidYNNkQSiEcWRLrnRg#share-S7k1dPUtuomNB3x1hg8coMnunZf"
-                                class="support-link">赞助支持 💸</a
+                                href={getTutorialLink("homepageFooter").url}
+                                class="support-link"
+                                >{pluginT(plugin, "common.sponsor")}</a
                             >
                         </div>
                     {:else}
@@ -882,12 +899,16 @@
     {:else}
         <div class="section plugin-footer">
             <div class="plugin-info">
-                <div class="plugin-name">🏠思源笔记主页插件</div>
-                <div class="plugin-author">作者: Glaube-TY</div>
+                <div class="plugin-name">
+                    {pluginT(plugin, "common.pluginName")}
+                </div>
+                <div class="plugin-author">
+                    {pluginT(plugin, "common.author")}
+                </div>
                 <div class="plugin-support">
                     <a
-                        href="https://ttl8ygt82u.feishu.cn/wiki/Skg2woe9DidYNNkQSiEcWRLrnRg#share-S7k1dPUtuomNB3x1hg8coMnunZf"
-                        class="support-link">赞助支持 💸</a
+                        href={getTutorialLink("homepageFooter").url}
+                        class="support-link">{pluginT(plugin, "common.sponsor")}</a
                     >
                 </div>
             </div>

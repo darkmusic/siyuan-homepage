@@ -1,6 +1,7 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
 
     export let plugin: any;
     export let quickNotesPosition: string;
@@ -10,11 +11,15 @@
 
     let quickNotesContent = "";
 
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {});
 
     async function addQuickNote() {
         if (quickNotesContent === "") {
-            showMessage("❌请输入内容");
+            showMessage(t("messages.quickNotesEmpty"));
             return;
         }
 
@@ -64,12 +69,12 @@
 <div class="content-display">
     <textarea
         name="content"
-        placeholder="请输入需要记录的内容……"
+        placeholder={t("widgets.quickNotes.inputPlaceholder")}
         bind:value={quickNotesContent}
     ></textarea>
     <div class="button-group">
-        <button on:click={addQuickNote}>添加</button>
-        <button on:click={close}>取消</button>
+        <button on:click={addQuickNote}>{t("common.add")}</button>
+        <button on:click={close}>{t("common.cancel")}</button>
     </div>
 </div>
 

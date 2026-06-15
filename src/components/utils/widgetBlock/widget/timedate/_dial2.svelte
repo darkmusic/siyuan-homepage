@@ -2,6 +2,7 @@
 	import { onMount } from "svelte";
 
 	export let contentTypeJson: string = "{}";
+	export let plugin: any;
 
 	let time = new Date();
 

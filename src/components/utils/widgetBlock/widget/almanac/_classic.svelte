@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
     import {
         getSolarDay,
         getLunarDay,
@@ -34,6 +35,8 @@
         getGod,
     } from "@/components/tools/calendarCalculation";
 
+    export let plugin: any;
+
     const solarDay = getSolarDay();
     const lunarDay = getLunarDay();
     const lunarSeason = getLunarSeason();
@@ -66,22 +69,28 @@
     const kitchenGodSteed = getKitchenGodSteed();
     const taboo = getTaboo();
     const god = getGod();
+
+    const notYet = t(plugin, "widgets.calendar.notYet");
+
+    function showOrNotYet(value: string): string {
+        return value || notYet;
+    }
 </script>
 
 <div class="content-display-classic">
     <table>
         <tr>
-            <td colspan="2">公历日期</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.solarDate")}</td>
             <td colspan="2"
                 >{solarDay.yearCN}年{solarDay.monthCN}月{solarDay.dayCN}日</td
             >
         </tr>
         <tr>
-            <td colspan="2">农历日期</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.lunarDate")}</td>
             <td colspan="2">{lunarDay.lunarDateStr}</td>
         </tr>
         <tr>
-            <td colspan="2">干支日期</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.ganzhiDate")}</td>
             <td colspan="2">
                 {sixtyCycle.sixtyCycleYearStr}
                 {sixtyCycle.sixtyCycleMonthStr}
@@ -90,130 +99,130 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2">节气</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.solarTerm")}</td>
             <td>{solarTerm.termStr}</td>
         </tr>
         <tr>
-            <td colspan="2">农历季节</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.lunarSeason")}</td>
             <td>{lunarSeason.lunarSeasonStr}</td>
         </tr>
         <tr>
-            <td colspan="2">生肖</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.zodiac")}</td>
             <td>{zodiac.zodiac}</td>
         </tr>
         <tr>
-            <td colspan="2">星座</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.constellation")}</td>
             <td>{constellation.constellationStr}</td>
         </tr>
         <tr>
-            <td colspan="2">月相</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.moonPhase")}</td>
             <td>{phase.lunarPhaseStr}</td></tr
         >
         <tr>
-            <td colspan="2">三伏天</td>
-            <td>{dogDay.dogDayStr}</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.dogDays")}</td>
+            <td>{showOrNotYet(dogDay.dogDayStr)}</td>
         </tr>
         <tr>
-            <td colspan="2">梅雨天</td>
-            <td>{plumRainDay.plumRainDayStr}</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.plumRain")}</td>
+            <td>{showOrNotYet(plumRainDay.plumRainDayStr)}</td>
         </tr>
         <tr>
-            <td colspan="2">数九天</td>
-            <td>{nineDay.nineDayStr}</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.nineColdDays")}</td>
+            <td>{showOrNotYet(nineDay.nineDayStr)}</td>
         </tr>
         <tr>
-            <td colspan="2">儒略日</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.julianDay")}</td>
             <td>{julianDay.julianDayStr}</td>
         </tr>
         <tr>
-            <td colspan="2">三候</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.threePhenology")}</td>
             <td>{threePhenology.threePhenologyStr}</td>
         </tr>
         <tr>
-            <td colspan="2">三柱</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.threePillars")}</td>
             <td>{threePillars.threePillarsStr}</td>
         </tr>
         <tr>
-            <td colspan="2">六曜</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.sixYao")}</td>
             <td>{sixStar.sixStarStr}</td>
         </tr>
         <tr>
-            <td colspan="2">七曜</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.sevenLuminaries")}</td>
             <td>{sevenStar.sevenStarStr}</td>
         </tr>
         <tr>
-            <td colspan="2">小六壬</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.smallLiuRen")}</td>
             <td>{sixteenStar.sixteenStarStr}</td>
         </tr>
         <tr>
-            <td colspan="2">八字</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.eightCharacters")}</td>
             <td>{eightChar.eightCharStr}</td>
         </tr>
         <tr>
-            <td rowspan="4">九星</td>
-            <td style="color: black;">年</td>
+            <td rowspan="4">{t(plugin, "widgets.almanac.labels.nineStars")}</td>
+            <td style="color: black;">{t(plugin, "widgets.almanac.labels.year")}</td>
             <td>{nineStar.nineStarYearStr} </td>
         </tr>
         <tr>
-            <td>月</td>
+            <td>{t(plugin, "widgets.almanac.labels.month")}</td>
             <td> {nineStar.nineStarMonthStr}</td>
         </tr>
         <tr>
-            <td>日</td>
+            <td>{t(plugin, "widgets.almanac.labels.day")}</td>
             <td> {nineStar.nineStarDayStr}</td>
         </tr>
         <tr>
-            <td>时</td>
+            <td>{t(plugin, "widgets.almanac.labels.hour")}</td>
             <td> {nineStar.nineStarHourStr}</td>
         </tr>
         <tr>
-            <td rowspan="4">北斗九星</td>
-            <td style="color: black;">年</td>
+            <td rowspan="4">{t(plugin, "widgets.almanac.labels.beidouNineStars")}</td>
+            <td style="color: black;">{t(plugin, "widgets.almanac.labels.year")}</td>
             <td>{dipper.dipperYearStr}</td>
         </tr>
         <tr>
-            <td>月</td>
+            <td>{t(plugin, "widgets.almanac.labels.month")}</td>
             <td> {dipper.dipperMonthStr}</td>
         </tr>
         <tr>
-            <td>日</td>
+            <td>{t(plugin, "widgets.almanac.labels.day")}</td>
             <td> {dipper.dipperDayStr}</td>
         </tr>
         <tr>
-            <td>时</td>
+            <td>{t(plugin, "widgets.almanac.labels.hour")}</td>
             <td> {dipper.dipperHourStr}</td>
         </tr>
         <tr>
-            <td colspan="2">逐月胎神</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.monthlyFetalGod")}</td>
             <td>{fetusMonth.fetusMonthStr}</td>
         </tr>
         <tr>
-            <td colspan="2">逐日胎神</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.dailyFetalGod")}</td>
             <td colspan="2">{fetusDay.fetusDayStr}</td>
         </tr>
         <tr>
-            <td colspan="2">建除十二值神</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.twelveDutyGods")}</td>
             <td>{duty.dutyStr}</td>
         </tr>
         <tr>
-            <td colspan="2">七十二候</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.seventyTwoPhenology")}</td>
             <td>{phenologyDay.phenologyDayStr}</td>
         </tr>
         <tr>
-            <td colspan="2">人元司令分野</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.humanElementCommander")}</td>
             <td>{hideHeavenStemDay.hideHeavenStemDayStr}</td>
         </tr>
         <tr>
-            <td rowspan="2">彭祖百忌</td>
-            <td style="color: black;">日百忌</td>
+            <td rowspan="2">{t(plugin, "widgets.almanac.labels.pengZuTaboo")}</td>
+            <td style="color: black;">{t(plugin, "widgets.almanac.labels.dailyTaboo")}</td>
             <td>{pengZu.pengZuDayStr}</td>
         </tr>
         <tr>
-            <td>时百忌</td>
+            <td>{t(plugin, "widgets.almanac.labels.hourlyTaboo")}</td>
             <td>{pengZu.pengZuTimeStr}</td>
         </tr>
         <tr>
-            <td rowspan="14" colspan="2">灶马头</td>
+            <td rowspan="14" colspan="2">{t(plugin, "widgets.almanac.labels.stoveHorseHead")}</td>
             <td>{kitchenGodSteed.mouse}</td>
         </tr>
         <tr>
@@ -256,41 +265,41 @@
             <td>{kitchenGodSteed.peopleHoes}</td>
         </tr>
         <tr>
-            <td rowspan="4">宜忌</td>
-            <td style="color: black;">日宜</td>
+            <td rowspan="4">{t(plugin, "widgets.almanac.labels.yiJi")}</td>
+            <td style="color: black;">{t(plugin, "widgets.almanac.labels.dailyYi")}</td>
             <td colspan="2">{taboo.taboosDayStr}</td>
         </tr>
         <tr>
-            <td>日忌</td>
+            <td>{t(plugin, "widgets.almanac.labels.dailyJi")}</td>
             <td colspan="2">{taboo.taboosDay2Str}</td>
         </tr>
         <tr>
-            <td>时宜</td>
+            <td>{t(plugin, "widgets.almanac.labels.hourlyYi")}</td>
             <td colspan="2">{taboo.taboosHourStr}</td>
         </tr>
         <tr>
-            <td>时忌</td>
+            <td>{t(plugin, "widgets.almanac.labels.hourlyJi")}</td>
             <td colspan="2">{taboo.taboosHour2Str}</td>
         </tr>
         <tr>
-            <td rowspan="2">神煞</td>
-            <td style="color: black;">吉神宜趋</td>
+            <td rowspan="2">{t(plugin, "widgets.almanac.labels.spirits")}</td>
+            <td style="color: black;">{t(plugin, "widgets.almanac.labels.auspiciousSpirits")}</td>
             <td colspan="2">{god.goodGodsStr}</td>
         </tr>
         <tr>
-            <td>凶神宜忌</td>
+            <td>{t(plugin, "widgets.almanac.labels.inauspiciousSpirits")}</td>
             <td colspan="2">{god.badGodsStr}</td>
         </tr>
         <tr>
-            <td colspan="2">运</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.fortune")}</td>
             <td>{twenty.twentyStr}</td>
         </tr>
         <tr>
-            <td colspan="2">元</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.yuan")}</td>
             <td>{sixty.sixtyStr}</td>
         </tr>
         <tr>
-            <td colspan="2">旬</td>
+            <td colspan="2">{t(plugin, "widgets.almanac.labels.xun")}</td>
             <td>{ten.tenStr}</td>
         </tr>
     </table>

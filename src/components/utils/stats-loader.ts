@@ -1,4 +1,5 @@
 import { sql, lsNotebooks } from "@/api";
+import { getIntlLocale, t, type SiyuanLang } from "@/libs/i18n";
 
 export interface StatsData {
     startDate: string;
@@ -24,7 +25,11 @@ function parseDateToTimestamp(dateStr: string): number | null {
     return isNaN(date.getTime()) ? null : date.getTime();
 }
 
-export function parseDurationExpression(expression: string, statsData: StatsData): string {
+export function parseDurationExpression(
+    expression: string,
+    statsData: StatsData,
+    i18n?: Record<string, unknown>,
+): string {
     const regex = /^(\s*[\w\u4e00-\u9fa5][\w\s\u4e00-\u9fa5\-:\/]*?)\s+([dp])\s+(\s*[\w\u4e00-\u9fa5][\w\s\u4e00-\u9fa5\-:\/]*?)(?:\s+as\s+([\w\u4e00-\u9fa5\s]+))?$/;
     const match = expression.match(regex);
 
@@ -48,7 +53,9 @@ export function parseDurationExpression(expression: string, statsData: StatsData
         var2 = parseDateToTimestamp(match[3]);
     }
 
-    if (var1 === null || var2 === null) return "无效日期";
+    if (var1 === null || var2 === null) {
+        return t(i18n, "common.invalidDate");
+    }
 
     let result: number;
     if (match[2] === "d") {
@@ -78,7 +85,49 @@ export function parseDurationExpression(expression: string, statsData: StatsData
     return `${years}年同${months}月同${days}日同${hours}时同${minutes}分同${seconds}秒`;
 }
 
-export async function loadStatsData(): Promise<StatsData> {
+function formatLocalizedDate(
+    date: Date,
+    lang?: SiyuanLang,
+): string {
+    return new Intl.DateTimeFormat(getIntlLocale(lang), {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
+}
+
+function formatSiYuanTime(
+    timestamp: string,
+    i18n?: Record<string, unknown>,
+    lang?: SiyuanLang,
+): string {
+    const unknown = t(i18n, "common.unknownStats");
+    if (!timestamp || timestamp === unknown) {
+        return unknown;
+    }
+
+    const year = timestamp.substring(0, 4);
+    const month = timestamp.substring(4, 6);
+    const day = timestamp.substring(6, 8);
+    const date = new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+    );
+
+    if (isNaN(date.getTime())) {
+        return unknown;
+    }
+
+    return formatLocalizedDate(date, lang);
+}
+
+export async function loadStatsData(
+    i18n?: Record<string, unknown>,
+    lang?: SiyuanLang,
+): Promise<StatsData> {
+    const unknown = t(i18n, "common.unknownStats");
+
     try {
         const notebooksResponse = await lsNotebooks();
 
@@ -87,14 +136,14 @@ export async function loadStatsData(): Promise<StatsData> {
 
         const startDateResult = await sql("SELECT created AS startDate FROM blocks WHERE type = 'd' ORDER BY created ASC LIMIT 1;");
 
-        const today = new Date();
-        const year = String(today.getFullYear());
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const nowDate = `${year}年${month}月${day}日`;
+        const nowDate = formatLocalizedDate(new Date(), lang);
 
         return {
-            startDate: formatSiYuanTime(startDateResult[0]?.startDate || "未知"),
+            startDate: formatSiYuanTime(
+                startDateResult[0]?.startDate || unknown,
+                i18n,
+                lang,
+            ),
             notesCount: totalNotesResponse[0]?.totalDocuments || 0,
             notebooksCount: notebooksResponse.notebooks.length,
             DocsCount: notesResponse[0]?.totalDocuments || 0,
@@ -103,21 +152,11 @@ export async function loadStatsData(): Promise<StatsData> {
     } catch (error) {
         console.error("Failed to load stats data:", error);
         return {
-            startDate: "未知",
+            startDate: unknown,
             notesCount: 0,
             notebooksCount: 0,
             DocsCount: 0,
-            nowDate: "未知",
+            nowDate: unknown,
         };
-    }
-
-    function formatSiYuanTime(timestamp: string): string {
-        if (!timestamp || timestamp === "未知") return "未知";
-
-        const year = timestamp.substring(0, 4);
-        const month = timestamp.substring(4, 6);
-        const day = timestamp.substring(6, 8);
-
-        return `${year}年${month}月${day}日`;
     }
 }

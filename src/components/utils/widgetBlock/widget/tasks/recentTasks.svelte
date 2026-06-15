@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getLatestTasks, type RecentTasksInfo } from "./recentTasks";
+    import { pluginT } from "@/libs/i18n";
     import { openDocs } from "@/components/tools/openDocs";
 
     export let plugin: any;
@@ -24,10 +25,16 @@
         hpath: string;
     }> = [];
 
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {
         recentTasks = await getLatestTasks(parsed.data?.tasksNotebookId);
         showTasksDetails = parsed.data?.showTasksDetails ?? true;
-        TaskManTitle = parsed.data?.TaskManTitle || "📋任务管理";
+        TaskManTitle =
+            parsed.data?.TaskManTitle ||
+            pluginT(plugin, "widgets.defaults.taskManTitle");
     });
 
     $: {
@@ -85,7 +92,7 @@
     }
 
     function formatDate(created: string): string {
-        if (created.length !== 14) return "无效时间";
+        if (created.length !== 14) return t("common.invalidTime");
 
         const year = parseInt(created.slice(0, 4), 10);
         const month = parseInt(created.slice(4, 6), 10) - 1;
@@ -93,13 +100,20 @@
 
         const date = new Date(year, month, day);
 
-        if (isNaN(date.getTime())) return "无效时间";
+        if (isNaN(date.getTime())) return t("common.invalidTime");
 
-        const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+        const weekDays = t("common.weekdays").split(",");
         const weekDay = weekDays[date.getDay()];
 
-        const formattedDate = `${year}年${String(month + 1).padStart(2, "0")}月${String(day).padStart(2, "0")}日`;
-        return `${formattedDate}（星期${weekDay}）`;
+        const formattedDate = t("common.dateFormatDisplay", {
+            year,
+            month: String(month + 1).padStart(2, "0"),
+            day: String(day).padStart(2, "0"),
+        });
+        return t("widgets.tasks.weekFormat", {
+            date: formattedDate,
+            day: weekDay,
+        });
     }
 
     async function handleCheck(
@@ -232,7 +246,7 @@
                 </li>
             {/each}
         {:else}
-            <p>暂无任务记录</p>
+            <p>{t("widgets.tasks.noTasks")}</p>
         {/if}
     </ul>
 </div>

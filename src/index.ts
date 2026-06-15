@@ -7,6 +7,8 @@ import {
 } from "siyuan";
 
 import { svelteDialog } from "@/libs/dialog";
+import { migratePersistedConfig } from "@/libs/configMigration";
+import { pluginT as t } from "@/libs/i18n";
 
 import * as sdk from "@siyuan-community/siyuan-sdk";
 import Homepage from "./components/homepage.svelte";
@@ -31,6 +33,7 @@ export default class PluginHomepage extends Plugin {
     client = new sdk.Client(undefined, 'fetch');
 
     async onload() {
+        await migratePersistedConfig(this);
         const config = await this.loadData("homepageSettingConfig.json");
         this.registerIcon();
 
@@ -85,7 +88,7 @@ export default class PluginHomepage extends Plugin {
             if (this.isMobile && savedConfig.autoOpenMobileHomepage === true) {
                 // 移动端打开方式
                 this.currentMobileDialog = svelteDialog({
-                    title: "移动主页",
+                    title: t(this, "homepage.mobileTitle"),
                     width: "100vh",
                     height: "100vh",
                     constructor: (containerEl: HTMLElement) => {
@@ -106,8 +109,8 @@ export default class PluginHomepage extends Plugin {
                     app: this.app,
                     custom: {
                         icon: "iconhomepage",
-                        title: "首页",
-                        data: { text: "思源笔记首页" },
+                        title: t(this, "homepage.tabHome"),
+                        data: { text: t(this, "homepage.title") },
                         id: this.name + TAB_TYPE,
                     },
                 });
@@ -128,7 +131,7 @@ export default class PluginHomepage extends Plugin {
 
     private registerCommand() {
         this.addCommand({
-            langKey: "快速笔记",
+            langKey: "commands.quickNotes",
             hotkey: "⇧⌘Q",
             callback: async () => {
                 const homepageSettingConfig = await this.loadData("homepageSettingConfig.json");
@@ -138,14 +141,14 @@ export default class PluginHomepage extends Plugin {
                 const quickNotesAddPosition = homepageSettingConfig.quickNotesAddPosition;
 
                 if (!quickNotesEnabled) {
-                    showMessage("❌请先在主页设置中开启快速笔记");
+                    showMessage(t(this, "messages.quickNotesEnableFirst"));
                     return;
                 } else if (quickNotesPosition == "") {
-                    showMessage("❌请先在主页设置中设置快速笔记的位置");
+                    showMessage(t(this, "messages.quickNotesPositionFirst"));
                     return;
                 } else {
                     const dialog = svelteDialog({
-                        title: "快速笔记",
+                        title: t(this, "commands.quickNotes"),
                         constructor: (containerEl: HTMLElement) => {
                             return new QuickNotesDialog({
                                 target: containerEl,
@@ -168,12 +171,12 @@ export default class PluginHomepage extends Plugin {
 
         // 添加快速打开主页的快捷键命令
         this.addCommand({
-            langKey: "打开主页",
+            langKey: "commands.openHomepage",
             hotkey: "⇧⌘H",
             callback: async () => {
                 // 检查是否为移动端
                 if (this.isMobile) {
-                    showMessage("❌移动端不支持快捷键开启");
+                    showMessage(t(this, "messages.mobileShortcutUnsupported"));
                     return;
                 } else {
                     // 桌面端打开方式
@@ -181,8 +184,8 @@ export default class PluginHomepage extends Plugin {
                         app: this.app,
                         custom: {
                             icon: "iconhomepage",
-                            title: "首页",
-                            data: { text: "思源笔记首页" },
+                            title: t(this, "homepage.tabHome"),
+                            data: { text: t(this, "homepage.title") },
                             id: this.name + TAB_TYPE,
                         },
                     });
@@ -194,13 +197,13 @@ export default class PluginHomepage extends Plugin {
     private registerTopBar() {
         this.addTopBar({
             icon: "iconhomepage",
-            title: "打开主页",
+            title: t(this, "commands.openHomepage"),
             position: "left",
             callback: () => {
                 if (this.isMobile) {
                     // 移动端打开方式
                     this.currentMobileDialog = svelteDialog({
-                        title: "移动主页",
+                        title: t(this, "homepage.mobileTitle"),
                         width: "100vh",
                         height: "100vh",
                         constructor: (containerEl: HTMLElement) => {
@@ -221,8 +224,8 @@ export default class PluginHomepage extends Plugin {
                         app: this.app,
                         custom: {
                             icon: "iconhomepage",
-                            title: "首页",
-                            data: { text: "思源笔记首页" },
+                            title: t(this, "homepage.tabHome"),
+                            data: { text: t(this, "homepage.title") },
                             id: this.name + TAB_TYPE,
                         },
                     });
@@ -237,11 +240,11 @@ export default class PluginHomepage extends Plugin {
                 position: "RightTop",
                 size: { width: 200, height: 0 },
                 icon: "iconhomepage",
-                title: "主页侧边栏",
+                title: t(this, "dock.sidebarTitle"),
                 hotkey: "⌥⌘C",
             },
             data: {
-                text: "这是一个主页侧边栏。"
+                text: t(this, "dock.sidebarText"),
             },
             type: DOCK_TYPE,
             init: (dock) => {
@@ -268,12 +271,12 @@ export default class PluginHomepage extends Plugin {
         // 创建主菜单项：主页插件
         detail.menu.addItem({
             icon: "iconhomepage",
-            label: "主页插件",
+            label: t(this, "menus.pluginRoot"),
             type: "submenu",
             submenu: [
                 {
                     icon: "iconHeart",
-                    label: "收藏文档",
+                    label: t(this, "menus.favorite"),
                     click: () => {
                         this.client.setBlockAttrs({
                             id: nodeId,
@@ -281,16 +284,16 @@ export default class PluginHomepage extends Plugin {
                                 "custom-homepage-favorites": "true"
                             }
                         }).then(() => {
-                            showMessage("已收藏");
+                            showMessage(t(this, "messages.favorited"));
                         }).catch(err => {
                             console.error("收藏失败", err);
-                            showMessage("收藏失败，请查看控制台日志");
+                            showMessage(t(this, "messages.favoriteFailed"));
                         });
                     }
                 },
                 {
                     icon: "iconClose",
-                    label: "取消收藏",
+                    label: t(this, "menus.unfavorite"),
                     click: () => {
                         this.client.setBlockAttrs({
                             id: nodeId,
@@ -298,10 +301,10 @@ export default class PluginHomepage extends Plugin {
                                 "custom-homepage-favorites": ""
                             }
                         }).then(() => {
-                            showMessage("已取消收藏");
+                            showMessage(t(this, "messages.unfavorited"));
                         }).catch(err => {
                             console.error("取消收藏失败", err);
-                            showMessage("取消收藏失败，请查看控制台日志");
+                            showMessage(t(this, "messages.unfavoriteFailed"));
                         });
                     }
                 }
@@ -317,12 +320,12 @@ export default class PluginHomepage extends Plugin {
         }
         detail.menu.addItem({
             icon: "iconTask",
-            label: "任务编辑器（主页插件）",
+            label: t(this, "menus.taskEditor"),
             click: () => {
                 const blockId = blockElement.getAttribute('data-node-id');
                 if (blockId) {
                     const dialog = svelteDialog({
-                        title: "任务编辑器",
+                        title: t(this, "homepage.dialog.taskEditor"),
                         constructor: (containerEl: HTMLElement) => {
                             return new TasksEditingDialog({
                                 target: containerEl,

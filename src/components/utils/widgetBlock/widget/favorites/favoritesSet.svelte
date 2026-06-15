@@ -1,9 +1,11 @@
 <script lang="ts">
     import MultiSelect from "svelte-multiselect";
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
-    // 收藏文档相关变量
-    export let favoritiesTitle: string = "💖收藏文档";
+    export let plugin: any;
+    export let favoritiesTitle: string = "";
     export let favoritiesSortOrder: string = "created";
     export let showNoteMeta: boolean = true;
     export let favoritiesDocPrefix: string = "❤";
@@ -14,11 +16,14 @@
     }[] = [];
     export let showFavFloatDoc: boolean = true;
     export let favFloatDocShowTime: number = 0.1;
-
-    // 笔记本列表
     export let notebooks: any[] = [];
 
-    // 初始化选择状态
+    const tutorialLink = getTutorialLink("widgets.favorites");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     function initializeSelectedNotebooks() {
         if (
             favoritesNotebookId &&
@@ -40,17 +45,14 @@
         }
     }
 
-    // 组件挂载时初始化
     onMount(() => {
         initializeSelectedNotebooks();
     });
 
-    // 监听变化，确保状态正确恢复
     $: if (favoritesNotebookId && notebooks.length > 0) {
         initializeSelectedNotebooks();
     }
 
-    // 监听选择变化，更新字符串格式
     $: if (selectedFavoritesNotebookIds) {
         favoritesNotebookId =
             selectedFavoritesNotebookIds.length > 0
@@ -62,23 +64,22 @@
 </script>
 
 <div class="content-panel favorites">
-    <!-- 收藏文档设置区域 -->
     <div class="favorites-setting-top">
         <div>
             <div class="form-group">
                 <label for="favorities-title">
-                    组件标题：
+                    {t("common.widgetTitle")}
                     <input
                         id="favorities-title"
                         type="text"
                         bind:value={favoritiesTitle}
-                        placeholder="输入组件标题"
+                        placeholder={t("common.widgetTitleInput")}
                     />
                 </label>
             </div>
             <div class="form-group">
                 <label for="favorities-doc-prefix">
-                    文档前缀：
+                    {t("widgets.favorites.docPrefix")}
                     <input
                         id="favorities-doc-prefix"
                         type="text"
@@ -89,13 +90,15 @@
         </div>
         <div>
             <div class="form-group">
-                <label for="favorities-sort-order"> 排序方式： </label>
+                <label for="favorities-sort-order">
+                    {t("common.sortOrder")}
+                </label>
                 <select
                     id="favorities-sort-order"
                     bind:value={favoritiesSortOrder}
                 >
-                    <option value="created">创建时间</option>
-                    <option value="updated">更新时间</option>
+                    <option value="created">{t("common.createdTime")}</option>
+                    <option value="updated">{t("common.updatedTime")}</option>
                 </select>
             </div>
             <div class="form-group">
@@ -105,14 +108,16 @@
                         type="checkbox"
                         bind:checked={showNoteMeta}
                     />
-                    显示文档信息
+                    {t("widgets.favorites.showMeta")}
                 </label>
             </div>
         </div>
     </div>
     <div class="favorites-setting-bottom">
         <div class="form-group doc-notebook-id">
-            <label for="doc-notebook-id"> 文档笔记本： </label>
+            <label for="doc-notebook-id">
+                {t("widgets.favorites.notebook")}
+            </label>
             <MultiSelect
                 id="doc-notebook-id"
                 bind:selected={selectedFavoritesNotebookIds}
@@ -120,7 +125,7 @@
                     label: notebook.name,
                     value: notebook.id,
                 }))}
-                placeholder="选择笔记本..."
+                placeholder={t("common.selectNotebook")}
             />
             <div class="form-group">
                 <label for="show-fav-float-doc">
@@ -129,29 +134,24 @@
                         type="checkbox"
                         bind:checked={showFavFloatDoc}
                     />
-                    显示预览弹窗
+                    {t("common.showPreviewPopup")}
                 </label>
                 <label for="fav-float-doc-show-time">
-                    悬停时间：
+                    {t("common.hoverTime")}
                     <input
                         type="number"
-                        title="悬停多长时间显示预览弹窗"
+                        title={t("common.hoverTimeTitle")}
                         bind:value={favFloatDocShowTime}
                     />
-                    秒
+                    {t("common.seconds")}
                 </label>
             </div>
         </div>
     </div>
     <hr />
     <div>
-        组件说明：
-        <a
-            href="https://ttl8ygt82u.feishu.cn/wiki/HCICwChqpi9Iglkw6nwcVuP1nsf?from=from_copylink"
-            target="_blank"
-        >
-            收藏文档
-        </a>
+        {t("common.componentDescription")}
+        <a href={tutorialLink.url} target="_blank">{tutorialLink.label}</a>
     </div>
 </div>
 

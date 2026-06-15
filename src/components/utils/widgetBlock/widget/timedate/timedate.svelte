@@ -36,15 +36,15 @@
 </script>
 
 {#if timeType === "classic"}
-    <Classic {contentTypeJson}></Classic>
+    <Classic {contentTypeJson} {plugin}></Classic>
 {:else if timeType === "simple1"}
-    <Simple1 {contentTypeJson}></Simple1>
+    <Simple1 {contentTypeJson} {plugin}></Simple1>
 {:else if timeType === "simple2"}
-    <Simple2 {contentTypeJson}></Simple2>
+    <Simple2 {contentTypeJson} {plugin}></Simple2>
 {:else if timeType === "dial1"}
-    <Dial1 {contentTypeJson}></Dial1>
+    <Dial1 {contentTypeJson} {plugin}></Dial1>
 {:else if timeType === "dial2"}
-    <Dial2 {contentTypeJson}></Dial2>
+    <Dial2 {contentTypeJson} {plugin}></Dial2>
 {:else if timeType === "dial3"}
     <Dial3 {contentTypeJson} {plugin}></Dial3>
 {:else if timeType === "dial4"}

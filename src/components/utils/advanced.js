@@ -1,6 +1,8 @@
 // src/components/utils/advanced.js   这是千问帮忙写的，否则打包时会报错。
 // 为 SiYuan 主页设置创建的高级功能模块
 
+import { getIntlLocale } from "@/libs/i18n";
+
 /**
  * 高级设置管理类
  */
@@ -8,7 +10,7 @@ class AdvancedSettings {
   constructor() {
     this.settings = {
       theme: 'light',
-      language: 'zh-CN',
+      language: getIntlLocale(),
       animations: true,
       accessibility: true,
       autoSave: true,
@@ -79,7 +81,7 @@ class AdvancedSettings {
   resetToDefault() {
     this.settings = {
       theme: 'light',
-      language: 'zh-CN',
+      language: getIntlLocale(),
       animations: true,
       accessibility: true,
       autoSave: true,

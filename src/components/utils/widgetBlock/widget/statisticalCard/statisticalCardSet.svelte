@@ -1,4 +1,8 @@
-<script>
+<script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let advancedEnabled;
     export let statisticalCardTitle;
     export let statisticalCardTitleSize;
@@ -7,6 +11,8 @@
     export let statisticalCardCountSize;
     export let statisticalCardCountColor;
     export let customSQLCount;
+
+    const tutorial = getTutorialLink("widgets.statisticalCard");
 </script>
 
 <div class="content-panel statisticalCard">
@@ -14,20 +20,20 @@
         <div class="content-panel statisticalCard">
             <div class="form-group statisticalCardTitle">
                 <div>
-                    <label for="">标题：</label><input
+                    <label for="">{t(plugin, "widgets.statisticalCard.title")}</label><input
                         type="text"
                         bind:value={statisticalCardTitle}
                     />
                 </div>
                 <div>
                     <label for=""
-                        >标题大小：<input
+                        >{t(plugin, "widgets.statisticalCard.titleSize")}<input
                             type="number"
                             bind:value={statisticalCardTitleSize}
                         /></label
                     >
                     <label for=""
-                        >标题颜色：<input
+                        >{t(plugin, "widgets.statisticalCard.titleColor")}<input
                             type="color"
                             bind:value={statisticalCardTitleColor}
                         /></label
@@ -36,35 +42,35 @@
             </div>
             <div class="form-group statisticalCardContent">
                 <label for=""
-                    >统计内容：<select
+                    >{t(plugin, "widgets.statisticalCard.content")}<select
                         name=""
                         id=""
                         bind:value={statisticalCardContent}
                     >
-                        <option value="notebooksCount">笔记本数</option>
-                        <option value="docsCount">文档数</option>
-                        <option value="blocksCount">块数</option>
-                        <option value="wordsCount">字数</option>
-                        <option value="tasksCount">任务数</option>
-                        <option value="doneTasksCount">已完成任务数</option>
-                        <option value="undoneTasksCount">未完成任务数</option>
-                        <option value="dailynotesCount">日记数</option>
-                        <option value="tagsCount">标签数</option>
-                        <option value="citationCount">引述数</option>
-                        <option value="codeBlocksCount">代码数</option>
-                        <option value="mathBlocksCount">公式数</option>
-                        <option value="customSQLCount">SQL 查询结果数</option>
+                        <option value="notebooksCount">{t(plugin, "widgets.statisticalCard.notebooksCount")}</option>
+                        <option value="docsCount">{t(plugin, "widgets.statisticalCard.docsCount")}</option>
+                        <option value="blocksCount">{t(plugin, "widgets.statisticalCard.blocksCount")}</option>
+                        <option value="wordsCount">{t(plugin, "widgets.statisticalCard.wordsCount")}</option>
+                        <option value="tasksCount">{t(plugin, "widgets.statisticalCard.tasksCount")}</option>
+                        <option value="doneTasksCount">{t(plugin, "widgets.statisticalCard.doneTasksCount")}</option>
+                        <option value="undoneTasksCount">{t(plugin, "widgets.statisticalCard.undoneTasksCount")}</option>
+                        <option value="dailynotesCount">{t(plugin, "widgets.statisticalCard.dailynotesCount")}</option>
+                        <option value="tagsCount">{t(plugin, "widgets.statisticalCard.tagsCount")}</option>
+                        <option value="citationCount">{t(plugin, "widgets.statisticalCard.citationCount")}</option>
+                        <option value="codeBlocksCount">{t(plugin, "widgets.statisticalCard.codeBlocksCount")}</option>
+                        <option value="mathBlocksCount">{t(plugin, "widgets.statisticalCard.mathBlocksCount")}</option>
+                        <option value="customSQLCount">{t(plugin, "widgets.statisticalCard.customSQLCount")}</option>
                     </select></label
                 >
                 <div>
                     <label for=""
-                        >数字大小：<input
+                        >{t(plugin, "widgets.statisticalCard.countSize")}<input
                             type="number"
                             bind:value={statisticalCardCountSize}
                         /></label
                     >
                     <label for=""
-                        >数字颜色：<input
+                        >{t(plugin, "widgets.statisticalCard.countColor")}<input
                             type="color"
                             bind:value={statisticalCardCountColor}
                         /></label
@@ -74,7 +80,7 @@
             {#if statisticalCardContent === "customSQLCount"}
                 <div class="form-group">
                     <label for=""
-                        >自定义 SQL 查询：<textarea
+                        >{t(plugin, "widgets.statisticalCard.customSQL")}<textarea
                             bind:value={customSQLCount}
                         /></label
                     >
@@ -82,13 +88,13 @@
             {/if}
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/B8kGwSDdui3vy3kz55EcJkVHnHD?from=from_copylink"
-            target="_blank">统计卡片</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

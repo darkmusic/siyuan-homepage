@@ -1,21 +1,26 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let advancedEnabled: boolean = false;
     export let selectedConstellation: string = "capricorn";
 
-    // 星座选项：显示中文，值为英文
+    const tutorial = getTutorialLink("widgets.constellation");
+
     const constellations = [
-        { value: "capricorn", label: "摩羯" },
-        { value: "aquarius", label: "水瓶" },
-        { value: "pisces", label: "双鱼" },
-        { value: "aries", label: "白羊" },
-        { value: "taurus", label: "金牛" },
-        { value: "gemini", label: "双子" },
-        { value: "cancer", label: "巨蟹" },
-        { value: "leo", label: "狮子" },
-        { value: "virgo", label: "处女" },
-        { value: "libra", label: "天秤" },
-        { value: "scorpio", label: "天蝎" },
-        { value: "sagittarius", label: "射手" },
+        { value: "capricorn", key: "widgets.constellation.capricorn" },
+        { value: "aquarius", key: "widgets.constellation.aquarius" },
+        { value: "pisces", key: "widgets.constellation.pisces" },
+        { value: "aries", key: "widgets.constellation.aries" },
+        { value: "taurus", key: "widgets.constellation.taurus" },
+        { value: "gemini", key: "widgets.constellation.gemini" },
+        { value: "cancer", key: "widgets.constellation.cancer" },
+        { value: "leo", key: "widgets.constellation.leo" },
+        { value: "virgo", key: "widgets.constellation.virgo" },
+        { value: "libra", key: "widgets.constellation.libra" },
+        { value: "scorpio", key: "widgets.constellation.scorpio" },
+        { value: "sagittarius", key: "widgets.constellation.sagittarius" },
     ];
 </script>
 
@@ -23,23 +28,23 @@
     {#if advancedEnabled}
         <div class="content-panel constellation">
             <label for="constellation"
-                >选择星座：
+                >{t(plugin, "widgets.constellation.select")}
                 <select id="constellation" bind:value={selectedConstellation}>
                     {#each constellations as constellation}
-                        <option value={constellation.value}>{constellation.label}</option>
+                        <option value={constellation.value}>{t(plugin, constellation.key)}</option>
                     {/each}
                 </select>
             </label>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/RqNUwkJaBiJwHHkFAc4cHmWenqb?from=from_copylink"
-            target="_blank">星座运势</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
-    <p>注：若某一接口失效请联系我更新~</p>
+    <p>{t(plugin, "common.apiNote")}</p>
 </div>

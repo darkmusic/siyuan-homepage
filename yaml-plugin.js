@@ -31,7 +31,7 @@ export default function vitePluginYamlI18n(options = {}) {
                 fs.mkdirSync(outDir, { recursive: true });
             }
 
-            //Parse yaml file, output to json
+            // Parse yaml file, output to json
             const files = fs.readdirSync(inDir);
             for (const file of files) {
                 if (file.endsWith('.yaml') || file.endsWith('.yml')) {
@@ -53,6 +53,11 @@ export default function vitePluginYamlI18n(options = {}) {
                     } catch (error) {
                         this.error(`---- Error parsing YAML file ${file}: ${error.message}`);
                     }
+                } else if (file.endsWith('.json')) {
+                    const filePath = resolve(inDir, file);
+                    const outputFilePath = resolve(outDir, file);
+                    console.log(`-- Copying ${file} to ${outputFilePath}`);
+                    fs.copyFileSync(filePath, outputFilePath);
                 }
             }
         },

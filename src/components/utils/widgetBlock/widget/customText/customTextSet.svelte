@@ -1,10 +1,18 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let customTextInputValue: string = "";
 
+    const tutorial = getTutorialLink("widgets.customText");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {
-        // 组件挂载时的初始化逻辑
         if (!customTextInputValue) {
             customTextInputValue = "";
         }
@@ -13,18 +21,17 @@
 
 <div class="content-display">
     <div class="content-panel custom-text">
-        <h4>自定义文字内容</h4>
+        <h4>{t("widgets.customText.title")}</h4>
         <textarea
-            placeholder="在这里输入你想要显示的自定义文字内容，以 Markdown
-            格式编写..."
+            placeholder={t("widgets.customText.placeholder")}
             bind:value={customTextInputValue}
         ></textarea>
 
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/DkJnwuWzuipxpgkcTKZcEyaMnHf?from=from_copylink"
-                target="_blank">自定义文字</a
+            {t("common.componentDescription")}<a
+                href={tutorial.url}
+                target="_blank">{tutorial.label}</a
             >
         </div>
     </div>

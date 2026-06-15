@@ -1,7 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT, getIntlLocale } from "@/libs/i18n";
 
+    export let plugin: any;
     export let contentTypeJson: string = "{}";
     const parsed = JSON.parse(contentTypeJson);
 
@@ -18,6 +20,10 @@
     let countdownCard2BgColor = parsed.data?.countdownCard2BgColor || "#000000";
 
     let countdownList2BgColor = parsed.data?.countdownList2BgColor || "#000000";
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     // 当前事件索引
     let currentEventIndex = 0;
@@ -70,7 +76,7 @@
             if (diffDays > 0) {
                 return { text: `${diffDays}`, status: "future" };
             } else if (diffDays === 0) {
-                return { text: "今天", status: "today" };
+                return { text: t("common.today"), status: "today" };
             } else {
                 return { text: `${Math.abs(diffDays)}`, status: "expired" };
             }
@@ -82,7 +88,7 @@
             if (diffDays > 0) {
                 return { text: `${diffDays}`, status: "future" };
             } else if (diffDays === 0) {
-                return { text: "今天", status: "today" };
+                return { text: t("common.today"), status: "today" };
             } else {
                 return { text: `${Math.abs(diffDays)}`, status: "expired" };
             }
@@ -92,10 +98,11 @@
     // 格式化日期
     function formatDate(dateStr: string): string {
         const date = new Date(dateStr);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}年${month}月${day}日`;
+        return new Intl.DateTimeFormat(getIntlLocale(), {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).format(date);
     }
 
     // 根据数字长度获取适配的字体大小（使用配置管理器）
@@ -148,7 +155,7 @@
 <div class="content-display">
     {#if countdownStyle === "list1"}
         <div class="content-display-list1">
-            <h3 class="widget-title">📅 倒数日</h3>
+            <h3 class="widget-title">{t("widgets.countdown.title")}</h3>
             <ul class="countdown-list">
                 {#each countdownEvents as event (event.name)}
                     <li class="countdown-item">
@@ -156,7 +163,7 @@
                         <div class="countdown-date">
                             📅 {formatDate(event.date)}
                             {#if event.anniversary}
-                                <span class="anniversary-badge">周年</span>
+                                <span class="anniversary-badge">{t("widgets.countdown.anniversary")}</span>
                             {/if}
                         </div>
                         <div
@@ -176,11 +183,11 @@
                     <li class="countdown-item">
                         <div class="countdown-name">
                             {#if getDaysLeft(event.date, event.anniversary).status === "expired"}
-                                {event.name}已过
+                                {t("widgets.countdown.eventExpired", { name: event.name })}
                             {:else}
                                 {event.name}
                                 {#if event.anniversary}
-                                    <span class="anniversary-badge">周年</span>
+                                    <span class="anniversary-badge">{t("widgets.countdown.anniversary")}</span>
                                 {/if}
                             {/if}
                         </div>
@@ -265,12 +272,12 @@
                         {#if getDaysLeft(countdownEvents[currentEventIndex].date, countdownEvents[currentEventIndex].anniversary).status === "future"}
                             {countdownEvents[currentEventIndex].name}
                             {#if countdownEvents[currentEventIndex].anniversary}
-                                (周年)
+                                {t("widgets.countdown.anniversaryParen")}
                             {/if}
                         {:else}
                             {countdownEvents[currentEventIndex].name}
                             {#if countdownEvents[currentEventIndex].anniversary}
-                                (周年)
+                                {t("widgets.countdown.anniversaryParen")}
                             {/if}
                         {/if}
                     </text>
@@ -305,7 +312,7 @@
                         font-size="14px"
                         fill="var(--b3-theme-secondary)"
                     >
-                        暂无事件
+                        {t("widgets.countdown.noEvents")}
                     </text>
                 </svg>
             {/if}
@@ -360,17 +367,17 @@
                         {#if getDaysLeft(countdownEvents[currentEventIndex].date, countdownEvents[currentEventIndex].anniversary).status === "future"}
                             {countdownEvents[currentEventIndex].name}
                             {#if countdownEvents[currentEventIndex].anniversary}
-                                (周年)
+                                {t("widgets.countdown.anniversaryParen")}
                             {/if}
                         {:else if getDaysLeft(countdownEvents[currentEventIndex].date, countdownEvents[currentEventIndex].anniversary).status === "expired"}
-                            {countdownEvents[currentEventIndex].name}已过
+                            {t("widgets.countdown.eventExpired", { name: countdownEvents[currentEventIndex].name })}
                             {#if countdownEvents[currentEventIndex].anniversary}
-                                (周年)
+                                {t("widgets.countdown.anniversaryParen")}
                             {/if}
                         {:else if getDaysLeft(countdownEvents[currentEventIndex].date, countdownEvents[currentEventIndex].anniversary).status === "today"}
                             {countdownEvents[currentEventIndex].name}
                             {#if countdownEvents[currentEventIndex].anniversary}
-                                (周年)
+                                {t("widgets.countdown.anniversaryParen")}
                             {/if}
                         {/if}
                     </text>
@@ -405,7 +412,7 @@
                         font-size="14px"
                         fill="var(--b3-theme-secondary)"
                     >
-                        暂无事件
+                        {t("widgets.countdown.noEvents")}
                     </text>
                 </svg>
             {/if}

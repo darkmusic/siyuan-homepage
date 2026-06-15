@@ -1,6 +1,9 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let advancedEnabled: boolean;
     export let PicFolderPath: string = ""; // 图片文件夹路径
     export let PicAutoPlay: boolean = false; // 是否自动播放
@@ -14,6 +17,8 @@
     export let PicSlidesPerView: string = "1"; // 每页显示的图片数量
     export let PicRandomSwitch: boolean = false; // 是否随机切换
 
+    const tutorial = getTutorialLink("widgets.picCaro");
+
     // 选择图片文件夹
     async function selectPicFolder() {
         try {
@@ -21,7 +26,7 @@
                 !window.navigator.userAgent.includes("Electron") ||
                 typeof window.require !== "function"
             )
-                return showMessage("此功能仅在桌面版可用");
+                return showMessage(t(plugin, "common.desktopOnly"));
             const { filePaths } = await window
                 .require("@electron/remote")
                 .dialog.showOpenDialog({
@@ -41,14 +46,15 @@
     {#if advancedEnabled}
         <div class="content-panel picCaro">
             <label class="folder-select-label">
-                <span>图片路径：</span>
+                <span>{t(plugin, "widgets.picCaro.path")}</span>
                 <input
                     type="text"
                     bind:value={PicFolderPath}
-                    placeholder="请选择图片文件夹"
+                    placeholder={t(plugin, "widgets.picCaro.pathPlaceholder")}
                 />
-                <button title="选择图片文件夹" on:click={selectPicFolder}
-                    >📁</button
+                <button
+                    title={t(plugin, "widgets.picCaro.selectFolder")}
+                    on:click={selectPicFolder}>📁</button
                 >
             </label>
         </div>
@@ -61,16 +67,16 @@
                         type="checkbox"
                         id="autoPlay"
                         bind:checked={PicAutoPlay}
-                    />自动播放</label
+                    />{t(plugin, "widgets.picCaro.autoPlay")}</label
                 >
                 {#if PicAutoPlay}
                     <label for="interval"
-                        >间隔：<input
+                        >{t(plugin, "widgets.picCaro.interval")}<input
                             type="number"
                             id="interval"
                             style="width: 50px;"
                             bind:value={PicInterval}
-                        />秒</label
+                        />{t(plugin, "common.seconds")}</label
                     >
                 {/if}
                 <label for="navigation"
@@ -78,14 +84,14 @@
                         type="checkbox"
                         id="navigation"
                         bind:checked={PicNavigation}
-                    />显示切换按钮</label
+                    />{t(plugin, "widgets.picCaro.navigation")}</label
                 >
                 <label for="randomSwitch"
                     ><input
                         type="checkbox"
                         id="randomSwitch"
                         bind:checked={PicRandomSwitch}
-                    />随机</label
+                    />{t(plugin, "widgets.picCaro.random")}</label
                 >
             </div>
         </div>
@@ -98,17 +104,17 @@
                         type="checkbox"
                         id="pagination"
                         bind:checked={PicPagination}
-                    />显示分页进度</label
+                    />{t(plugin, "widgets.picCaro.pagination")}</label
                 >
                 {#if PicPagination}
                     <label for="paginationType"
-                        >样式：<select
+                        >{t(plugin, "common.style")}<select
                             id="paginationType"
                             bind:value={PicPaginationType}
                         >
-                            <option value="bullets">圆点</option>
-                            <option value="fraction">分式</option>
-                            <option value="progressbar">进度条</option>
+                            <option value="bullets">{t(plugin, "widgets.picCaro.bullets")}</option>
+                            <option value="fraction">{t(plugin, "widgets.picCaro.fraction")}</option>
+                            <option value="progressbar">{t(plugin, "widgets.picCaro.progressbar")}</option>
                         </select></label
                     >
                     {#if PicPaginationType === "bullets"}
@@ -117,7 +123,7 @@
                                 type="checkbox"
                                 id="dynamicBullets"
                                 bind:checked={PicPaginationDyBu}
-                            />动态圆点</label
+                            />{t(plugin, "widgets.picCaro.dynamicBullets")}</label
                         >
                     {:else if PicPaginationType === "progressbar"}
                         <label for="paginationProgressOpposite"
@@ -125,7 +131,7 @@
                                 type="checkbox"
                                 id="paginationProgressOpposite"
                                 bind:checked={PicPaginationPrOp}
-                            />进度条反方向</label
+                            />{t(plugin, "widgets.picCaro.reverseProgress")}</label
                         >
                     {/if}
                 {/if}
@@ -136,17 +142,17 @@
                 style="display: flex; gap: 1rem; align-items: center; padding-top: 1rem;"
             >
                 <label for="effect"
-                    >切换效果：<select id="effect" bind:value={PicEffect}>
-                        <option value="slide">滑动</option>
-                        <option value="fade">淡入</option>
-                        <option value="cube">立方体</option>
-                        <option value="coverflow">封面流</option>
-                        <option value="flip">翻转</option>
+                    >{t(plugin, "widgets.picCaro.effect")}<select id="effect" bind:value={PicEffect}>
+                        <option value="slide">{t(plugin, "widgets.picCaro.slide")}</option>
+                        <option value="fade">{t(plugin, "widgets.picCaro.fade")}</option>
+                        <option value="cube">{t(plugin, "widgets.picCaro.cube")}</option>
+                        <option value="coverflow">{t(plugin, "widgets.picCaro.coverflow")}</option>
+                        <option value="flip">{t(plugin, "widgets.picCaro.flip")}</option>
                     </select></label
                 >
                 {#if PicEffect === "slide"}
                     <label for="slidesPerView"
-                        >每页显示的图片数量：<input
+                        >{t(plugin, "widgets.picCaro.slidesPerView")}<input
                             type="number"
                             id="slidesPerView"
                             style="width: 50px;"
@@ -157,13 +163,13 @@
             </div>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ai.feishu.cn/wiki/MLaew9FOwiEREHkao1HcZof2nEd"
-            target="_blank">图片轮播</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

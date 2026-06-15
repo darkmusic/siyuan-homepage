@@ -32,6 +32,7 @@
     import CYBMOKSet from "./widget/CYBMOK/CYBMOKSet.svelte";
     import CountdownTimerSet from "./widget/countdownTimer/countdownTimerSet.svelte";
     import ConditionDocsSet from "./widget/conditionDocs/conditionDocsSet.svelte";
+    import { pluginT } from "@/libs/i18n";
 
     // import DatabaseChartSet from "./widget/databaseChart/databaseChartSet.svelte";
 
@@ -45,6 +46,10 @@
     // 当前区块 ID
     export let currentBlockId: string = "";
 
+    function t(key: string, vars?: Record<string, string | number>): string {
+        return pluginT(plugin, key, vars);
+    }
+
     let activeTab = "note";
 
     let notebooks = [];
@@ -54,7 +59,7 @@
     let customTextInputValue: string = "";
 
     // 子文档配置
-    let childDocsTitle: string = "📄子文档";
+    let childDocsTitle: string = pluginT(plugin, "widgets.defaults.childDocsTitle");
     let childDocsPrefix: string = "📄";
     let showChildDocsDetails: boolean = true;
     let childDocsParentId: string = "";
@@ -63,7 +68,7 @@
     let childDocsFloatDocShowTime: number = 0.1;
 
     // 条件文档配置
-    let conditionDocsTitle: string = "📄条件文档";
+    let conditionDocsTitle: string = pluginT(plugin, "widgets.defaults.conditionDocsTitle");
     let conditionDocsCondition: string = "keyword";
     let conditionDocsKeyPosition: string = "anywhere";
     let conditionDocsKeyWord: string = "";
@@ -77,7 +82,7 @@
     let ensureOpenDocs: boolean = false;
     let selectedNotebookIds: { label: string; value: string }[] = [];
     let docNotebookId: string = "";
-    let latestDocsTitle: string = "🕒最近文档";
+    let latestDocsTitle: string = pluginT(plugin, "widgets.defaults.latestDocsTitle");
     let latestDocsPrefix: string = "📄";
     let showLatestDocDetails: boolean = true;
     let showLatestDocFloatDoc: boolean = true;
@@ -92,7 +97,7 @@
     let latestDailyNotesFloatDocShowTime: number = 0.1;
 
     // 收藏文档配置
-    let favoritiesTitle: string = "💖收藏文档";
+    let favoritiesTitle: string = pluginT(plugin, "widgets.defaults.favoritesTitle");
     let favoritiesSortOrder: string = "created";
     let showNoteMeta: boolean = true;
     let favoritiesDocPrefix: string = "❤";
@@ -105,18 +110,18 @@
     let showCompletedTasks = true; // 默认显示已完成任务
     let tasksNotebookId: string = ""; // 任务管理笔记本 ID
     let showTasksDetails = true; // 默认显示任务详情
-    let TaskManTitle: string = "📋任务管理";
+    let TaskManTitle: string = pluginT(plugin, "widgets.defaults.taskManTitle");
     let selectedTasksNotebookIds: { label: string; value: string }[] = [];
 
     // 任务管理Plus 相关变量
-    let TaskManPlusTitle: string = "📋任务管理Plus";
+    let TaskManPlusTitle: string = pluginT(plugin, "widgets.defaults.taskManPlusTitle");
     let isCustomFilter: boolean = false;
     let internalFilter: string = "all";
     let customFilter: string = "";
     let tasksSort: string = "startdate";
 
     // 快速笔记相关变量
-    let quickNotesTitle: string = "📝快速笔记";
+    let quickNotesTitle: string = pluginT(plugin, "widgets.defaults.quickNotesTitle");
     let quickNotesSort: string = "DOC_ASC";
 
     // 便签相关变量
@@ -162,7 +167,7 @@
 
     // 热力图相关
     let timeRangeType: "past" | "custom" = "past";
-    let heatmapTitle: string = "📅创作热力图";
+    let heatmapTitle: string = pluginT(plugin, "widgets.defaults.heatmapTitle");
     let pastMonthCount: number = 6;
     let showLabel: boolean = true;
     let selectedColorPreset: "github" | "blue" | "custom" = "github";
@@ -181,7 +186,7 @@
     // 时钟组件经典样式相关变量
     let timedateFontSize: number = 3;
     let showSeconds: boolean = true;
-    let dateFormat: string = "YYYY年MM月DD日";
+    let dateFormat: string = pluginT(plugin, "common.dateFormat");
     let showLunar: boolean = true;
     let showZodiac: boolean = true;
     let showSolarTerm: boolean = true;
@@ -243,7 +248,7 @@
     let breakLocalImage = null;
 
     // SQL 查询
-    let sqlTitle: string = "🔍SQL 查询结果";
+    let sqlTitle: string = pluginT(plugin, "widgets.defaults.sqlTitle");
     let sqlInput: string = "";
     let columnOrder: string = "";
     let hiddenFields: string = "";
@@ -271,7 +276,7 @@
     let databaseChartLineWidth: number = 2;
 
     // 统计卡片相关
-    let statisticalCardTitle: string = "统计卡片";
+    let statisticalCardTitle: string = pluginT(plugin, "widgets.defaults.statisticalCardTitle");
     let statisticalCardTitleSize: number = 1;
     let statisticalCardTitleColor: string = "#000000";
     let statisticalCardContent: string = "notebooksCount";
@@ -348,7 +353,7 @@
                       })
                     : [];
                 latestDocsTitle =
-                    parsedData.data?.[0]?.latestDocsTitle || "🕒最近文档";
+                    parsedData.data?.[0]?.latestDocsTitle || t("widgets.defaults.latestDocsTitle");
                 latestDocsPrefix =
                     parsedData.data?.[0]?.latestDocsPrefix || "📄";
                 showLatestDocDetails =
@@ -359,7 +364,7 @@
                     parsedData.data?.[0]?.latestDocsFloatDocShowTime || 0.1;
             } else if (parsedData.type === "favorites") {
                 favoritiesTitle =
-                    parsedData.data?.favoritiesTitle || "💖收藏文档";
+                    parsedData.data?.favoritiesTitle || t("widgets.defaults.favoritesTitle");
                 favoritiesSortOrder =
                     parsedData.data?.favoritiesSortOrder || "created";
                 showNoteMeta = parsedData.data?.showNoteMeta ?? true;
@@ -435,7 +440,7 @@
                 timeType = parsedData.data?.timeType || "classic";
                 // 时钟组件经典样式相关变量
                 showSeconds = parsedData.data?.showSeconds ?? true;
-                dateFormat = parsedData.data?.dateFormat ?? "YYYY年MM月DD日";
+                dateFormat = parsedData.data?.dateFormat ?? t("common.dateFormat");
                 showLunar = parsedData.data?.showLunar ?? true;
                 showZodiac = parsedData.data?.showZodiac ?? true;
                 showSolarTerm = parsedData.data?.showSolarTerm ?? true;
@@ -509,7 +514,7 @@
                       })
                     : [];
                 showTasksDetails = parsedData.data?.showTasksDetails ?? true;
-                TaskManTitle = parsedData.data?.TaskManTitle || "📋任务管理";
+                TaskManTitle = parsedData.data?.TaskManTitle || t("widgets.defaults.taskManTitle");
             } else if (parsedData.type === "focus") {
                 focusImageType = parsedData.data?.focusImageType || "remote";
                 breakImageType = parsedData.data?.breakImageType || "remote";
@@ -718,23 +723,23 @@
     <div class="tab-nav">
         <button
             on:click={() => (activeTab = "note")}
-            class:active={activeTab === "note"}>笔记数据</button
+            class:active={activeTab === "note"}>{t("settings.content.tab.note")}</button
         >
         <button
             on:click={() => (activeTab = "visualization")}
-            class:active={activeTab === "visualization"}>可视化</button
+            class:active={activeTab === "visualization"}>{t("settings.content.tab.visualization")}</button
         >
         <button
             on:click={() => (activeTab = "tool")}
-            class:active={activeTab === "tool"}>日常工具</button
+            class:active={activeTab === "tool"}>{t("settings.content.tab.tool")}</button
         >
         <button
             on:click={() => (activeTab = "info")}
-            class:active={activeTab === "info"}>信息资讯</button
+            class:active={activeTab === "info"}>{t("settings.content.tab.info")}</button
         >
         <button
             on:click={() => (activeTab = "custom")}
-            class:active={activeTab === "custom"}>自定义</button
+            class:active={activeTab === "custom"}>{t("settings.content.tab.custom")}</button
         >
     </div>
 
@@ -743,23 +748,24 @@
         {#if activeTab === "note"}
             <!-- 笔记数据 -->
             <div class="content-type-select">
-                <label for="content-type">选择组件：</label>
+                <label for="content-type">{t("common.selectWidget")}</label>
                 <select id="content-type" bind:value={selectedContentType}>
-                    <option value="favorites">收藏文档</option>
-                    <option value="TaskMan">任务管理</option>
-                    <option value="TaskManPlus">任务管理Plus</option>
-                    <option value="latest-docs">最近文档</option>
-                    <option value="recent-journals">最近日记</option>
-                    <option value="quick-notes">快速笔记</option>
-                    <option value="childDocs">子文档👑</option>
-                    <option value="stikynot">便签👑</option>
-                    <option value="conditionDocs">条件文档👑</option>
+                    <option value="favorites">{t("widgets.names.favorites")}</option>
+                    <option value="TaskMan">{t("widgets.names.taskMan")}</option>
+                    <option value="TaskManPlus">{t("widgets.names.taskManPlus")}</option>
+                    <option value="latest-docs">{t("widgets.names.latestDocs")}</option>
+                    <option value="recent-journals">{t("widgets.names.recentJournals")}</option>
+                    <option value="quick-notes">{t("widgets.names.quickNotes")}</option>
+                    <option value="childDocs">{t("widgets.names.childDocs")}</option>
+                    <option value="stikynot">{t("widgets.names.stikynot")}</option>
+                    <option value="conditionDocs">{t("widgets.names.conditionDocs")}</option>
                 </select>
             </div>
             <!-- 动态内容区域 -->
             <div class="dynamic-content-area">
                 {#if selectedContentType === "latest-docs"}
                     <LatestDocsSet
+                        {plugin}
                         bind:docLimit
                         bind:ensureOpenDocs
                         bind:selectedNotebookIds
@@ -773,6 +779,7 @@
                     />
                 {:else if selectedContentType === "favorites"}
                     <FavoritesSet
+                        {plugin}
                         bind:favoritiesTitle
                         bind:favoritiesSortOrder
                         bind:showNoteMeta
@@ -785,6 +792,7 @@
                     />
                 {:else if selectedContentType === "recent-journals"}
                     <LatestDailyNotesSet
+                        {plugin}
                         bind:docJournalLimit
                         bind:recentJournalsShowType
                         bind:recentJournalsCalendarIcon
@@ -794,6 +802,7 @@
                     />
                 {:else if selectedContentType === "TaskMan"}
                     <RecentTasksSet
+                        {plugin}
                         bind:TaskManTitle
                         bind:showCompletedTasks
                         bind:showTasksDetails
@@ -802,6 +811,7 @@
                     />
                 {:else if selectedContentType === "TaskManPlus"}
                     <TasksPlusSet
+                        {plugin}
                         bind:TaskManPlusTitle
                         bind:isCustomFilter
                         bind:internalFilter
@@ -809,11 +819,12 @@
                         bind:tasksSort
                     />
                 {:else if selectedContentType === "quick-notes"}
-                    <QuickNotesSet bind:quickNotesTitle bind:quickNotesSort />
+                    <QuickNotesSet {plugin} bind:quickNotesTitle bind:quickNotesSort />
                 {:else if selectedContentType === "stikynot"}
-                    <StikynotSet {advancedEnabled} bind:stikynotStyle />
+                    <StikynotSet {plugin} {advancedEnabled} bind:stikynotStyle />
                 {:else if selectedContentType === "childDocs"}
                     <ChildDocsSet
+                        {plugin}
                         {advancedEnabled}
                         bind:childDocsTitle
                         bind:childDocsPrefix
@@ -825,6 +836,7 @@
                     />
                 {:else if selectedContentType === "conditionDocs"}
                     <ConditionDocsSet
+                        {plugin}
                         {advancedEnabled}
                         bind:conditionDocsTitle
                         bind:conditionDocsCondition
@@ -840,21 +852,22 @@
         {:else if activeTab === "info"}
             <!-- 信息资讯 -->
             <div class="content-type-select">
-                <label for="content-type">选择组件：</label>
+                <label for="content-type">{t("common.selectWidget")}</label>
                 <select id="content-type" bind:value={selectedContentType}>
-                    <option value="HOT">热搜</option>
-                    <option value="dailyQuote">每日一言</option>
-                    <option value="News">新闻资讯👑</option>
-                    <option value="constellation">星座运势👑</option>
-                    <option value="historyDays">历史上的今天👑</option>
+                    <option value="HOT">{t("widgets.names.hot")}</option>
+                    <option value="dailyQuote">{t("widgets.names.dailyQuote")}</option>
+                    <option value="News">{t("widgets.names.news")}</option>
+                    <option value="constellation">{t("widgets.names.constellation")}</option>
+                    <option value="historyDays">{t("widgets.names.historyDays")}</option>
                 </select>
             </div>
             <!-- 动态内容区域 -->
             <div class="dynamic-content-area">
                 {#if selectedContentType === "HOT"}
-                    <HOTSet bind:hotSource />
+                    <HOTSet {plugin} bind:hotSource />
                 {:else if selectedContentType === "dailyQuote"}
                     <DailyQuoteSet
+                        {plugin}
                         {advancedEnabled}
                         bind:dailyQuoteMode
                         bind:dailyQuoteFontSize
@@ -866,32 +879,34 @@
                         bind:dailyQuoteBgInput
                     />
                 {:else if selectedContentType === "News"}
-                    <NewsSet {advancedEnabled} bind:NewsType />
+                    <NewsSet {plugin} {advancedEnabled} bind:NewsType />
                 {:else if selectedContentType === "constellation"}
                     <ConstellationSet
+                        {plugin}
                         {advancedEnabled}
                         bind:selectedConstellation
                     />
                 {:else if selectedContentType === "historyDays"}
-                    <HistoryDaysSet {advancedEnabled} bind:historyDaysType />
+                    <HistoryDaysSet {plugin} {advancedEnabled} bind:historyDaysType />
                 {/if}
             </div>
         {:else if activeTab === "visualization"}
             <!-- 可视化 -->
             <div class="content-type-select">
-                <label for="content-type">选择组件：</label>
+                <label for="content-type">{t("common.selectWidget")}</label>
                 <select id="content-type" bind:value={selectedContentType}>
-                    <option value="heatmap">热力图</option>
-                    <option value="sql">SQL 查询</option>
-                    <option value="visualChart">可视化图表</option>
+                    <option value="heatmap">{t("widgets.names.heatmap")}</option>
+                    <option value="sql">{t("widgets.names.sql")}</option>
+                    <option value="visualChart">{t("widgets.names.visualChart")}</option>
                     <!-- <option value="databaseChart">数据库图表👑</option> -->
-                    <option value="statisticalCard">统计卡片👑</option>
+                    <option value="statisticalCard">{t("widgets.names.statisticalCard")}</option>
                 </select>
             </div>
             <!-- 动态内容区域 -->
             <div class="dynamic-content-area">
                 {#if selectedContentType === "heatmap"}
                     <HeatmapSet
+                        {plugin}
                         bind:heatmapTitle
                         bind:pastMonthCount
                         bind:showLabel
@@ -901,13 +916,14 @@
                     />
                 {:else if selectedContentType === "sql"}
                     <SqlSet
+                        {plugin}
                         bind:sqlTitle
                         bind:sqlInput
                         bind:columnOrder
                         bind:hiddenFields
                     />
                 {:else if selectedContentType === "visualChart"}
-                    <VisualChartSet bind:visualChartType />
+                    <VisualChartSet {plugin} bind:visualChartType />
                     <!-- {:else if selectedContentType === "databaseChart"}
                     <DatabaseChartSet
                         {plugin}
@@ -932,6 +948,7 @@
                     /> -->
                 {:else if selectedContentType === "statisticalCard"}
                     <StatisticalCardSet
+                        {plugin}
                         {advancedEnabled}
                         bind:statisticalCardTitle
                         bind:statisticalCardTitleSize
@@ -946,23 +963,24 @@
         {:else if activeTab === "tool"}
             <!-- 日常工具 -->
             <div class="content-type-select">
-                <label for="content-type">选择组件：</label>
+                <label for="content-type">{t("common.selectWidget")}</label>
                 <select id="content-type" bind:value={selectedContentType}>
-                    <option value="focus">番茄钟</option>
-                    <option value="countdown">倒数日</option>
-                    <option value="weather">今日天气</option>
-                    <option value="timedate">时钟</option>
-                    <option value="musicPlayer">音乐播放器👑</option>
-                    <option value="almanac">黄历👑</option>
-                    <option value="PicCaro">图片轮播👑</option>
-                    <option value="CYBMOK">赛博木鱼👑</option>
-                    <option value="countdownTimer">倒计时👑</option>
+                    <option value="focus">{t("widgets.names.focus")}</option>
+                    <option value="countdown">{t("widgets.names.countdown")}</option>
+                    <option value="weather">{t("widgets.names.weather")}</option>
+                    <option value="timedate">{t("widgets.names.timedate")}</option>
+                    <option value="musicPlayer">{t("widgets.names.musicPlayer")}</option>
+                    <option value="almanac">{t("widgets.names.almanac")}</option>
+                    <option value="PicCaro">{t("widgets.names.picCaro")}</option>
+                    <option value="CYBMOK">{t("widgets.names.cybmok")}</option>
+                    <option value="countdownTimer">{t("widgets.names.countdownTimer")}</option>
                 </select>
             </div>
             <!-- 动态内容区域 -->
             <div class="dynamic-content-area">
                 {#if selectedContentType === "countdown"}
                     <CountdownSet
+                        {plugin}
                         bind:countdownStyle
                         bind:eventList
                         bind:countdownCard1BgSelect
@@ -973,6 +991,7 @@
                     />
                 {:else if selectedContentType === "weather"}
                     <WeatherSet
+                        {plugin}
                         bind:customWeatherCityName
                         bind:customWeatherCityCode
                         bind:weatherStyle
@@ -1021,6 +1040,7 @@
                     />
                 {:else if selectedContentType === "focus"}
                     <FocusSet
+                        {plugin}
                         bind:focusImageType
                         bind:breakImageType
                         bind:focusBgImage
@@ -1030,14 +1050,16 @@
                     />
                 {:else if selectedContentType === "musicPlayer"}
                     <MusicPlayerSet
+                        {plugin}
                         bind:advancedEnabled
                         bind:musicFolderPath
                         bind:autoPlay
                     />
                 {:else if selectedContentType === "almanac"}
-                    <AlmanacSet bind:advancedEnabled bind:almanacStyle />
+                    <AlmanacSet {plugin} bind:advancedEnabled bind:almanacStyle />
                 {:else if selectedContentType === "PicCaro"}
                     <PicCaroSet
+                        {plugin}
                         bind:advancedEnabled
                         bind:PicFolderPath
                         bind:PicAutoPlay
@@ -1059,6 +1081,7 @@
                     />
                 {:else if selectedContentType === "countdownTimer"}
                     <CountdownTimerSet
+                        {plugin}
                         bind:advancedEnabled
                         bind:countdownTimerStyle
                     />
@@ -1067,21 +1090,21 @@
         {:else if activeTab === "custom"}
             <!-- 自定义 -->
             <div class="content-type-select">
-                <label for="content-type">选择组件：</label>
+                <label for="content-type">{t("common.selectWidget")}</label>
                 <select id="content-type" bind:value={selectedContentType}>
-                    <option value="custom-protyle">文档编辑器</option>
-                    <option value="custom-text">文字内容</option>
-                    <option value="custom-web">网页浏览器</option>
+                    <option value="custom-protyle">{t("widgets.names.customProtyle")}</option>
+                    <option value="custom-text">{t("widgets.names.customText")}</option>
+                    <option value="custom-web">{t("widgets.names.customWeb")}</option>
                 </select>
             </div>
             <!-- 动态内容区域 -->
             <div class="dynamic-content-area">
                 {#if selectedContentType === "custom-text"}
-                    <CustomTextSet bind:customTextInputValue />
+                    <CustomTextSet {plugin} bind:customTextInputValue />
                 {:else if selectedContentType === "custom-web"}
-                    <WebviewSet bind:customWebUrl />
+                    <WebviewSet {plugin} bind:customWebUrl />
                 {:else if selectedContentType === "custom-protyle"}
-                    <ProtyleSet bind:isRandomDoc bind:customBlockID />
+                    <ProtyleSet {plugin} bind:isRandomDoc bind:customBlockID />
                 {/if}
             </div>
         {/if}
@@ -1545,8 +1568,8 @@
                 onConfirm(JSON.stringify(contentTypeJson));
             }}
         >
-            ✔ 确定
+            {t("common.confirmAlt")}
         </button>
-        <button class="cancel-button" on:click={onClose}>❌ 取消</button>
+        <button class="cancel-button" on:click={onClose}>{t("common.cancel")}</button>
     </div>
 </div>

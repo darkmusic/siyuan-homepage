@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
     export let plugin: any;
     export let advancedEnabled: boolean;
     export let databaseChartID: string = "";
@@ -21,6 +24,8 @@
 
     let databaseChartInfo: any[] = [];
     let confirmDatabaseChartID: boolean = false;
+
+    const tutorial = getTutorialLink("widgets.databaseChart");
 
     async function getDatabase() {
         if (!databaseChartID) return;
@@ -57,45 +62,45 @@
 {#if advancedEnabled}
     <div class="content-panel databaseChart">
         <div class="form-group">
-            <label for="">数据库ID：</label>
+            <label for="">{t(plugin, "widgets.databaseChart.id")}</label>
             <input
                 type="text"
-                placeholder="请输入数据库ID"
+                placeholder={t(plugin, "widgets.databaseChart.idPlaceholder")}
                 bind:value={databaseChartID}
             />
         </div>
         {#if confirmDatabaseChartID}
             <div class="form-group">
-                <label for="">图表类型：</label>
+                <label for="">{t(plugin, "widgets.databaseChart.chartType")}</label>
                 <select bind:value={databaseChartType}>
-                    <option value="line">折线图</option>
-                    <option value="bar">柱状图</option>
-                    <option value="pie">饼图</option>
-                    <option value="point">散点图</option>
+                    <option value="line">{t(plugin, "widgets.databaseChart.line")}</option>
+                    <option value="bar">{t(plugin, "widgets.databaseChart.bar")}</option>
+                    <option value="pie">{t(plugin, "widgets.databaseChart.pie")}</option>
+                    <option value="point">{t(plugin, "widgets.databaseChart.scatter")}</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="">图表标题：</label>
+                <label for="">{t(plugin, "widgets.databaseChart.chartTitle")}</label>
                 <input
                     type="text"
-                    placeholder="请输入图表标题"
+                    placeholder={t(plugin, "widgets.databaseChart.chartTitlePlaceholder")}
                     bind:value={databaseChartTitle}
                 />
             </div>
             {#if databaseChartType === "line"}
                 <div class="database-chart-line-config">
                     <div class="form-group">
-                        <label for="">数据类型：</label>
+                        <label for="">{t(plugin, "widgets.databaseChart.dataType")}</label>
                         <select bind:value={databaseChartLineType}>
-                            <option value="XY">XY轴</option>
-                            <option value="count">数量</option>
+                            <option value="XY">{t(plugin, "widgets.databaseChart.xyAxis")}</option>
+                            <option value="count">{t(plugin, "widgets.databaseChart.countType")}</option>
                         </select>
                     </div>
                     {#if databaseChartLineType === "XY"}
                         <div class="database-chart-line-XY">
                             <div class="database-chart-x-axis">
                                 <label for="">
-                                    X轴来源：
+                                    {t(plugin, "widgets.databaseChart.xSource")}
                                     <select
                                         bind:value={
                                             databaseChartLineXAxisSource
@@ -113,10 +118,10 @@
                                         {/each}
                                     </select>
                                 </label>
-                                <label for="">X轴标题：</label>
+                                <label for="">{t(plugin, "widgets.databaseChart.xAxisTitle")}</label>
                                 <input
                                     type="text"
-                                    placeholder="请输入X轴标题"
+                                    placeholder={t(plugin, "widgets.databaseChart.xTitlePlaceholder")}
                                     bind:value={
                                         databaseChartLineXAxisTitle
                                     }
@@ -124,7 +129,7 @@
                             </div>
                             <div class="database-chart-y-axis">
                                 <label for="">
-                                    Y轴来源（多选）：
+                                    {t(plugin, "widgets.databaseChart.ySourceMulti")}
                                     <div
                                         class="multi-select-wrapper"
                                     >
@@ -149,10 +154,10 @@
                                         </select>
                                     </div>
                                 </label>
-                                <label for="">Y轴标题：</label>
+                                <label for="">{t(plugin, "widgets.databaseChart.yAxisTitle")}</label>
                                 <input
                                     type="text"
-                                    placeholder="请输入Y轴标题"
+                                    placeholder={t(plugin, "widgets.databaseChart.yTitlePlaceholder")}
                                     bind:value={
                                         databaseChartLineYAxisTitle
                                     }
@@ -162,7 +167,7 @@
                     {:else if databaseChartLineType === "count"}
                         <div class="database-chart-count">
                             <label for=""
-                                >统计列：
+                                >{t(plugin, "widgets.databaseChart.countColumn")}
                                 <select
                                     bind:value={
                                         databaseChartLineCountColumn
@@ -183,14 +188,14 @@
                             <div
                                 class="database-chart-count-axis"
                             >
-                                <label for="">X轴标题： </label>
+                                <label for="">{t(plugin, "widgets.databaseChart.xAxisTitle")} </label>
                                 <input
                                     type="text"
                                     bind:value={
                                         databaseChartLineCountXAxisTitle
                                     }
                                 />
-                                <label for="">Y轴标题： </label>
+                                <label for="">{t(plugin, "widgets.databaseChart.yAxisTitle")} </label>
                                 <input
                                     type="text"
                                     bind:value={
@@ -203,7 +208,7 @@
                     <div class="line-chart-style">
                         <div class="line-chart-style-item">
                             <label for=""
-                                >平滑曲线：<input
+                                >{t(plugin, "widgets.databaseChart.smooth")}<input
                                     type="checkbox"
                                     bind:checked={
                                         databaseChartLineSmooth
@@ -211,7 +216,7 @@
                                 /></label
                             >
                             <label for=""
-                                >线条宽度：
+                                >{t(plugin, "widgets.databaseChart.lineWidth")}
                                 <input
                                     type="number"
                                     bind:value={
@@ -220,20 +225,20 @@
                                 />
                             </label>
                             <label for=""
-                                >线条样式：
+                                >{t(plugin, "widgets.databaseChart.lineStyle")}
                                 <select
                                     bind:value={
                                         databaseChartLineStyle
                                     }
                                 >
                                     <option value="solid"
-                                        >实线</option
+                                        >{t(plugin, "widgets.databaseChart.solid")}</option
                                     >
                                     <option value="dashed"
-                                        >虚线</option
+                                        >{t(plugin, "widgets.databaseChart.dashed")}</option
                                     >
                                     <option value="dotted"
-                                        >点线</option
+                                        >{t(plugin, "widgets.databaseChart.dotted")}</option
                                     >
                                 </select>
                             </label>
@@ -241,40 +246,40 @@
 
                         <div class="line-chart-style-item">
                             <label for=""
-                                >标记点：
+                                >{t(plugin, "widgets.databaseChart.markPoint")}
                                 <select
                                     bind:value={
                                         databaseChartLineMarkPoint
                                     }
                                 >
                                     <option value="circle"
-                                        >圆点</option
+                                        >{t(plugin, "widgets.databaseChart.markCircle")}</option
                                     >
                                     <option value="rect"
-                                        >矩形</option
+                                        >{t(plugin, "widgets.databaseChart.markRect")}</option
                                     >
                                     <option value="roundRect"
-                                        >圆角矩形</option
+                                        >{t(plugin, "widgets.databaseChart.markRoundRect")}</option
                                     >
                                     <option value="triangle"
-                                        >三角形</option
+                                        >{t(plugin, "widgets.databaseChart.markTriangle")}</option
                                     >
                                     <option value="diamond"
-                                        >菱形</option
+                                        >{t(plugin, "widgets.databaseChart.markDiamond")}</option
                                     >
                                     <option value="pin"
-                                        >大头针</option
+                                        >{t(plugin, "widgets.databaseChart.markPin")}</option
                                     >
                                     <option value="arrow"
-                                        >箭头</option
+                                        >{t(plugin, "widgets.databaseChart.markArrow")}</option
                                     >
                                     <option value="none"
-                                        >无</option
+                                        >{t(plugin, "widgets.databaseChart.markNone")}</option
                                     >
                                 </select>
                             </label>
                             <label for=""
-                                >标记点大小：
+                                >{t(plugin, "widgets.databaseChart.markPointSize")}
                                 <input
                                     type="number"
                                     bind:value={
@@ -284,17 +289,17 @@
                             </label>
                         </div>
                         <label for=""
-                            >排序方式：
+                            >{t(plugin, "widgets.databaseChart.sortMode")}
                             <select
                                 bind:value={
                                     databaseChartLineCountSort
                                 }
                             >
-                                <option value="none">无</option>
-                                <option value="asc">升序</option
+                                <option value="none">{t(plugin, "common.none")}</option>
+                                <option value="asc">{t(plugin, "widgets.databaseChart.asc")}</option
                                 >
                                 <option value="desc"
-                                    >降序</option
+                                    >{t(plugin, "widgets.databaseChart.desc")}</option
                                 >
                             </select>
                         </label>
@@ -302,23 +307,23 @@
                 </div>
             {:else if databaseChartType === "bar"}
                 <div>
-                    开发中……
+                    {t(plugin, "common.inDevelopment")}
                 </div>
             {:else if databaseChartType === "pie"}
                 <div>
-                    开发中……
+                    {t(plugin, "common.inDevelopment")}
                 </div>
             {:else if databaseChartType === "point"}
-                <div>开发中……</div>
+                <div>{t(plugin, "common.inDevelopment")}</div>
             {/if}
         {/if}
     </div>
 {:else}
-    <h3>👑会员专属权益👑</h3>
+    <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
 {/if}
 <hr>
-<div>组件说明：<a href="https://ttl8ygt82u.feishu.cn/wiki/TVpYw7TRPiG6hRksrYKc7oBjnmd?from=from_copylink" target="_blank">数据库图表</a></div>
-<p>组件开发中~</p>
+<div>{t(plugin, "common.componentDescription")}<a href={tutorial.url} target="_blank">{tutorial.label}</a></div>
+<p>{t(plugin, "widgets.databaseChart.inDev")}</p>
 
 <style lang="scss">
     .content-panel.databaseChart {

@@ -1,13 +1,22 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let eventList: Array<{
         name: string;
         date: string;
         anniversary: boolean;
     }> = [{ name: "", date: "", anniversary: false }];
     export let countdownStyle: string = "list";
+
+    const tutorial = getTutorialLink("widgets.countdown");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     // 卡片1配置
     export let countdownCard1BgSelect: string = "remote";
@@ -85,10 +94,10 @@
             <table>
                 <tbody>
                     <tr>
-                        <th>事件名称</th>
-                        <th>事件日期</th>
-                        <th>周年</th>
-                        <th>删除</th>
+                        <th>{t("widgets.countdown.eventName")}</th>
+                        <th>{t("widgets.countdown.eventDate")}</th>
+                        <th>{t("widgets.countdown.anniversary")}</th>
+                        <th>{t("common.delete")}</th>
                     </tr>
                     {#each eventList as event, index}
                         <tr class="event-form-group" data-index={index}>
@@ -97,7 +106,7 @@
                                     id="event-name-{index}"
                                     type="text"
                                     bind:value={event.name}
-                                    placeholder="例如：生日"
+                                    placeholder={t("widgets.countdown.eventPlaceholder")}
                                 />
                             </td>
                             <td>
@@ -117,7 +126,7 @@
                             <td>
                                 <button
                                     class="remove-event"
-                                    title="删除"
+                                    title={t("common.delete")}
                                     on:click={() => removeEvent(index)}
                                 >
                                     🗑
@@ -127,24 +136,24 @@
                     {/each}
                 </tbody>
             </table>
-            <button class="add-event-btn" on:click={addEvent}>添加倒数日</button
+            <button class="add-event-btn" on:click={addEvent}>{t("widgets.countdown.addEvent")}</button
             >
         </div>
 
         <div class="form-group">
-            <label for="countdown-style">样式：</label>
+            <label for="countdown-style">{t("common.style")}</label>
             <select id="countdown-style" bind:value={countdownStyle}>
-                <option value="list1">列表1</option>
-                <option value="list2">列表2</option>
-                <option value="card1">卡片1</option>
-                <option value="card2">卡片2</option>
+                <option value="list1">{t("widgets.countdown.list1")}</option>
+                <option value="list2">{t("widgets.countdown.list2")}</option>
+                <option value="card1">{t("widgets.countdown.card1")}</option>
+                <option value="card2">{t("widgets.countdown.card2")}</option>
             </select>
         </div>
         {#if countdownStyle === "card1"}
             <div class="form-group countdown-card1-bg-select">
                 <div class="bg-select">
                     <label>
-                        背景设置：
+                        {t("common.backgroundSettings")}
                         <select
                             bind:value={countdownCard1BgSelect}
                             on:change={() => {
@@ -158,8 +167,8 @@
                                 }
                             }}
                         >
-                            <option value="remote">远程图片</option>
-                            <option value="local">本地图片</option>
+                            <option value="remote">{t("common.remoteImage")}</option>
+                            <option value="local">{t("common.localImage")}</option>
                         </select>
                     </label>
                     {#if countdownCard1BgSelect === "remote"}
@@ -167,11 +176,11 @@
                             type="text"
                             bind:value={countdownCard1RemoteBg}
                             on:change={getCountdownCard1BgImage}
-                            placeholder="输入远程图片URL"
+                            placeholder={t("common.remoteUrlPlaceholder")}
                         />
                     {:else}
                         <button on:click={() => countdownCard1BgInput?.click()}>
-                            上传图片
+                            {t("common.uploadImage")}
                         </button>
 
                         <input
@@ -187,12 +196,12 @@
                     {#if countdownCard1BgSelect === "remote" && countdownCard1BgImageData}
                         <img
                             src={countdownCard1BgImageData}
-                            alt="倒数日卡片1背景预览"
+                            alt={t("widgets.countdown.card1BgPreview")}
                         />
                     {:else if countdownCard1BgSelect === "local" && countdownCard1LocalBg}
                         <img
                             src={countdownCard1LocalBg}
-                            alt="倒数日卡片1背景预览"
+                            alt={t("widgets.countdown.card1BgPreview")}
                         />
                     {/if}
                 </div>
@@ -200,7 +209,7 @@
         {:else if countdownStyle === "card2"}
             <div class="form-group">
                 <label for="countdown-card2-bg-color"
-                    >背景颜色：
+                    >{t("widgets.countdown.bgColor")}
                     <input
                         id="countdown-card2-bg-color"
                         type="color"
@@ -211,7 +220,7 @@
         {:else if countdownStyle === "list2"}
             <div class="form-group">
                 <label for="countdown-list2-bg-color"
-                    >背景颜色：
+                    >{t("widgets.countdown.bgColor")}
                     <input
                         id="countdown-list2-bg-color"
                         type="color"
@@ -223,9 +232,9 @@
 
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/KjYew1TbViBCIQkmsbBcBO6vnOd?from=from_copylink"
-                target="_blank">倒数日</a
+            {t("common.componentDescription")}<a
+                href={tutorial.url}
+                target="_blank">{tutorial.label}</a
             >
         </div>
     </div>

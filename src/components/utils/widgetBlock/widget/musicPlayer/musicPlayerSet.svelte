@@ -1,9 +1,14 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let advancedEnabled: boolean;
     export let musicFolderPath: string = "";
     export let autoPlay: boolean = false;
+
+    const tutorial = getTutorialLink("widgets.musicPlayer");
 
     // 选择音乐文件夹
     async function selectMusicFolder() {
@@ -12,7 +17,7 @@
                 !window.navigator.userAgent.includes("Electron") ||
                 typeof window.require !== "function"
             )
-                return showMessage("此功能仅在桌面版可用");
+                return showMessage(t(plugin, "common.desktopOnly"));
             const { filePaths } = await window
                 .require("@electron/remote")
                 .dialog.showOpenDialog({
@@ -32,29 +37,30 @@
     {#if advancedEnabled}
         <div class="content-panel musicPlayer">
             <label class="folder-select-label">
-                <span>音乐路径：</span>
+                <span>{t(plugin, "widgets.musicPlayer.path")}</span>
                 <input
                     type="text"
                     bind:value={musicFolderPath}
-                    placeholder="请选择音乐文件夹"
+                    placeholder={t(plugin, "widgets.musicPlayer.pathPlaceholder")}
                 />
-                <button title="选择音乐文件夹" on:click={selectMusicFolder}
-                    >📁</button
+                <button
+                    title={t(plugin, "widgets.musicPlayer.selectFolder")}
+                    on:click={selectMusicFolder}>📁</button
                 >
             </label>
             <label>
                 <input type="checkbox" bind:checked={autoPlay} />
-                自动播放
+                {t(plugin, "widgets.musicPlayer.autoPlay")}
             </label>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/GJQNwPxiBiRGYAkbJxMcCHTanag?from=from_copylink"
-            target="_blank">音乐播放器</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

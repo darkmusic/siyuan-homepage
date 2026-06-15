@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let musicFiles: any;
@@ -37,13 +38,13 @@
                             {#if themeMode === 0}
                                 <img
                                     src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/playLight.svg`}
-                                    alt="播放"
+                                    alt={t(plugin, "widgets.musicPlayer.play")}
                                     style="width: 1rem; height: 1rem;"
                                 />
                             {:else}
                                 <img
                                     src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/playDark.svg`}
-                                    alt="播放"
+                                    alt={t(plugin, "widgets.musicPlayer.play")}
                                     style="width: 1rem; height: 1rem;"
                                 />
                             {/if}

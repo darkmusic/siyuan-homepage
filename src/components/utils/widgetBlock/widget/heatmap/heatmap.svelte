@@ -3,6 +3,7 @@
     import * as echarts from "echarts";
     import { sql } from "@/api";
     import { showMessage } from "siyuan";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -70,7 +71,7 @@
         setTimeout(async () => {
             const advancedEnabled = plugin.ADVANCED;
             if (!advancedEnabled && heatmapCountType === "words") {
-                showMessage("❌字数统计热力图仅订阅会员可用！");
+                showMessage(t(plugin, "messages.heatmapVipOnly"));
                 return;
             }
             
@@ -87,7 +88,9 @@
                     formatter: ({ data }) => {
                         const [date, value] = data;
                         const unit =
-                            heatmapCountType === "words" ? "个字" : "个块";
+                            heatmapCountType === "words"
+                                ? t(plugin, "widgets.heatmap.unitWords")
+                                : t(plugin, "widgets.heatmap.unitBlocks");
                         return `${date}: ${value} ${unit}`;
                     },
                 },

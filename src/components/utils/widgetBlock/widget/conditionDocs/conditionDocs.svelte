@@ -3,6 +3,7 @@
     import { openDocs } from "@/components/tools/openDocs";
     import { getConditionDocsByKeyword, getConditionDocsByTag } from "./conditionDocs";
     import { formatDateShort } from "@/components/tools/formatDate";
+    import { pluginT } from "@/libs/i18n";
     import {
         createFloatingDocPopup,
         setMouseOnTrigger,
@@ -12,7 +13,9 @@
     export let plugin: any;
     export let contentTypeJson: string = "{}";
     const parsed = JSON.parse(contentTypeJson);
-    const conditionDocsTitle = parsed.data?.conditionDocsTitle || "📄条件文档";
+    const conditionDocsTitle =
+        parsed.data?.conditionDocsTitle ||
+        pluginT(plugin, "widgets.defaults.conditionDocsTitle");
     const conditionDocsPrefix = parsed.data?.conditionDocsPrefix || "📄";
     const showConditionDocsDetails =
         parsed.data?.showConditionDocsDetails ?? true;
@@ -35,7 +38,10 @@
     // 悬浮窗定时器
     let floatDocTimeout: number | null = null;
 
-    // 模拟加载文档数据
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
+
     onMount(async () => {
         advancedEnabled = plugin.ADVANCED;
 
@@ -103,7 +109,9 @@
                             }}
                             role="button"
                             tabindex="0"
-                            aria-label="打开最近文档：{doc.content}"
+                            aria-label={t("widgets.conditionDocs.openAria", {
+                                content: doc.content,
+                            })}
                         >
                             {conditionDocsPrefix}
                             {doc.content}
@@ -112,13 +120,17 @@
                             {#if conditionDocsSortOrder === "updated"}
                                 <div class="document-updated-container">
                                     <span class="document-updated">
-                                        更新于：📅{formatDateShort(doc.updated)}
+                                        {t("widgets.conditionDocs.updatedOn", {
+                                            date: formatDateShort(doc.updated),
+                                        })}
                                     </span>
                                 </div>
                             {:else if conditionDocsSortOrder === "created"}
                                 <div class="document-updated-container">
                                     <span class="document-updated">
-                                        创建于：📅{formatDateShort(doc.created)}
+                                        {t("widgets.conditionDocs.createdOn", {
+                                            date: formatDateShort(doc.created),
+                                        })}
                                     </span>
                                 </div>
                             {/if}
@@ -126,13 +138,13 @@
                     </li>
                 {/each}
             {:else}
-                <p>暂无文档</p>
+                <p>{t("common.noDocs")}</p>
             {/if}
         </ul>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t("common.vipFeatureTitle")}</h2>
+            <h3>{t("common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

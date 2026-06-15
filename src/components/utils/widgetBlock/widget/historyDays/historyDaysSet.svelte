@@ -1,28 +1,34 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let advancedEnabled: boolean;
     export let historyDaysType: string;
+
+    const tutorial = getTutorialLink("widgets.historyDays");
 </script>
 
 <div class="historyDays-set">
     {#if advancedEnabled}
         <div class="form-group">
             <label for="historyDaysType">
-                显示类型：
+                {t(plugin, "widgets.historyDays.displayType")}
                 <select
                     id="historyDaysType"
                     bind:value={historyDaysType}
                 >
-                    <option value="list">列表</option>
-                    <option value="img">图片</option>
+                    <option value="list">{t(plugin, "common.list")}</option>
+                    <option value="img">{t(plugin, "common.image")}</option>
                 </select>
             </label>
         </div>
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr>
-    <div>组件说明：<a href="https://ttl8ygt82u.feishu.cn/wiki/SgHPwf76fiVlsnkxUNTcZ0ADnXg?from=from_copylink" target="_blank">历史上的今天</a></div>
-    <p>注：若接口失效请联系我更新~</p>
+    <div>{t(plugin, "common.componentDescription")}<a href={tutorial.url} target="_blank">{tutorial.label}</a></div>
+    <p>{t(plugin, "common.apiNoteShort")}</p>
 </div>
 
 <style lang="scss">

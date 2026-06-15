@@ -1,4 +1,5 @@
 import { svelteDialog } from "../../../libs/dialog";
+import { pluginT as t } from "@/libs/i18n";
 import WidgetBlockStyle from "./sidebarStyleSetting.svelte";
 import WidgetBlockContent from "../widgetBlock/contentSetting.svelte";
 import { setBlockSize } from "../widgetBlock/utils/block-size-handler";
@@ -65,15 +66,27 @@ export class WidgetBlock {
         this.element.className = "widget-block";
         this.element.id = this.id;
 
-        this.element.innerHTML = `
-            <button class="block-style-button" title="样式设置">🎨</button>
-            <button class="drag-handle" title="拖拽组件">🧲</button>
-            <button class="block-content-button" title="内容设置">⚙️</button>
-        `;
+        this.renderControlButtons();
 
         this.element.setAttribute("style", this.style);
 
         this.setupEventListeners();
+    }
+
+    private i18n(key: string, vars?: Record<string, string | number>): string {
+        return t(this.plugin, key, vars);
+    }
+
+    private renderControlButtons(includeRefresh = false): void {
+        const refreshButton = includeRefresh
+            ? `<button class="block-update-button" title="${this.i18n("settings.widgetBlock.refresh")}">🔄</button>`
+            : "";
+        this.element.innerHTML = `
+            <button class="block-style-button" title="${this.i18n("settings.widgetBlock.styleSettings")}">🎨</button>
+            <button class="drag-handle" title="${this.i18n("settings.widgetBlock.dragHandle")}">🧲</button>
+            <button class="block-content-button" title="${this.i18n("settings.widgetBlock.contentSettings")}">⚙️</button>
+            ${refreshButton}
+        `;
     }
 
     private setupEventListeners() {
@@ -86,7 +99,7 @@ export class WidgetBlock {
                 this.currentBlockForSettingsRef.value = this.element;
 
                 const dialogRef = svelteDialog({
-                    title: "组件样式",
+                    title: this.i18n("settings.widgetBlock.styleDialog"),
                     constructor: (containerEl: HTMLElement) => {
                         return new WidgetBlockStyle({
                             target: containerEl,
@@ -123,7 +136,7 @@ export class WidgetBlock {
                 this.currentBlockForSettingsRef.value = this.element;
 
                 const dialogRef = svelteDialog({
-                    title: "组件内容",
+                    title: this.i18n("settings.widgetBlock.contentDialog"),
                     constructor: (containerEl: HTMLElement) => {
                         return new WidgetBlockContent({
                             target: containerEl,
@@ -181,12 +194,7 @@ export class WidgetBlock {
             return;
         }
 
-        this.element.innerHTML = `
-        <button class="block-style-button" title="样式设置">🎨</button>
-        <button class="drag-handle" title="拖拽组件">🧲</button>
-        <button class="block-content-button" title="内容设置">⚙️</button>
-        <button class="block-update-button" title="刷新组件">🔄</button>
-        `;
+        this.renderControlButtons(true);
 
         // 根据 content 类型动态加载组件
         if (contentData.type === "latest-docs") {

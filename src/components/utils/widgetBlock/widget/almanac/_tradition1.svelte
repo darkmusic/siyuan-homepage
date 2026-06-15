@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
     import {
         getSolarDay,
         getLunarDay,
@@ -13,6 +14,8 @@
         getGod,
     } from "@/components/tools/calendarCalculation";
 
+    export let plugin: any;
+
     const solarDay = getSolarDay();
     const lunarDay = getLunarDay();
     const lunarSeason = getLunarSeason();
@@ -24,6 +27,15 @@
     const fetusMonth = getFetusMonth();
     const taboo = getTaboo();
     const god = getGod();
+
+    const weekDays = t(plugin, "common.weekdays").split(",");
+    const weekDay = weekDays[parseInt(solarDay.week, 10)] ?? "";
+    const solarDateLine = t(plugin, "widgets.almanac.solarDateLine", {
+        year: solarDay.yearNum,
+        month: solarDay.monthNum,
+        day: solarDay.dayNum,
+        week: weekDay,
+    });
 </script>
 
 <div class="content-display-tradition1">
@@ -39,7 +51,7 @@
             fill="#7D4141"
             text-anchor="middle"
         >
-            {solarDay.yearNum}年{solarDay.monthNum}月{solarDay.dayNum}日 星期{solarDay.weekCN}
+            {solarDateLine}
         </text>
 
         <line
@@ -119,7 +131,7 @@
             text-anchor="middle"
             dominant-baseline="middle"
         >
-            宜
+            {t(plugin, "widgets.almanac.labels.yi")}
         </text>
 
         <foreignObject x="5" y="110" width="40" height="30">
@@ -148,7 +160,7 @@
             text-anchor="middle"
             dominant-baseline="middle"
         >
-            忌
+            {t(plugin, "widgets.almanac.labels.ji")}
         </text>
 
         <foreignObject x="55" y="110" width="40" height="30">
@@ -178,7 +190,7 @@
             fill="#7D4141"
             text-anchor="middle"
         >
-            彭祖百忌
+            {t(plugin, "widgets.almanac.labels.pengZuTaboo")}
         </text>
         <text
             x="20"
@@ -210,7 +222,7 @@
             fill="#7D4141"
             text-anchor="middle"
         >
-            吉神宜趋
+            {t(plugin, "widgets.almanac.labels.auspiciousSpirits")}
         </text>
         <foreignObject x="35" y="132" width="40" height="30">
             <div
@@ -229,7 +241,7 @@
             fill="#7D4141"
             text-anchor="middle"
         >
-            逐月胎神
+            {t(plugin, "widgets.almanac.labels.monthlyFetalGod")}
         </text>
         <text
             x="85"

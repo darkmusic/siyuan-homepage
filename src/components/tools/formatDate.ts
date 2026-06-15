@@ -1,28 +1,49 @@
-export function formatDate(dateString: string) {
-    // 检查输入是否为空
-    if (!dateString) return "";
-    
-    // 解析 "20250809131843" 格式的日期字符串
-    // 格式: YYYYMMDDHHmmss
+import { getIntlLocale } from "@/libs/i18n";
+
+function parseSiYuanTimestamp(dateString: string): Date | null {
+    if (!dateString) return null;
+
     const year = dateString.substring(0, 4);
     const month = dateString.substring(4, 6);
     const day = dateString.substring(6, 8);
-    const hour = dateString.substring(8, 10);
-    const minute = dateString.substring(10, 12);
-    const second = dateString.substring(12, 14);
-    
-    // 返回格式化后的日期时间
-    return `${year}年${month}月${day}日 ${hour}:${minute}:${second}`;
+    const hour = dateString.substring(8, 10) || "0";
+    const minute = dateString.substring(10, 12) || "0";
+    const second = dateString.substring(12, 14) || "0";
+
+    const date = new Date(
+        parseInt(year, 10),
+        parseInt(month, 10) - 1,
+        parseInt(day, 10),
+        parseInt(hour, 10),
+        parseInt(minute, 10),
+        parseInt(second, 10),
+    );
+
+    return isNaN(date.getTime()) ? null : date;
 }
 
-export function formatDateShort(dateString: string) {
-    // 检查输入是否为空
-    if (!dateString) return "";
-    
-    // 解析 "20250809131843" 格式的日期字符串
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6);
-    const day = dateString.substring(6, 8);
-    
-    return `${year}年${month}月${day}日`;
+export function formatDate(dateString: string, locale?: string) {
+    const date = parseSiYuanTimestamp(dateString);
+    if (!date) return "";
+
+    return new Intl.DateTimeFormat(locale ?? getIntlLocale(), {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+    }).format(date);
+}
+
+export function formatDateShort(dateString: string, locale?: string) {
+    const date = parseSiYuanTimestamp(dateString);
+    if (!date) return "";
+
+    return new Intl.DateTimeFormat(locale ?? getIntlLocale(), {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
 }

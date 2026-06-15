@@ -2,8 +2,10 @@
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
     import { SolarDay, LunarDay, EarthBranch } from "tyme4ts";
+    import { pluginT as t, getIntlLocale } from "@/libs/i18n";
 
     export let contentTypeJson: string = "{}";
+    export let plugin: any;
 
     // 时间相关状态
     let currentTime = new Date();
@@ -57,6 +59,20 @@
     let year = "";
     let month = "";
     let day = "";
+    let weekDisplay = "";
+
+    function formatWithSeparator(date: Date, separator: string): string {
+        const parts = new Intl.DateTimeFormat(getIntlLocale(), {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).formatToParts(date);
+        const y = parts.find((p) => p.type === "year")?.value ?? "";
+        const m = parts.find((p) => p.type === "month")?.value ?? "";
+        const d = parts.find((p) => p.type === "day")?.value ?? "";
+        return `${y}${separator}${m}${separator}${d}`;
+    }
+
     // 日期格式化函数
     const formatDateString = (date: Date): string => {
         year = date.getFullYear().toString();
@@ -65,20 +81,19 @@
 
         switch (dateFormat) {
             case "YYYY年MM月DD日":
-                return `${year}年${month}月${day}日`;
+                return t(plugin, "common.dateFormatDisplay", { year, month, day });
             case "YYYY-MM-DD":
-                return `${year}-${month}-${day}`;
+                return formatWithSeparator(date, "-");
             case "YYYY/MM/DD":
-                return `${year}/${month}/${day}`;
+                return formatWithSeparator(date, "/");
             case "YYYY.MM.DD":
-                return `${year}.${month}.${day}`;
+                return formatWithSeparator(date, ".");
             default:
-                return date.toLocaleDateString();
+                return new Intl.DateTimeFormat(getIntlLocale()).format(date);
         }
     };
 
     let lunarDayStr = "";
-    let weekDay = ""; // 星期几
     let zodiac = ""; // 生肖
     let lunarZodiacIcon = ""; // 生肖图标
     let solarTerm = ""; // 节气
@@ -95,8 +110,10 @@
 
             lunarDayStr = lunarDay.toString().replace("农历", ""); // 转换为中文格式
 
-            // 获取星期几（使用tyme4ts库）
-            weekDay = solarDay.getWeek().getName() || "";
+            const weekDays = t(plugin, "common.weekdays").split(",");
+            weekDisplay = t(plugin, "widgets.timedate.weekDisplay", {
+                day: weekDays[currentTime.getDay()],
+            });
 
             // 获取生肖（从lunarDayStr中提取地支）
             const earthBranchName = lunarDayStr.charAt(1);
@@ -125,7 +142,7 @@
         } catch (error) {
             console.error("获取农历失败:", error);
             lunarDayStr = "";
-            weekDay = "";
+            weekDisplay = "";
             zodiac = "";
             lunarZodiacIcon = "";
             solarTerm = "";
@@ -261,11 +278,12 @@
             class="time text-overlay"
             style="font-size: {timedateFontSize}rem;"
         >
-            {currentTime.toLocaleTimeString("zh-CN", {
+            {new Intl.DateTimeFormat(getIntlLocale(), {
                 hour: "2-digit",
                 minute: "2-digit",
                 second: showSeconds ? "2-digit" : undefined,
-            })}
+                hour12: false,
+            }).format(currentTime)}
         </span>
     </div>
 
@@ -287,7 +305,7 @@
                 class="day-status text-overlay"
                 style="font-size: {timedateFontSize / 2}rem;"
             >
-                星期{weekDay}
+                {weekDisplay}
             </span>
         </div>
     {/if}

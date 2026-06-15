@@ -3,6 +3,7 @@
     import { saveLayout } from "./utils/layout-handler";
     import { saveLayout as saveSidebarLayout } from "@/components/utils/sidebar/widget_layout";
     import { saveLayout as saveMobileLayout } from "@/components/utils/mobileHomepage/mobileHomepage_layout";
+    import { pluginT } from "@/libs/i18n";
 
     // 弹窗接收的 props
     export let plugin: any;
@@ -25,6 +26,10 @@
 
     let rowSize = 1;
     let colSize = 1;
+
+    function t(key: string, vars?: Record<string, string | number>): string {
+        return pluginT(plugin, key, vars);
+    }
 
     $: sizeOptions = Array.from(
         { length: widgetLayoutNumber },
@@ -202,13 +207,13 @@
     <div class="setting-item">
         <div class="size-options-row">
             <div class="size-option-group">
-                <label for="rowSize">行尺寸：</label>
+                <label for="rowSize">{t("common.rowSize")}</label>
                 <select id="rowSize" bind:value={rowSize}>
                     {#each sizeOptions as size}
                         <option value={size}>{size}</option>
                     {/each}
                 </select>
-                <label for="colSize">列尺寸：</label>
+                <label for="colSize">{t("common.colSize")}</label>
                 <select id="colSize" bind:value={colSize}>
                     {#each sizeOptions as size}
                         <option value={size}>{size}</option>
@@ -235,7 +240,7 @@
                     saveMobileLayout(plugin);
                 }}
             >
-                应用尺寸
+                {t("common.applySize")}
             </button>
         </div>
     </div>
@@ -247,7 +252,7 @@
             <div class="style-subgroup" style="margin-bottom: 0.5rem; ">
                 <!-- 颜色选择器 -->
                 <div class="color-picker-group">
-                    <label for="bg-color">背景颜色:</label>
+                    <label for="bg-color">{t("common.backgroundColor")}</label>
                     <input
                         id="bg-color"
                         type="color"
@@ -263,7 +268,7 @@
 
                 <!-- 透明度滑块 -->
                 <div class="opacity-slider-group">
-                    <label for="bg-opacity">背景透明度:</label>
+                    <label for="bg-opacity">{t("common.backgroundOpacity")}</label>
                     <input
                         id="bg-opacity"
                         type="range"
@@ -286,7 +291,7 @@
             <div class="style-subgroup">
                 <!-- 边框颜色选择器 -->
                 <div class="border-color-picker-group">
-                    <label for="border-color">边框颜色:</label>
+                    <label for="border-color">{t("common.borderColor")}</label>
                     <input
                         id="border-color"
                         type="color"
@@ -302,7 +307,7 @@
 
                 <!-- 边框粗细滑块 -->
                 <div class="border-width-slider-group">
-                    <label for="border-width">边框粗细:</label>
+                    <label for="border-width">{t("common.borderWidth")}</label>
                     <input
                         id="border-width"
                         type="range"
@@ -325,8 +330,8 @@
 
     <!-- 操作按钮：删除和取消在一行 -->
     <div class="action-buttons-row">
-        <button class="delete-button" on:click={onDelete}>🗑 删除组件</button>
-        <button class="cancel-button" on:click={onClose}>❌ 取消</button>
+        <button class="delete-button" on:click={onDelete}>{t("common.deleteWidget")}</button>
+        <button class="cancel-button" on:click={onClose}>{t("common.cancel")}</button>
     </div>
 </div>
 

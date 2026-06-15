@@ -85,7 +85,7 @@
                   margin-top: 1.2em;
                   gap: 8px;">
             <span style="font-size: 1.1em; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));">📄</span>
-            <span style="font-weight: 500; letter-spacing: 0.5px;">完整更新日志 / Full Update Log</span>
+            <span style="font-weight: 500; letter-spacing: 0.5px;">完整更新日志</span>
         </a>
         </div>
     </div>

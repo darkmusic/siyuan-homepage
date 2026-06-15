@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT } from "@/libs/i18n";
     import Quill from "quill";
 
     export let plugin: any;
@@ -15,6 +16,10 @@
     let customColor: string = "";
 
     let advancedEnabled = false;
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     onMount(() => {
         advancedEnabled = plugin.ADVANCED;
@@ -39,7 +44,7 @@
                         container: toolbarContainer,
                     },
                 },
-                placeholder: "输入你的便签内容...",
+                placeholder: t("widgets.stikynot.placeholder"),
             });
 
             // 加载保存的内容
@@ -132,9 +137,15 @@
             <button class="ql-header" value="4">H4</button>
             <button class="ql-header" value="5">H5</button>
             <button class="ql-header" value="6">H6</button>
-            <button class="ql-size" value="small">小</button>
-            <button class="ql-size" value="large">中</button>
-            <button class="ql-size" value="huge">大</button>
+            <button class="ql-size" value="small"
+                >{t("widgets.stikynot.sizeSmall")}</button
+            >
+            <button class="ql-size" value="large"
+                >{t("widgets.stikynot.sizeMedium")}</button
+            >
+            <button class="ql-size" value="huge"
+                >{t("widgets.stikynot.sizeLarge")}</button
+            >
             <button class="ql-bold"></button>
             <button class="ql-italic"></button>
             <button class="ql-underline"></button>
@@ -158,11 +169,11 @@
     </div>
     {#if !advancedEnabled}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t("common.vipFeatureTitle")}</h2>
+            <h3>{t("common.vipFeatureHint")}</h3>
         </div>
     {:else if plugin.isMobile}
-        <div>移动端无法使用该功能</div>
+        <div>{t("widgets.stikynot.mobileNotSupported")}</div>
     {/if}
 </div>
 

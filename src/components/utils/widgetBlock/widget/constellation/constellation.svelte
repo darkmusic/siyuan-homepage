@@ -1,15 +1,33 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
     const parsedContent = JSON.parse(contentTypeJson);
     const selectedConstellation =
-        parsedContent.data?.selectedConstellation || "摩羯";
+        parsedContent.data?.selectedConstellation || "capricorn";
 
     let constellationData: any = null;
     let advancedEnabled = false;
+
+    const constellationKeys = [
+        "aries",
+        "taurus",
+        "gemini",
+        "cancer",
+        "leo",
+        "virgo",
+        "libra",
+        "scorpio",
+        "sagittarius",
+        "capricorn",
+        "aquarius",
+        "pisces",
+    ] as const;
+
+    type ConstellationKey = (typeof constellationKeys)[number];
 
     onMount(async () => {
         advancedEnabled = plugin.ADVANCED;
@@ -23,52 +41,27 @@
         const data = await response.json();
 
         if (data.code != 200) {
-            showMessage(`获取 ${getDisplayName(selectedConstellation)} 运势错误：${data.msg}`);
+            showMessage(
+                t(plugin, "messages.constellationError", {
+                    name: getDisplayName(selectedConstellation),
+                    msg: data.msg,
+                }),
+            );
             return;
         }
 
-        return data.data; // 返回data.data，新的API结构
+        return data.data;
     };
 
-    // 字段对应的中文名称（根据新API结构更新）
-    const fieldNames = {
-        all: "整体运势",
-        work: "事业运势",
-        money: "财富运势",
-        love: "爱情运势",
-        health: "健康运势",
-        luckycolor: "幸运颜色",
-        luckynumber: "幸运数字",
-        luckyconstellation: "贵人星座",
-        shortcomment: "简短评语",
-        todo: "今日建议",
-        name: "星座名称",
-        title: "星座标题",
-        time: "时间",
-        type: "运势类型",
-        index: "运势指数",
-        fortunetext: "运势详情",
-    };
-
-    // 英文到中文的星座名称映射
-    const constellationNameMap = {
-        aries: "白羊",
-        taurus: "金牛",
-        gemini: "双子",
-        cancer: "巨蟹",
-        leo: "狮子",
-        virgo: "处女",
-        libra: "天秤",
-        scorpio: "天蝎",
-        sagittarius: "射手",
-        capricorn: "摩羯",
-        aquarius: "水瓶",
-        pisces: "双鱼",
-    };
-
-    // 获取显示用的中文名称
     const getDisplayName = (englishName: string): string => {
-        return constellationNameMap[englishName] || englishName;
+        if (constellationKeys.includes(englishName as ConstellationKey)) {
+            return t(plugin, `widgets.constellation.${englishName}`);
+        }
+        return englishName;
+    };
+
+    const getFieldName = (field: string): string => {
+        return t(plugin, `widgets.constellation.field.${field}`);
     };
 </script>
 
@@ -80,80 +73,63 @@
 
         {#if constellationData}
             <div class="fortune-card">
-                <!-- 运势指数卡片 -->
                 <div class="fortune-card1">
                     <div class="fortune-item">
-                        <span><strong>整体指数</strong>：{constellationData.index?.all || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.index.all")}</strong>：{constellationData.index?.all || 'N/A'}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>健康指数</strong>：{constellationData.index?.health || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.index.health")}</strong>：{constellationData.index?.health || 'N/A'}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>爱情指数</strong>：{constellationData.index?.love || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.index.love")}</strong>：{constellationData.index?.love || 'N/A'}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>财运指数</strong>：{constellationData.index?.money || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.index.money")}</strong>：{constellationData.index?.money || 'N/A'}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>事业指数</strong>：{constellationData.index?.work || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.index.work")}</strong>：{constellationData.index?.work || 'N/A'}</span>
                     </div>
                 </div>
 
-                <!-- 幸运信息卡片 -->
                 <div class="fortune-card1">
                     <div class="fortune-item">
-                        <span><strong>{fieldNames.luckycolor}</strong>：{constellationData.luckycolor}</span>
+                        <span><strong>{getFieldName("luckycolor")}</strong>：{constellationData.luckycolor}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>{fieldNames.luckynumber}</strong>：{constellationData.luckynumber}</span>
+                        <span><strong>{getFieldName("luckynumber")}</strong>：{constellationData.luckynumber}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>{fieldNames.luckyconstellation}</strong>：{constellationData.luckyconstellation}</span>
+                        <span><strong>{getFieldName("luckyconstellation")}</strong>：{constellationData.luckyconstellation}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>今日建议</strong>：宜 {constellationData.todo?.yi || 'N/A'}，忌 {constellationData.todo?.ji || 'N/A'}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.todo")}</strong>：{t(plugin, "widgets.constellation.todoYiJi", { yi: constellationData.todo?.yi || 'N/A', ji: constellationData.todo?.ji || 'N/A' })}</span>
                     </div>
                     <div class="fortune-item">
-                        <span><strong>简短评语</strong>：{constellationData.shortcomment}</span>
+                        <span><strong>{t(plugin, "widgets.constellation.shortComment")}</strong>：{constellationData.shortcomment}</span>
                     </div>
                 </div>
 
-                <!-- 详细运势卡片 -->
                 <div class="fortune-card2">
-                    <div class="fortune-item">
-                        <h4>{fieldNames.all}</h4>
-                        <p>{constellationData.fortunetext?.all}</p>
-                    </div>
-                    <div class="fortune-item">
-                        <h4>{fieldNames.health}</h4>
-                        <p>{constellationData.fortunetext?.health}</p>
-                    </div>
-                    <div class="fortune-item">
-                        <h4>{fieldNames.love}</h4>
-                        <p>{constellationData.fortunetext?.love}</p>
-                    </div>
-                    <div class="fortune-item">
-                        <h4>{fieldNames.money}</h4>
-                        <p>{constellationData.fortunetext?.money}</p>
-                    </div>
-                    <div class="fortune-item">
-                        <h4>{fieldNames.work}</h4>
-                        <p>{constellationData.fortunetext?.work}</p>
-                    </div>
+                    {#each ["all", "health", "love", "money", "work"] as field}
+                        <div class="fortune-item">
+                            <h4>{getFieldName(field)}</h4>
+                            <p>{constellationData.fortunetext?.[field]}</p>
+                        </div>
+                    {/each}
                 </div>
             </div>
         {:else}
             <div style="text-align: center; padding: 2rem; color: var(--b3-theme-on-surface-light);">
-                <p>🌟 正在加载运势信息...</p>
+                <p>{t(plugin, "widgets.constellation.loading")}</p>
                 <small style="font-size: 12px; margin-top: 8px; display: block;">
-                    星座: {getDisplayName(selectedConstellation)}
+                    {t(plugin, "widgets.constellation.constellationLabel", { name: getDisplayName(selectedConstellation) })}
                 </small>
             </div>
         {/if}
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

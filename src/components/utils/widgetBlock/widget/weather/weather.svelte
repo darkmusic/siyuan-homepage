@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { UapiClient } from "uapi-sdk-typescript";
+    import { pluginT as t } from "@/libs/i18n";
 
     import Simple1 from "./_simple1.svelte";
     import Simple2 from "./_simple2.svelte";
@@ -13,16 +14,15 @@
     const cityCode = parsedContent?.data?.cityCode || "";
     const weatherStyle = parsedContent?.data?.weatherStyle || "default";
 
-    let city: string = "加载中...";
-    let temperature: string = "加载中...";
-    let weather: string = "加载中...";
-    let wind_direction: string = "加载中...";
-    let wind_power: string = "加载中...";
-    let humidity: string = "加载中...";
-    let reportTime: string = "加载中...";
+    let city: string = t(plugin, "common.loading");
+    let temperature: string = t(plugin, "common.loading");
+    let weather: string = t(plugin, "common.loading");
+    let wind_direction: string = t(plugin, "common.loading");
+    let wind_power: string = t(plugin, "common.loading");
+    let humidity: string = t(plugin, "common.loading");
+    let reportTime: string = t(plugin, "common.loading");
     let result: WeatherResponse | null = null;
 
-    // 定义新的天气数据接口
     interface WeatherResponse {
         province: string;
         city: string;
@@ -48,7 +48,6 @@
             return response;
         } catch (error) {
             console.error("uapis API调用失败:", error);
-            // 可以在这里添加备用处理逻辑
         }
     }
 
@@ -56,38 +55,40 @@
         try {
             result = await loadWeather();
 
-            // 处理新的接口数据格式
             if (result) {
-                city = result.city || "未知城市";
+                city = result.city || t(plugin, "common.unknownCity");
                 temperature =
                     result.temperature !== undefined
                         ? `${result.temperature}`
-                        : "未知";
-                weather = result.weather || "未知";
+                        : t(plugin, "common.unknown");
+                weather = result.weather || t(plugin, "common.unknown");
 
                 wind_direction =
-                    result.wind_direction && result.wind_direction !== "无"
+                    result.wind_direction &&
+                    result.wind_direction !== t(plugin, "widgets.weather.none")
                         ? `${result.wind_direction}`
-                        : "未知";
+                        : t(plugin, "common.unknown");
                 wind_power =
-                    result.wind_power && result.wind_power !== "无"
+                    result.wind_power &&
+                    result.wind_power !== t(plugin, "widgets.weather.none")
                         ? `${result.wind_power}`
-                        : "未知";
+                        : t(plugin, "common.unknown");
                 humidity =
                     result.humidity !== undefined
                         ? `${result.humidity}`
-                        : "未知";
+                        : t(plugin, "common.unknown");
                 reportTime = result.report_time ? `${result.report_time}` : "";
             }
         } catch (error) {
             console.error("获取天气数据出错:", error);
+            const networkError = t(plugin, "common.networkError");
             city =
                 temperature =
                 weather =
                 wind_direction =
                 wind_power =
                 humidity =
-                    "网络错误";
+                    networkError;
         }
     });
 </script>
@@ -104,7 +105,7 @@
         <div
             style="display: flex; flex-direction: column; padding: 1rem; overflow: auto;"
         >
-            <h3 class="widget-title">🌦{city}的天气</h3>
+            <h3 class="widget-title">{t(plugin, "widgets.weather.title", { city })}</h3>
             <div class="weather-content-container">
                 <div class="weather-info-grid">
                     <div class="info-item">
@@ -118,7 +119,7 @@
                     <div class="info-item">
                         <i class="fas fa-wind"></i>
                         <span id="wind-direction">{wind_direction}</span>
-                        <span id="wind-power">{wind_power}级</span>
+                        <span id="wind-power">{t(plugin, "widgets.weather.windLevel", { power: wind_power })}</span>
                     </div>
                     <div class="info-item">
                         <i class="fas fa-tint"></i>
@@ -126,7 +127,7 @@
                     </div>
                 </div>
                 {#if reportTime}
-                    <div class="report-time">更新时间：{reportTime}</div>
+                    <div class="report-time">{t(plugin, "widgets.weather.updateTime", { time: reportTime })}</div>
                 {/if}
             </div>
         </div>

@@ -1,7 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getImage } from "@/components/tools/getImage";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
+    export let plugin: any;
     export let advancedEnabled: boolean = false;
     export let dailyQuoteMode: string = "custom";
     export let dailyQuoteFontSize: number = 1;
@@ -13,19 +16,19 @@
     export let dailyQuoteLocalBg: string = "";
     export let dailyQuoteBgInput: HTMLInputElement | null = null;
 
+    const tutorial = getTutorialLink("widgets.dailyQuote");
+
     let getDailyQuoteBgImage: () => Promise<void>;
     let handleDailyQuoteUpload: () => void;
 
     let dailyQuoteBgImageData: string = "";
 
     onMount(async () => {
-        // 初始化背景图片
         if (!dailyQuoteBgImageData && dailyQuoteBgSelect === "remote") {
             await getDailyQuoteBgImage();
         }
     });
 
-    // 获取背景图片
     getDailyQuoteBgImage = async () => {
         if (dailyQuoteBgSelect === "remote") {
             dailyQuoteBgImageData = await getImage(dailyQuoteRemoteBg);
@@ -34,7 +37,6 @@
         }
     };
 
-    // 处理图片上传
     handleDailyQuoteUpload = () => {
         const file = dailyQuoteBgInput?.files?.[0];
         if (file) {
@@ -51,13 +53,13 @@
     <div class="content-panel dailyQuote">
         <div class="form-group dailyQuoteMode">
             <label>
-                每日一言模式：<select bind:value={dailyQuoteMode}>
-                    <option value="custom">自定义文字</option>
-                    <option value="remote">远程接口👑</option>
+                {t(plugin, "widgets.dailyQuote.mode")}<select bind:value={dailyQuoteMode}>
+                    <option value="custom">{t(plugin, "widgets.dailyQuote.custom")}</option>
+                    <option value="remote">{t(plugin, "widgets.dailyQuote.remote")}</option>
                 </select>
             </label>
             <label for="">
-                字体大小：<input
+                {t(plugin, "widgets.dailyQuote.fontSize")}<input
                     type="number"
                     bind:value={dailyQuoteFontSize}
                 />
@@ -67,23 +69,23 @@
         {#if dailyQuoteMode === "remote"}
             {#if advancedEnabled}
                 <label for="">
-                    接口来源：<select bind:value={dailyQuoteSource}>
-                        <option value="classic">今日语录</option>
-                        <option value="celebrity">名人名言</option>
-                        <option value="emotion">情感语录</option>
-                        <option value="gaoxiao">搞笑语录</option>
-                        <option value="pyq">朋友圈语录</option>
-                        <option value="straybirdsZH">飞鸟集（中文版）</option>
-                        <option value="straybirdsEN">飞鸟集（英文版）</option>
-                        <option value="lovegarden">爱情公寓语录</option>
+                    {t(plugin, "widgets.dailyQuote.source")}<select bind:value={dailyQuoteSource}>
+                        <option value="classic">{t(plugin, "widgets.dailyQuote.sourceClassic")}</option>
+                        <option value="celebrity">{t(plugin, "widgets.dailyQuote.sourceCelebrity")}</option>
+                        <option value="emotion">{t(plugin, "widgets.dailyQuote.sourceEmotion")}</option>
+                        <option value="gaoxiao">{t(plugin, "widgets.dailyQuote.sourceGaoxiao")}</option>
+                        <option value="pyq">{t(plugin, "widgets.dailyQuote.sourcePyq")}</option>
+                        <option value="straybirdsZH">{t(plugin, "widgets.dailyQuote.sourceStraybirdsZH")}</option>
+                        <option value="straybirdsEN">{t(plugin, "widgets.dailyQuote.sourceStraybirdsEN")}</option>
+                        <option value="lovegarden">{t(plugin, "widgets.dailyQuote.sourceLovegarden")}</option>
                     </select>
                 </label>
             {:else}
-                <h3>👑会员专属权益👑</h3>
+                <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
             {/if}
         {:else}
             <label for="">
-                自定义内容：（每句话一行）
+                {t(plugin, "widgets.dailyQuote.customContent")}
                 <textarea
                     name=""
                     id=""
@@ -97,7 +99,7 @@
         <div class="form-group dailyQuoteBackgroundImg">
             <div class="type-select-and-input">
                 <label>
-                    背景设置：
+                    {t(plugin, "common.backgroundSettings")}
                     <select
                         bind:value={dailyQuoteBgSelect}
                         on:change={() => {
@@ -108,8 +110,8 @@
                             }
                         }}
                     >
-                        <option value="remote">远程图片</option>
-                        <option value="local">本地图片</option>
+                        <option value="remote">{t(plugin, "common.remoteImage")}</option>
+                        <option value="local">{t(plugin, "common.localImage")}</option>
                     </select>
                 </label>
                 {#if dailyQuoteBgSelect === "remote"}
@@ -117,11 +119,11 @@
                         type="text"
                         bind:value={dailyQuoteRemoteBg}
                         on:change={getDailyQuoteBgImage}
-                        placeholder="输入远程图片URL"
+                        placeholder={t(plugin, "common.remoteUrlPlaceholder")}
                     />
                 {:else}
                     <button on:click={() => dailyQuoteBgInput?.click()}>
-                        上传图片
+                        {t(plugin, "common.uploadImage")}
                     </button>
 
                     <input
@@ -135,21 +137,21 @@
             </div>
             <div class="image-preview">
                 {#if dailyQuoteBgSelect === "remote" && dailyQuoteBgImageData}
-                    <img src={dailyQuoteBgImageData} alt="每日一言背景预览" />
+                    <img src={dailyQuoteBgImageData} alt={t(plugin, "widgets.dailyQuote.bgPreviewAlt")} />
                 {:else if dailyQuoteBgSelect === "local" && dailyQuoteLocalBg}
-                    <img src={dailyQuoteLocalBg} alt="每日一言背景预览" />
+                    <img src={dailyQuoteLocalBg} alt={t(plugin, "widgets.dailyQuote.bgPreviewAlt")} />
                 {/if}
             </div>
         </div>
 
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/QRVowj3azihjGukBoR5cmBKsnKg?from=from_copylink"
-                target="_blank">每日一言</a
+            {t(plugin, "common.componentDescription")}<a
+                href={tutorial.url}
+                target="_blank">{tutorial.label}</a
             >
         </div>
-        <p>注：若某一接口失效请联系我更新~</p>
+        <p>{t(plugin, "common.apiNote")}</p>
     </div>
 </div>
 
@@ -229,7 +231,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: auto; // 固定宽度为 200px
+                width: auto;
                 background-color: rgba(255, 255, 255, 0.1);
                 border-radius: 8px;
                 overflow: hidden;
@@ -239,8 +241,8 @@
                 padding: 0.5rem;
 
                 img {
-                    width: 150px; // 宽度填满容器（200px）
-                    height: auto; // 高度自适应，保持图片比例
+                    width: 150px;
+                    height: auto;
                     max-height: 100px;
                     object-fit: contain;
                     border-radius: 6px;

@@ -6,6 +6,7 @@
         type DailyNoteInfo,
     } from "./latestDailyNotes";
     import { openDocs } from "@/components/tools/openDocs";
+    import { pluginT, getIntlLocale } from "@/libs/i18n";
     import {
         createFloatingDocPopup,
         setMouseOnTrigger,
@@ -40,6 +41,10 @@
     let listFloatDocTimeout: number | null = null;
     // 悬浮窗定时器（日历模式）
     let calendarFloatDocTimeout: number | null = null;
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 
     function getMonthRange(date: Date): string {
         const year = date.getFullYear();
@@ -110,7 +115,7 @@
             year: "numeric",
             month: "long",
         };
-        return new Intl.DateTimeFormat("zh-CN", options).format(date);
+        return new Intl.DateTimeFormat(getIntlLocale(), options).format(date);
     }
 
     onMount(async () => {
@@ -161,7 +166,7 @@
                         const hasJournal = Array.isArray(value)
                             ? value[1] !== ""
                             : false;
-                        return `${date}\n${hasJournal ? "有日记" : "无日记"}`;
+                        return `${date}\n${hasJournal ? t("widgets.latestDailyNotes.hasJournal") : t("widgets.latestDailyNotes.noJournal")}`;
                     },
                 },
                 calendar: {
@@ -376,7 +381,7 @@
 
 <div class="content-display">
     {#if recentJournalsShowType == "list"}
-        <h3 class="widget-title">📓最近日记</h3>
+        <h3 class="widget-title">{t("widgets.latestDailyNotes.title")}</h3>
         <ul class="document-list">
             {#if displayedDocs.length > 0}
                 {#each displayedDocs as doc (doc.id + "-" + doc.updated)}
@@ -421,21 +426,23 @@
                         }}
                             role="button"
                             tabindex="0"
-                            aria-label="打开最近日记：{doc.content}"
+                            aria-label={t("widgets.latestDailyNotes.openAria", {
+                                content: doc.content,
+                            })}
                         >
-                            📅 {doc.content || "(无标题)"}
+                            📅 {doc.content || t("common.noTitle")}
                         </div>
                     </li>
                 {/each}
             {:else}
-                <p>暂无日记记录</p>
+                <p>{t("common.noJournals")}</p>
             {/if}
         </ul>
     {:else}
         <div class="widget-title-container">
             <button
                 class="nav-button prev"
-                title="上一个月"
+                title={t("widgets.latestDailyNotes.prevMonth")}
                 on:click={goToPreviousMonth}
             >
                 <i class="fas fa-chevron-left"></i>
@@ -443,7 +450,7 @@
             <p class="widget-title-calendar">{formatMonthTitle(currentDate)}</p>
             <button
                 class="nav-button next"
-                title="下一个月"
+                title={t("widgets.latestDailyNotes.nextMonth")}
                 on:click={goToNextMonth}
             >
                 <i class="fas fa-chevron-right"></i>

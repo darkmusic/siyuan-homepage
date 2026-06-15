@@ -1,13 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
     export let plugin: any;
     export let advancedEnabled: boolean = false;
     export let CMKnockSound: string = "普通";
 
+    const tutorial = getTutorialLink("widgets.cybmok");
+
     let CYBMOKData: any = {};
     let totalMerit: number = 0;
-    let maxMeritDate: any = {};
+    let maxMeritDate: { date: string; count: number } = { date: "", count: 0 };
 
     onMount(async () => {
         CYBMOKData = await plugin.loadData("CYBMOKData.json");
@@ -33,7 +37,7 @@
             typeof CYBMOKData !== "object" ||
             Object.keys(CYBMOKData).length === 0
         ) {
-            return { date: "暂无", count: 0 };
+            return { date: "", count: 0 };
         }
 
         let maxDate = "";
@@ -47,10 +51,13 @@
             }
         }
 
-        // 格式化日期显示
         const formattedDate =
             maxDate.length === 8
-                ? `${maxDate.slice(0, 4)}年${maxDate.slice(4, 6)}月${maxDate.slice(6, 8)}日`
+                ? t(plugin, "widgets.cybmok.dateDisplay", {
+                      year: maxDate.slice(0, 4),
+                      month: maxDate.slice(4, 6),
+                      day: maxDate.slice(6, 8),
+                  })
                 : maxDate;
 
         return { date: formattedDate, count: maxCount };
@@ -61,11 +68,11 @@
     {#if advancedEnabled}
         <div class="content-panel">
             <label>
-                敲击音效
+                {t(plugin, "widgets.cybmok.soundEffect")}
                 <select bind:value={CMKnockSound}>
-                    <option value="普通">普通</option>
-                    <option value="空洞">空洞</option>
-                    <option value="空灵">空灵</option>
+                    <option value="普通">{t(plugin, "widgets.cybmok.soundNormal")}</option>
+                    <option value="空洞">{t(plugin, "widgets.cybmok.soundHollow")}</option>
+                    <option value="空灵">{t(plugin, "widgets.cybmok.soundEthereal")}</option>
                 </select>
             </label>
         </div>
@@ -74,28 +81,28 @@
             <!-- 功德统计总结 -->
             <div class="merit-summary">
                 <div class="summary-item">
-                    <span class="summary-label">你已积攒的总功德数为：</span>
+                    <span class="summary-label">{t(plugin, "widgets.cybmok.totalMeritLabel")}</span>
                     <span class="summary-value">{totalMerit}</span>
                 </div>
                 <div class="summary-item">
-                    <span class="summary-label">在</span>
+                    <span class="summary-label">{t(plugin, "widgets.cybmok.maxMeritOn")}</span>
                     <span class="summary-date">{maxMeritDate.date}</span>
-                    <span class="summary-label">这一天积攒的功德最多，为：</span
+                    <span class="summary-label">{t(plugin, "widgets.cybmok.maxMeritDayLabel")}</span
                     >
                     <span class="summary-value">{maxMeritDate.count}</span>
                 </div>
             </div>
         {:else}
-            <h3>暂无功德记录，拿起棒槌开敲吧！</h3>
+            <h3>{t(plugin, "widgets.cybmok.noMeritRecord")}</h3>
         {/if}
     {:else}
-        <h3>👑会员专属权益👑</h3>
+        <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
     {/if}
     <hr />
     <div>
-        组件说明：<a
-            href="https://ai.feishu.cn/wiki/GJIDwjfIhizRNVkXlaHcmncfnf1"
-            target="_blank">赛博木鱼</a
+        {t(plugin, "common.componentDescription")}<a
+            href={tutorial.url}
+            target="_blank">{tutorial.label}</a
         >
     </div>
 </div>

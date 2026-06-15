@@ -4,6 +4,7 @@
     import { onMount } from "svelte";
     import * as echarts from "echarts";
     import "echarts-wordcloud";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -43,7 +44,11 @@
 
         const formatter =
             bar.type === "date"
-                ? `${bar.title}: {c0}% (${Math.round(bar.progress)}天/共${bar.target}天)`
+                ? t(plugin, "widgets.visualChart.progressFormat", {
+                      title: bar.title,
+                      days: Math.round(bar.progress),
+                      target: bar.target,
+                  })
                 : `${bar.title}: {c0}% (${bar.progress}/${bar.target})`;
 
         return {
@@ -85,11 +90,11 @@
                         title: { color: textColor },
                     },
                 },
-                data: ["进度"],
+                data: [t(plugin, "widgets.visualChart.progress")],
             },
             series: [
                 {
-                    name: "进度",
+                    name: t(plugin, "widgets.visualChart.progress"),
                     type: "bar",
                     itemStyle: {
                         borderRadius: 30,
@@ -129,14 +134,12 @@
                         ) {
                             actualProgress = Number(values[0]);
                         } else {
-                            showMessage(
-                                "进度查询结果格式不符合要求，应为一个仅含数字字符串的对象",
-                            );
+                            showMessage(t(plugin, "messages.progressInvalidFormat"));
                         }
                     } else if (progressResult.length >= 1) {
                         actualProgress = progressResult.length;
                     } else if (progressResult.length === 0) {
-                        showMessage("进度查询结果为空");
+                        showMessage(t(plugin, "messages.progressEmpty"));
                     }
                 }
 
@@ -154,18 +157,16 @@
                         ) {
                             actualTarget = Number(values[0]);
                         } else {
-                            showMessage(
-                                "目标查询结果格式不符合要求，应为一个仅含数字字符串的对象",
-                            );
+                            showMessage(t(plugin, "messages.targetInvalidFormat"));
                         }
                     } else if (targetResult.length >= 1) {
                         actualTarget = targetResult.length;
                     } else if (targetResult.length === 0) {
-                        showMessage("目标查询结果为空");
+                        showMessage(t(plugin, "messages.targetEmpty"));
                     }
                 }
             } catch (error) {
-                showMessage(`SQL 执行错误: ${error.message}`);
+                showMessage(t(plugin, "messages.sqlError", { message: error.message }));
                 return;
             }
 
@@ -186,11 +187,11 @@
             const end = new Date(newEndDate);
 
             if (!(start instanceof Date) || isNaN(start.getTime())) {
-                showMessage("起始日期格式无效");
+                showMessage(t(plugin, "messages.invalidStartDate"));
                 return;
             }
             if (!(end instanceof Date) || isNaN(end.getTime())) {
-                showMessage("结束日期格式无效");
+                showMessage(t(plugin, "messages.invalidEndDate"));
                 return;
             }
 
@@ -199,7 +200,7 @@
             const todayTime = today.getTime();
 
             if (startTime > endTime) {
-                showMessage("起始日期不能晚于结束日期");
+                showMessage(t(plugin, "messages.startAfterEnd"));
                 return;
             }
 
@@ -229,7 +230,7 @@
         } else if (progressBarType === "task") {
             const selectedTaskIds = Array.from(selectedTasks);
             if (selectedTaskIds.length === 0) {
-                showMessage("请选择至少一个任务");
+                showMessage(t(plugin, "messages.selectTask"));
                 return;
             }
 
@@ -245,7 +246,7 @@
                 let end = task.deadline ? new Date(task.deadline) : null;
 
                 if (!end) {
-                    showMessage(`任务 "${task.taskname}" 缺少截止日期`);
+                    showMessage(t(plugin, "messages.taskMissingDeadline", { taskname: task.taskname }));
                     continue;
                 }
 
@@ -254,7 +255,7 @@
                 const endTime = end.getTime();
 
                 if (startTime > endTime) {
-                    showMessage(`任务 "${task.taskname}" 起始时间晚于结束时间`);
+                    showMessage(t(plugin, "messages.taskInvalidRange", { taskname: task.taskname }));
                     continue;
                 }
 
@@ -424,7 +425,7 @@
             },
             series: [
                 {
-                    name: "标签",
+                    name: t(plugin, "widgets.visualChart.tag"),
                     type: "wordCloud",
                     sizeRange: [10, 50],
                     rotationRange: [-45, 90],
@@ -491,14 +492,12 @@
                             ) {
                                 progress = Number(values[0]);
                             } else {
-                                showMessage(
-                                    "进度查询结果格式不符合要求，应为一个仅含数字字符串的对象",
-                                );
+                                showMessage(t(plugin, "messages.progressInvalidFormat"));
                             }
                         } else if (progressResult.length >= 1) {
                             progress = progressResult.length;
                         } else if (progressResult.length === 0) {
-                            showMessage("进度查询结果为空");
+                            showMessage(t(plugin, "messages.progressEmpty"));
                         }
                     }
                     if (bar.targetType === "sql" && bar.targetSQL) {
@@ -514,14 +513,12 @@
                             ) {
                                 target = Number(values[0]);
                             } else {
-                                showMessage(
-                                    "目标查询结果格式不符合要求，应为一个仅含数字字符串的对象",
-                                );
+                                showMessage(t(plugin, "messages.targetInvalidFormat"));
                             }
                         } else if (targetResult.length >= 1) {
                             target = targetResult.length;
                         } else if (targetResult.length === 0) {
-                            showMessage("目标查询结果为空");
+                            showMessage(t(plugin, "messages.targetEmpty"));
                         }
                     }
                     if (bar.type === "date") {
@@ -533,11 +530,11 @@
                             !(start instanceof Date) ||
                             isNaN(start.getTime())
                         ) {
-                            showMessage("起始日期格式无效");
+                            showMessage(t(plugin, "messages.invalidStartDate"));
                             return;
                         }
                         if (!(end instanceof Date) || isNaN(end.getTime())) {
-                            showMessage("结束日期格式无效");
+                            showMessage(t(plugin, "messages.invalidEndDate"));
                             return;
                         }
 
@@ -546,7 +543,7 @@
                         const todayTime = today.getTime();
 
                         if (startTime > endTime) {
-                            showMessage("起始日期不能晚于结束日期");
+                            showMessage(t(plugin, "messages.startAfterEnd"));
                             return;
                         }
 
@@ -626,32 +623,32 @@
                     </div>
                     <div class="chart-container chart-container-{bar.id}"></div>
                     <button
-                        title="删除"
+                        title={t(plugin, "common.delete")}
                         on:click={() => removeProgressBar(bar.id)}>×</button
                     >
                 </div>
             {/each}
             <div class="add-controls">
                 <label
-                    >类型：
+                    >{t(plugin, "widgets.visualChart.barType")}
                     <select bind:value={progressBarType}>
-                        <option value="number">数量</option>
-                        <option value="date">日期</option>
-                        <option value="task">任务</option>
+                        <option value="number">{t(plugin, "widgets.visualChart.numberType")}</option>
+                        <option value="date">{t(plugin, "widgets.visualChart.dateType")}</option>
+                        <option value="task">{t(plugin, "widgets.visualChart.taskType")}</option>
                     </select>
                 </label>
                 {#if progressBarType === "number"}
                     <label
-                        >标题：<input
+                        >{t(plugin, "widgets.visualChart.titleLabel")}<input
                             bind:value={newTitle}
-                            placeholder="进度标题"
+                            placeholder={t(plugin, "widgets.visualChart.progressTitle")}
                         /></label
                     >
                     <label
-                        >进度：
+                        >{t(plugin, "widgets.visualChart.progressLabel")}
                         <select bind:value={newProgressType}>
-                            <option value="number">数字</option>
-                            <option value="sql">SQL</option>
+                            <option value="number">{t(plugin, "common.number")}</option>
+                            <option value="sql">{t(plugin, "widgets.visualChart.sqlType")}</option>
                         </select>
                         {#if newProgressType === "number"}
                             <input
@@ -663,15 +660,15 @@
                         {:else}
                             <textarea
                                 bind:value={newProgressSQL}
-                                placeholder="SQL 语句"
+                                placeholder={t(plugin, "widgets.visualChart.sqlPlaceholder")}
                             />
                         {/if}
                     </label>
                     <label
-                        >目标：
+                        >{t(plugin, "widgets.visualChart.targetLabel")}
                         <select bind:value={newTargetType}>
-                            <option value="number">数字</option>
-                            <option value="sql">SQL</option>
+                            <option value="number">{t(plugin, "common.number")}</option>
+                            <option value="sql">{t(plugin, "widgets.visualChart.sqlType")}</option>
                         </select>
                         {#if newTargetType === "number"}
                             <input
@@ -683,30 +680,30 @@
                         {:else}
                             <textarea
                                 bind:value={newTargetSQL}
-                                placeholder="SQL 语句"
+                                placeholder={t(plugin, "widgets.visualChart.sqlPlaceholder")}
                             />
                         {/if}
                     </label>
                 {:else if progressBarType === "date"}
                     <label
-                        >标题：<input
+                        >{t(plugin, "widgets.visualChart.titleLabel")}<input
                             bind:value={newTitle}
-                            placeholder="进度标题"
+                            placeholder={t(plugin, "widgets.visualChart.progressTitle")}
                         /></label
                     >
                     <label
-                        >起始：
+                        >{t(plugin, "widgets.visualChart.startLabel")}
                         <input type="date" bind:value={newStartDate} />
                     </label>
                     <label
-                        >结束：
+                        >{t(plugin, "widgets.visualChart.endLabel")}
                         <input type="date" bind:value={newEndDate} />
                     </label>
                 {:else if progressBarType === "task"}
-                    <p>使用前请先了解“任务管理 Plus”</p>
+                    <p>{t(plugin, "widgets.visualChart.taskPlusHint")}</p>
                     <div class="task-list">
                         {#if tasks.length === 0}
-                            <p>暂无符合条件的未完成任务</p>
+                            <p>{t(plugin, "widgets.visualChart.noTasks")}</p>
                         {:else}
                             {#each tasks as task}
                                 {#if !addedTaskIds?.has(task.Id)}
@@ -724,7 +721,7 @@
                         {/if}
                     </div>
                 {/if}
-                <button on:click={addProgressBar}>添加</button>
+                <button on:click={addProgressBar}>{t(plugin, "common.add")}</button>
             </div>
         </div>
     {:else if visualChartType === "tagCloud"}

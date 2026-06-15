@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import { Howl, Howler } from "howler";
     import { svelteDialog } from "@/libs/dialog";
+    import { pluginT as t } from "@/libs/i18n";
     import musicList from "./musicList.svelte";
 
     export let plugin: any;
@@ -246,7 +247,7 @@
     function openMusicList() {
         const dialog = svelteDialog({
             height: "60vh",
-            title: "🎵音乐列表",
+            title: t(plugin, "widgets.musicPlayer.listTitle"),
             constructor: (containerEl: HTMLElement) => {
                 return new musicList({
                     target: containerEl,
@@ -272,7 +273,7 @@
     {#if advancedEnabled}
         <div class="player">
             <div class="track-info">
-                <h3>{musicFiles[currentTrackIndex]?.name || "无音乐"}</h3>
+                <h3>{musicFiles[currentTrackIndex]?.name || t(plugin, "widgets.musicPlayer.noMusic")}</h3>
             </div>
 
             <div
@@ -306,17 +307,17 @@
             </div>
 
             <div class="controls">
-                <button on:click={prevTrack} title="上一曲">
+                <button on:click={prevTrack} title={t(plugin, "widgets.musicPlayer.prev")}>
                     {#if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/backwardLight.svg`}
-                            alt="上一曲"
+                            alt={t(plugin, "widgets.musicPlayer.prev")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/backwardDark.svg`}
-                            alt="上一曲"
+                            alt={t(plugin, "widgets.musicPlayer.prev")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
@@ -326,57 +327,57 @@
                         {#if themeMode === 0}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/pauseLight.svg`}
-                                alt="暂停"
+                                alt={t(plugin, "widgets.musicPlayer.pause")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {:else}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/pauseDark.svg`}
-                                alt="暂停"
+                                alt={t(plugin, "widgets.musicPlayer.pause")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {/if}
                     {:else if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/playLight.svg`}
-                            alt="播放"
+                            alt={t(plugin, "widgets.musicPlayer.play")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/playDark.svg`}
-                            alt="播放"
+                            alt={t(plugin, "widgets.musicPlayer.play")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
                 </button>
-                <button on:click={nextTrack} title="下一曲">
+                <button on:click={nextTrack} title={t(plugin, "widgets.musicPlayer.next")}>
                     {#if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/forwardLight.svg`}
-                            alt="上一曲"
+                            alt={t(plugin, "widgets.musicPlayer.next")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/forwardDark.svg`}
-                            alt="上一曲"
+                            alt={t(plugin, "widgets.musicPlayer.next")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
                 </button>
-                <button on:click={togglePlayMode} title="切换播放模式">
+                <button on:click={togglePlayMode} title={t(plugin, "widgets.musicPlayer.playMode")}>
                     {#if playMode === "order"}
                         {#if themeMode === 0}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/orderLight.svg`}
-                                alt="顺序播放"
+                                alt={t(plugin, "widgets.musicPlayer.sequential")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {:else}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/orderDark.svg`}
-                                alt="顺序播放"
+                                alt={t(plugin, "widgets.musicPlayer.sequential")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {/if}
@@ -384,26 +385,26 @@
                         {#if themeMode === 0}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/repeatLight.svg`}
-                                alt="单曲循环"
+                                alt={t(plugin, "widgets.musicPlayer.singleLoop")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {:else}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/repeatDark.svg`}
-                                alt="单曲循环"
+                                alt={t(plugin, "widgets.musicPlayer.singleLoop")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {/if}
                     {:else if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/shuffleLight.svg`}
-                            alt="随机播放"
+                            alt={t(plugin, "widgets.musicPlayer.shuffle")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/shuffleDark.svg`}
-                            alt="随机播放"
+                            alt={t(plugin, "widgets.musicPlayer.shuffle")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
@@ -411,31 +412,31 @@
             </div>
 
             <div class="volume-control">
-                <button on:click={toggleMute} title="切换静音">
+                <button on:click={toggleMute} title={t(plugin, "widgets.musicPlayer.mute")}>
                     {#if isMuted}
                         {#if themeMode === 0}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/muteLight.svg`}
-                                alt="静音"
+                                alt={t(plugin, "widgets.musicPlayer.mute")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {:else}
                             <img
                                 src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/muteDark.svg`}
-                                alt="静音"
+                                alt={t(plugin, "widgets.musicPlayer.mute")}
                                 style="width: 1rem; height: 1rem;"
                             />
                         {/if}
                     {:else if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/volumeLight.svg`}
-                            alt="音量"
+                            alt={t(plugin, "widgets.musicPlayer.volume")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/volumeDark.svg`}
-                            alt="音量"
+                            alt={t(plugin, "widgets.musicPlayer.volume")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
@@ -454,13 +455,13 @@
                     {#if themeMode === 0}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/musicListLight.svg`}
-                            alt="音乐列表"
+                            alt={t(plugin, "widgets.musicPlayer.listTitle")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {:else}
                         <img
                             src={`/plugins/siyuan-homepage/asset/musicPlayerIcon/musicListDark.svg`}
-                            alt="音乐列表"
+                            alt={t(plugin, "widgets.musicPlayer.listTitle")}
                             style="width: 1rem; height: 1rem;"
                         />
                     {/if}
@@ -469,8 +470,8 @@
         </div>
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

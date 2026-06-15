@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
+    export let plugin: any;
     export let contentTypeJson: string = "{}";
 
     let webviewUrl: string = "";
@@ -56,15 +58,18 @@
     {:else if webviewUrl !== "about:blank"}
         <div>
             <p>
-                浏览器运行环境（如docker和局域网访问）下无法完整使用该组件，此时只能简单的展示，且大部分网站会拒绝连接。
+                {t(plugin, "widgets.webview.limitedEnv")}
             </p>
-            <p>完整功能请使用思源笔记桌面客户端查看。</p>
+            <p>{t(plugin, "widgets.webview.useDesktop")}</p>
             <div>
-                新标签页中打开原网址:
-                <a href={webviewUrl} target="_blank">打开链接</a>
+                {t(plugin, "widgets.webview.openInNewTab")}
+                <a href={webviewUrl} target="_blank">{t(plugin, "widgets.webview.openLink")}</a>
             </div>
         </div>
-        <iframe class="custom-web" src={webviewUrl} title="自定义网页内容"
+        <iframe
+            class="custom-web"
+            src={webviewUrl}
+            title={t(plugin, "widgets.webview.iframeTitle")}
         ></iframe>
     {/if}
 </div>

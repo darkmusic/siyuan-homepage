@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     import Classic from "./_classic.svelte";
     import Tradition1 from "./_tradition1.svelte";
@@ -20,9 +21,9 @@
 <div class="content-display">
     {#if advancedEnabled}
         {#if almanacStyle === "classic"}
-            <Classic></Classic>
+            <Classic {plugin}></Classic>
         {:else if almanacStyle === "tradition1"}
-            <Tradition1></Tradition1>
+            <Tradition1 {plugin}></Tradition1>
         {:else}
             <div class="almanac-display">
                 <div class="almanac-classic"></div>
@@ -30,8 +31,8 @@
         {/if}
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在“主页设置”→“会员服务”中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

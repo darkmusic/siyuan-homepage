@@ -4,9 +4,45 @@
     import "./homepageSettingStyle/homepageSetting.scss";
     import * as advanced from "./advanced";
     import { showMessage } from "siyuan";
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
 
     export let plugin: any;
     export let close: () => void;
+
+    const ADD_WIDGET_BUTTON_ID = 1728000002000;
+    const SETTINGS_BUTTON_ID = 1728000003000;
+
+    function defaultButtonsList(): ButtonItem[] {
+        return [
+            {
+                id: 1728000000000,
+                label: t(plugin, "homepage.button.searchNotes"),
+                checked: true,
+                shortcut: "Ctrl+P",
+                order: 0,
+            },
+            {
+                id: 1728000001000,
+                label: t(plugin, "homepage.button.todayJournal"),
+                checked: true,
+                shortcut: "Alt+5",
+                order: 1,
+            },
+            {
+                id: ADD_WIDGET_BUTTON_ID,
+                label: t(plugin, "homepage.button.addWidget"),
+                checked: true,
+                order: 2,
+            },
+            {
+                id: SETTINGS_BUTTON_ID,
+                label: t(plugin, "homepage.button.settings"),
+                checked: true,
+                order: 3,
+            },
+        ];
+    }
 
     let activeTab = "homepage";
 
@@ -38,10 +74,9 @@
     let tempTitleIconEmoji = "🏠";
     let tempTitleIconImage: string | null = null;
     let iconInputEl: HTMLInputElement;
-    let tempCustomTitle = "思源笔记首页";
+    let tempCustomTitle = t(plugin, "homepage.title");
 
-    let tempStatsInfoText =
-        "自{{startDate}} 写下第一条笔记以来，你已累计记录笔记 {{notesCount}} 条。\n当前共有 {{notebooksCount}} 个笔记本和 {{DocsCount}} 篇笔记。\n感谢自己的坚持！❤";
+    let tempStatsInfoText = t(plugin, "homepage.statsDefault");
 
     type ButtonItem = {
         id: number;
@@ -51,34 +86,7 @@
         order: number;
     };
 
-    let buttonsList: ButtonItem[] = [
-        {
-            id: 1728000000000,
-            label: "🔍 搜索笔记",
-            checked: true,
-            shortcut: "Ctrl+P",
-            order: 0,
-        },
-        {
-            id: 1728000001000,
-            label: "📅 今日日记",
-            checked: true,
-            shortcut: "Alt+5",
-            order: 1,
-        },
-        {
-            id: 1728000002000,
-            label: "➕ 添加组件",
-            checked: true,
-            order: 2,
-        },
-        {
-            id: 1728000003000,
-            label: "⚙ 主页设置",
-            checked: true,
-            order: 3,
-        },
-    ];
+    let buttonsList: ButtonItem[] = defaultButtonsList();
 
     // 当前选中的按钮项
     let selectedButton: ButtonItem | null = null;
@@ -138,8 +146,11 @@
             tempTitleIconEmoji = savedConfig.TitleIconEmoji || "🏠";
             tempTitleIconImage = savedConfig.TitleIconImage || null;
             tempTitleIconStyle = savedConfig.tempTitleIconStyle || "square";
-            tempCustomTitle = savedConfig.customTitle || "思源笔记首页";
-            tempStatsInfoText = savedConfig.statsInfoText;
+            tempCustomTitle =
+                savedConfig.customTitle || t(plugin, "homepage.title");
+            tempStatsInfoText =
+                savedConfig.statsInfoText ??
+                t(plugin, "homepage.statsDefault");
 
             // 恢复按钮配置
             if (savedConfig.buttonsList) {
@@ -272,7 +283,7 @@
 
         const newItem = {
             id: newId,
-            label: `新建按钮`,
+            label: t(plugin, "settings.button.newDefault"),
             checked: false,
             order:
                 buttonsList.length > 0
@@ -302,9 +313,8 @@
 
     function deleteCustomButton() {
         if (selectedButton) {
-            // 判断是否为核心按钮（不删除）
-            const coreButtons = ["➕ 添加组件", "⚙ 主页设置"];
-            if (coreButtons.includes(selectedButton.label)) {
+            const coreButtonIds = [ADD_WIDGET_BUTTON_ID, SETTINGS_BUTTON_ID];
+            if (coreButtonIds.includes(selectedButton.id)) {
                 return;
             }
 
@@ -438,11 +448,13 @@
     <div class="tab-nav">
         <button
             on:click={() => (activeTab = "homepage")}
-            class:active={activeTab === "homepage"}>主页设置</button
+            class:active={activeTab === "homepage"}
+            >{t(plugin, "settings.tab.homepage")}</button
         >
         <button
             on:click={() => (activeTab = "about")}
-            class:active={activeTab === "about"}>关于插件</button
+            class:active={activeTab === "about"}
+            >{t(plugin, "settings.tab.about")}</button
         >
     </div>
 
@@ -451,20 +463,20 @@
         {#if activeTab === "homepage"}
             <div class="homepage-global-settings">
                 <label for="auto-open-homepage"
-                    >自动打开主页：<input
+                    >{t(plugin, "settings.autoOpenHomepage")}<input
                         type="checkbox"
                         id="auto-open-homepage"
                         bind:checked={tempAutoOpenHomepage}
                     /></label
                 >
                 <label for=""
-                    >开启侧边栏👑：<input
+                    >{t(plugin, "settings.sidebarEnabled")}<input
                         type="checkbox"
                         bind:checked={sidebarEnabled}
                     /></label
                 >
                 <label for=""
-                    >自动打开移动端主页👑：<input
+                    >{t(plugin, "settings.autoOpenMobile")}<input
                         type="checkbox"
                         bind:checked={autoOpenMobileHomepage}
                     /></label
@@ -477,28 +489,28 @@
                     <button
                         on:click={() => (settingsActiveTab = "banner")}
                         class:active={settingsActiveTab === "banner"}
-                        >横幅设置</button
+                        >{t(plugin, "settings.subtab.banner")}</button
                     >
                     <button
                         on:click={() => (settingsActiveTab = "title")}
                         class:active={settingsActiveTab === "title"}
-                        >标题设置</button
+                        >{t(plugin, "settings.subtab.title")}</button
                     >
                     <button
                         on:click={() => (settingsActiveTab = "button")}
                         class:active={settingsActiveTab === "button"}
-                        >按钮设置</button
+                        >{t(plugin, "settings.subtab.button")}</button
                     >
                     <button
                         on:click={() => (settingsActiveTab = "widgets")}
                         class:active={settingsActiveTab === "widgets"}
-                        >组件设置</button
+                        >{t(plugin, "settings.subtab.widgets")}</button
                     >
                     {#if advancedEnabled}
                         <button
                             on:click={() => (settingsActiveTab = "styles")}
                             class:active={settingsActiveTab === "styles"}
-                            >高级样式👑</button
+                            >{t(plugin, "settings.subtab.advancedStyles")}</button
                         >
                     {/if}
                 </div>
@@ -511,28 +523,41 @@
                                     type="checkbox"
                                     bind:checked={tempBannerEnabled}
                                 />
-                                启用横幅图片
+                                {t(plugin, "settings.banner.enable")}
                             </label>
                         </div>
                         {#if tempBannerEnabled}
                             <div class="form-group">
                                 <label for=""
-                                    >横幅类型：<select
+                                    >{t(plugin, "settings.banner.type")}<select
                                         bind:value={bannerGlobalType}
                                     >
-                                        <option value="custom">自定义</option>
-                                        <option value="bing">每日一图👑</option>
+                                        <option value="custom"
+                                            >{t(
+                                                plugin,
+                                                "settings.banner.typeCustom",
+                                            )}</option
+                                        >
+                                        <option value="bing"
+                                            >{t(
+                                                plugin,
+                                                "settings.banner.typeBing",
+                                            )}</option
+                                        >
                                     </select></label
                                 >
                                 <label for="banner-height-input"
-                                    >横幅高度(px)：<input
+                                    >{t(plugin, "settings.banner.height")}<input
                                         id="banner-height-input"
                                         type="number"
                                         bind:value={tempBannerHeight}
                                         min="100"
                                         max="800"
                                         step="10"
-                                        placeholder="例如：300"
+                                        placeholder={t(
+                                            plugin,
+                                            "settings.banner.heightPlaceholder",
+                                        )}
                                     /></label
                                 >
                             </div>
@@ -543,17 +568,26 @@
                                         <!-- 横幅来源选择 -->
                                         <div class="form-group">
                                             <label for="banner-source-select"
-                                                >横幅来源：</label
+                                                >{t(
+                                                    plugin,
+                                                    "settings.banner.source",
+                                                )}</label
                                             >
                                             <select
                                                 id="banner-source-select"
                                                 bind:value={tempBannerType}
                                             >
                                                 <option value="local"
-                                                    >本地图片</option
+                                                    >{t(
+                                                        plugin,
+                                                        "common.localImage",
+                                                    )}</option
                                                 >
                                                 <option value="remote"
-                                                    >网络图片</option
+                                                    >{t(
+                                                        plugin,
+                                                        "common.remoteImage",
+                                                    )}</option
                                                 >
                                             </select>
                                         </div>
@@ -562,14 +596,20 @@
                                         {#if tempBannerType === "local"}
                                             <div class="form-group">
                                                 <label for="local-image-input"
-                                                    >本地路径：</label
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.localPath",
+                                                    )}</label
                                                 >
                                                 <button
                                                     on:click={() =>
                                                         fileInputEl.click()}
                                                     class="btn-select-file"
                                                     id="local-image-input"
-                                                    >📂 选择图片</button
+                                                    >{t(
+                                                        plugin,
+                                                        "common.selectFile",
+                                                    )}</button
                                                 >
                                                 <input
                                                     type="file"
@@ -586,7 +626,10 @@
                                                 <div class="input-row">
                                                     <label
                                                         for="remote-image-url"
-                                                        >远程地址：</label
+                                                        >{t(
+                                                            plugin,
+                                                            "settings.banner.remoteUrl",
+                                                        )}</label
                                                     >
                                                     <input
                                                         id="remote-image-url"
@@ -594,7 +637,10 @@
                                                         bind:value={
                                                             bannerRemoteUrl
                                                         }
-                                                        placeholder="输入远程图片地址"
+                                                        placeholder={t(
+                                                            plugin,
+                                                            "settings.banner.remotePlaceholder",
+                                                        )}
                                                     />
                                                 </div>
                                             </div>
@@ -607,20 +653,29 @@
                                             {#if tempBannerType === "local" && bannerLocalData}
                                                 <img
                                                     src={bannerLocalData}
-                                                    alt="本地预览图"
+                                                    alt={t(
+                                                        plugin,
+                                                        "settings.banner.localPreviewAlt",
+                                                    )}
                                                     class="banner-preview"
                                                 />
                                             {:else if tempBannerType === "remote" && bannerRemoteUrl}
                                                 <img
                                                     src={bannerRemoteUrl}
-                                                    alt="远程预览图"
+                                                    alt={t(
+                                                        plugin,
+                                                        "settings.banner.remotePreviewAlt",
+                                                    )}
                                                     class="banner-preview"
                                                 />
                                             {:else}
                                                 <div
                                                     class="banner-preview-placeholder"
                                                 >
-                                                    未选择图片
+                                                    {t(
+                                                        plugin,
+                                                        "common.noImageSelected",
+                                                    )}
                                                 </div>
                                             {/if}
                                         {/if}
@@ -630,38 +685,65 @@
                                 {#if advancedEnabled}
                                     <div class="banner-setting-bing">
                                         <label for=""
-                                            >远程接口：<select
+                                            >{t(
+                                                plugin,
+                                                "settings.banner.bingApi",
+                                            )}<select
                                                 bind:value={bingApiType}
                                             >
                                                 <option value="POD_UHD"
-                                                    >Bing 每日一图（原图）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingPodUhd",
+                                                    )}</option
                                                 >
                                                 <option value="POD_1K"
-                                                    >Bing 每日一图（1080P）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingPod1k",
+                                                    )}</option
                                                 >
                                                 <option value="POD_Normal"
-                                                    >Bing 每日一图（普通）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingPodNormal",
+                                                    )}</option
                                                 >
                                                 <option value="rand_uhd"
-                                                    >Bing 历史随机（原图）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingRandUhd",
+                                                    )}</option
                                                 >
                                                 <option value="rand_1K"
-                                                    >Bing 历史随机（1080P）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingRand1k",
+                                                    )}</option
                                                 >
                                                 <option value="rand_Normal"
-                                                    >Bing 历史随机（普通）</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.bingRandNormal",
+                                                    )}</option
                                                 >
                                                 <option value="ECY1"
-                                                    >二次元壁纸</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.ecy1",
+                                                    )}</option
                                                 >
                                                 <option value="RAND1"
-                                                    >随机壁纸</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.banner.rand1",
+                                                    )}</option
                                                 >
                                             </select></label
                                         >
                                     </div>
                                 {:else}
-                                    <h3>👑会员专属权益👑</h3>
+                                    <h3>{t(plugin, "common.vipBenefitTitle")}</h3>
                                 {/if}
                             {/if}
                         {/if}
@@ -678,7 +760,7 @@
                                         type="checkbox"
                                         bind:checked={showIcon}
                                     />
-                                    显示标题图标
+                                    {t(plugin, "settings.title.showIcon")}
                                 </label>
                             </div>
 
@@ -688,23 +770,42 @@
                                     <!-- 顶部图标设置 -->
                                     <div class="icon-selection">
                                         <label for="title-icon-type"
-                                            >标题图标：</label
+                                            >{t(
+                                                plugin,
+                                                "settings.title.icon",
+                                            )}</label
                                         >
                                         <select
                                             id="title-icon-type"
                                             bind:value={titleIconType}
                                         >
-                                            <option value="emoji">表情</option>
-                                            <option value="image">图片</option>
+                                            <option value="emoji"
+                                                >{t(
+                                                    plugin,
+                                                    "settings.title.iconEmoji",
+                                                )}</option
+                                            >
+                                            <option value="image"
+                                                >{t(
+                                                    plugin,
+                                                    "settings.title.iconImage",
+                                                )}</option
+                                            >
                                         </select>
                                         {#if titleIconType === "emoji"}
                                             <button
                                                 id="emoji-picker-button"
                                                 type="button"
-                                                title="选择图标"
+                                                title={t(
+                                                    plugin,
+                                                    "settings.title.selectIcon",
+                                                )}
                                                 class="emoji-display"
                                                 on:click={openEmojiPicker}
-                                                aria-label="选择表情"
+                                                aria-label={t(
+                                                    plugin,
+                                                    "settings.title.selectEmoji",
+                                                )}
                                             >
                                                 {tempTitleIconEmoji || "😊"}
                                             </button>
@@ -714,8 +815,14 @@
                                                     iconInputEl.click()}
                                                 class="btn-select-file"
                                                 id="icon-image-input"
-                                                title="选择图标"
-                                                >选择图片</button
+                                                title={t(
+                                                    plugin,
+                                                    "settings.title.selectIcon",
+                                                )}
+                                                >{t(
+                                                    plugin,
+                                                    "common.selectImage",
+                                                )}</button
                                             >
 
                                             <input
@@ -730,21 +837,36 @@
                                         {#if titleIconType === "image" && tempTitleIconImage}
                                             <img
                                                 src={tempTitleIconImage}
-                                                alt="图标预览"
-                                                title="图标预览"
+                                                alt={t(
+                                                    plugin,
+                                                    "settings.title.iconPreview",
+                                                )}
+                                                title={t(
+                                                    plugin,
+                                                    "settings.title.iconPreview",
+                                                )}
                                             />
                                             <select
                                                 class="iconstyle"
                                                 bind:value={tempTitleIconStyle}
                                             >
                                                 <option value="square"
-                                                    >方形</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.title.shapeSquare",
+                                                    )}</option
                                                 >
                                                 <option value="round"
-                                                    >圆角</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.title.shapeRound",
+                                                    )}</option
                                                 >
                                                 <option value="circle"
-                                                    >圆形</option
+                                                    >{t(
+                                                        plugin,
+                                                        "settings.title.shapeCircle",
+                                                    )}</option
                                                 >
                                             </select>
                                         {/if}
@@ -752,13 +874,19 @@
                                     <!-- 底部标题输入 -->
                                     <div class="custom-title-input">
                                         <label for="custom-title-input"
-                                            >标题文字：</label
+                                            >{t(
+                                                plugin,
+                                                "settings.title.text",
+                                            )}</label
                                         >
                                         <input
                                             id="custom-title-input"
                                             type="text"
                                             bind:value={tempCustomTitle}
-                                            placeholder="例如：我的主页"
+                                            placeholder={t(
+                                                plugin,
+                                                "settings.title.textPlaceholder",
+                                            )}
                                         />
                                     </div>
                                 </div>
@@ -777,7 +905,10 @@
                                             )
                                                 showEmojiPicker = false;
                                         }}
-                                        aria-label="关闭表情选择器"
+                                        aria-label={t(
+                                            plugin,
+                                            "settings.title.closeEmojiPicker",
+                                        )}
                                     ></button>
 
                                     <div
@@ -798,15 +929,22 @@
 
                         <div class="stats-info-setting">
                             <div>
-                                自定义状态语：<a
-                                    href="https://ttl8ygt82u.feishu.cn/wiki/Z4QOwYEXpifRb9kZQg4c2FafnXc?from=from_copylink"
-                                    target="_blank">查看可用变量</a
+                                {t(plugin, "settings.title.customStats")}<a
+                                    href={getTutorialLink("bannerSettings").url}
+                                    target="_blank"
+                                    >{t(
+                                        plugin,
+                                        "settings.title.viewVariables",
+                                    )}</a
                                 >
                             </div>
                             <textarea
                                 class="stats-info-text"
                                 bind:value={tempStatsInfoText}
-                                placeholder="输入自定义状态语句"
+                                placeholder={t(
+                                    plugin,
+                                    "settings.title.statsPlaceholder",
+                                )}
                             />
                         </div>
                     </div>
@@ -832,7 +970,11 @@
                                                 e.preventDefault();
                                             }
                                         }}
-                                        aria-label={`选择按钮 ${item.label}`}
+                                        aria-label={t(
+                                            plugin,
+                                            "settings.button.selectAria",
+                                            { label: item.label },
+                                        )}
                                     >
                                         <input
                                             type="checkbox"
@@ -844,22 +986,40 @@
                                 {/each}
                                 <button
                                     class="add-button"
-                                    on:click={addNewButton}>➕ 添加按钮</button
+                                    on:click={addNewButton}
+                                    >{t(plugin, "settings.button.add")}</button
                                 >
                             </div>
 
                             <div class="button-details">
                                 {#if selectedButton}
-                                    <h4>编辑按钮：{selectedButton.label}</h4>
-                                    {#if selectedButton.label === "➕ 添加组件"}
-                                        <p>插件核心按钮不支持自定义</p>
-                                    {:else if selectedButton.label === "⚙ 主页设置"}
-                                        <p>插件核心按钮不支持自定义</p>
+                                    <h4>
+                                        {t(plugin, "settings.button.edit", {
+                                            label: selectedButton.label,
+                                        })}
+                                    </h4>
+                                    {#if selectedButton.id === ADD_WIDGET_BUTTON_ID}
+                                        <p>
+                                            {t(
+                                                plugin,
+                                                "settings.button.coreNoCustom",
+                                            )}
+                                        </p>
+                                    {:else if selectedButton.id === SETTINGS_BUTTON_ID}
+                                        <p>
+                                            {t(
+                                                plugin,
+                                                "settings.button.coreNoCustom",
+                                            )}
+                                        </p>
                                     {:else}
                                         <!-- 自定义按钮设置项 -->
                                         <div class="form-group">
                                             <label for="custom-button-label"
-                                                >按钮标签：</label
+                                                >{t(
+                                                    plugin,
+                                                    "settings.button.label",
+                                                )}</label
                                             >
                                             <input
                                                 id="custom-button-label"
@@ -871,18 +1031,27 @@
                                                     updateButtonLabel(
                                                         selectedButton.label,
                                                     )}
-                                                placeholder="例如：我的快捷方式"
+                                                placeholder={t(
+                                                    plugin,
+                                                    "settings.button.labelPlaceholder",
+                                                )}
                                             />
                                         </div>
                                         <!-- 快捷键输入框 -->
                                         <div class="form-group">
                                             <label for="button-shortcut"
-                                                >快捷键：</label
+                                                >{t(
+                                                    plugin,
+                                                    "settings.button.shortcut",
+                                                )}</label
                                             >
                                             <input
                                                 id="button-shortcut"
                                                 type="text"
-                                                placeholder="例如：Ctrl+C"
+                                                placeholder={t(
+                                                    plugin,
+                                                    "settings.button.shortcutPlaceholder",
+                                                )}
                                                 bind:value={
                                                     selectedButton.shortcut
                                                 }
@@ -894,7 +1063,10 @@
                                                 on:click={moveUpButton}
                                                 disabled={selectedButtonIndex <=
                                                     0}
-                                                title="上移">🔼</button
+                                                title={t(
+                                                    plugin,
+                                                    "common.moveUp",
+                                                )}>🔼</button
                                             >
 
                                             <button
@@ -903,18 +1075,29 @@
                                                 disabled={selectedButtonIndex >=
                                                     buttonsList.length - 1 ||
                                                     selectedButtonIndex === -1}
-                                                title="下移">🔽</button
+                                                title={t(
+                                                    plugin,
+                                                    "common.moveDown",
+                                                )}>🔽</button
                                             >
 
                                             <button
                                                 class="btn danger"
                                                 on:click={deleteCustomButton}
-                                                >❌ 删除此按钮</button
+                                                >{t(
+                                                    plugin,
+                                                    "common.deleteButton",
+                                                )}</button
                                             >
                                         </div>
                                     {/if}
                                 {:else}
-                                    <p>请选择左侧按钮以查看或编辑其详情</p>
+                                    <p>
+                                        {t(
+                                            plugin,
+                                            "settings.button.selectHint",
+                                        )}
+                                    </p>
                                 {/if}
                             </div>
                         </div>
@@ -924,47 +1107,71 @@
                 {#if settingsActiveTab === "widgets"}
                     <div class="section-setting widgets-setting">
                         <div class="form-group widget-layout-setting">
-                            <h3>组件布局设置</h3>
+                            <h3>{t(plugin, "settings.widgets.layoutTitle")}</h3>
                             <label for=""
-                                >每行组件数量：<input
+                                >{t(plugin, "settings.widgets.perRow")}<input
                                     type="number"
                                     bind:value={widgetLayoutNumber}
                                 /></label
                             >
                             <label for="widget-gap"
-                                >组件间距：<input
+                                >{t(plugin, "settings.widgets.gap")}<input
                                     type="number"
                                     bind:value={widgetGap}
                                 /></label
                             >
                         </div>
                         <div class="form-group quick-notes-setting">
-                            <h3>快速笔记设置</h3>
+                            <h3>
+                                {t(plugin, "settings.widgets.quickNotesTitle")}
+                            </h3>
                             <label for="quick-notes-open"
                                 ><input
                                     id="quick-notes-open"
                                     type="checkbox"
                                     bind:checked={quickNotesEnabled}
-                                />开启快速笔记</label
+                                />{t(
+                                    plugin,
+                                    "settings.widgets.quickNotesEnable",
+                                )}</label
                             >
 
                             {#if quickNotesEnabled}
                                 <label for=""
-                                    >快速笔记位置：
+                                    >{t(
+                                        plugin,
+                                        "settings.widgets.quickNotesPosition",
+                                    )}
                                     <input
                                         type="text"
-                                        placeholder="输入用于存放快速笔记的文档 ID"
+                                        placeholder={t(
+                                            plugin,
+                                            "settings.widgets.quickNotesPositionPlaceholder",
+                                        )}
                                         bind:value={quickNotesPosition}
                                     />
                                 </label>
                                 <label for="quick-notes-position"
-                                    >添加位置：<select
+                                    >{t(
+                                        plugin,
+                                        "settings.widgets.quickNotesAddPosition",
+                                    )}<select
                                         name="quick-notes-position"
                                         id="quick-notes-position"
                                         bind:value={quickNotesAddPosition}
                                     >
-                                        <option value="bottom">文档最后</option>
-                                        <option value="top">文档最前</option>
+                                        <option value="bottom"
+                                            >{t(
+                                                plugin,
+                                                "settings.widgets.quickNotesAddBottom",
+                                            )}</option
+                                        >
+                                        <option value="top"
+                                            >{t(
+                                                plugin,
+                                                "settings.widgets.quickNotesAddTop",
+                                            )}</option
+                                        >
                                     </select></label
                                 >
                                 <label for="quick-notes-timestamp"
@@ -975,18 +1182,27 @@
                                             quickNotesTimestampEnabled
                                         }
                                     />
-                                    启用时间戳
+                                    {t(
+                                        plugin,
+                                        "settings.widgets.quickNotesTimestamp",
+                                    )}
                                 </label>
                             {/if}
                         </div>
                         <div class="form-group task-plus-setting">
-                            <h3>任务管理Plus设置</h3>
+                            <h3>
+                                {t(plugin, "settings.widgets.taskPlusTitle")}
+                            </h3>
                             <label for="task-editor-enabled"
                                 ><input
                                     id="task-editor-enabled"
                                     type="checkbox"
                                     bind:checked={taskEditorEnabled}
-                                /> 开启任务编辑器</label
+                                />
+                                {t(
+                                    plugin,
+                                    "settings.widgets.taskEditorEnable",
+                                )}</label
                             >
                         </div>
                     </div>
@@ -995,55 +1211,134 @@
                 {#if settingsActiveTab === "styles"}
                     <div class="section-setting styles-setting">
                         <div class="footer-setting">
-                            <h3>页脚设置</h3>
+                            <h3>{t(plugin, "settings.styles.footerTitle")}</h3>
                             <label for="footer-enable"
                                 ><input
                                     id="footer-enable"
                                     type="checkbox"
                                     bind:checked={footerEnabled}
-                                /> 显示页脚</label
+                                />
+                                {t(plugin, "settings.styles.footerEnable")}</label
                             >
                             {#if footerEnabled}
                                 <label for="footer-content">
                                     <textarea
                                         id="footer-content"
-                                        placeholder="输入页脚内容"
+                                        placeholder={t(
+                                            plugin,
+                                            "settings.styles.footerPlaceholder",
+                                        )}
                                         bind:value={footerContent}
                                     ></textarea>
                                 </label>
                             {/if}
                         </div>
                         <div class="mouse-setting">
-                            <h3>鼠标样式设置</h3>
+                            <h3>{t(plugin, "settings.styles.mouseTitle")}</h3>
                             <label for="mouse-style">
-                                鼠标图标：
+                                {t(plugin, "settings.styles.mouseIcon")}
                                 <select
                                     name="mouse-style"
                                     id="mouse-style"
                                     bind:value={mouseIcon}
                                 >
-                                    <option value="default">默认</option>
-                                    <option value="arrow1">箭头1</option>
-                                    <option value="arrow2">箭头2</option>
-                                    <option value="arrow3">箭头3</option>
-                                    <option value="arrow4">箭头4</option>
-                                    <option value="arrow5">箭头5</option>
-                                    <option value="arrow6">箭头6</option>
-                                    <option value="arrow7">箭头7</option>
+                                    <option value="default"
+                                        >{t(plugin, "common.default")}</option
+                                    >
+                                    <option value="arrow1"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow1",
+                                        )}</option
+                                    >
+                                    <option value="arrow2"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow2",
+                                        )}</option
+                                    >
+                                    <option value="arrow3"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow3",
+                                        )}</option
+                                    >
+                                    <option value="arrow4"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow4",
+                                        )}</option
+                                    >
+                                    <option value="arrow5"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow5",
+                                        )}</option
+                                    >
+                                    <option value="arrow6"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow6",
+                                        )}</option
+                                    >
+                                    <option value="arrow7"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseArrow7",
+                                        )}</option
+                                    >
                                     <option value="LOL1">LOL1</option>
                                     <option value="LOL2">LOL2</option>
                                     <option value="LOL3">LOL3</option>
                                     <option value="LOL4">LOL4</option>
                                     <option value="CBPK2077"
-                                        >赛博朋克2077</option
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseCyberpunk",
+                                        )}</option
                                     >
-                                    <option value="CYWL1">初音未来1</option>
-                                    <option value="CYWL2">初音未来2</option>
-                                    <option value="cat1">喵星人1</option>
-                                    <option value="cat2">喵星人2</option>
-                                    <option value="cat3">喵星人3</option>
-                                    <option value="WDSJsword">钻石剑</option>
-                                    <option value="WDSJpickaxe">钻石镐</option>
+                                    <option value="CYWL1"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseMiku1",
+                                        )}</option
+                                    >
+                                    <option value="CYWL2"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseMiku2",
+                                        )}</option
+                                    >
+                                    <option value="cat1"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseCat1",
+                                        )}</option
+                                    >
+                                    <option value="cat2"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseCat2",
+                                        )}</option
+                                    >
+                                    <option value="cat3"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseCat3",
+                                        )}</option
+                                    >
+                                    <option value="WDSJsword"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseDiamondSword",
+                                        )}</option
+                                    >
+                                    <option value="WDSJpickaxe"
+                                        >{t(
+                                            plugin,
+                                            "settings.styles.mouseDiamondPickaxe",
+                                        )}</option
+                                    >
                                 </select>
                             </label>
                             <div class="mouse-global-setting">
@@ -1052,98 +1347,222 @@
                                         id="mouse-global"
                                         type="checkbox"
                                         bind:checked={mouseGlobalEnabled}
-                                    />应用于全局
+                                    />{t(
+                                        plugin,
+                                        "settings.styles.mouseGlobal",
+                                    )}
                                 </label>
                                 <label for="mouse-trail">
                                     <input
                                         id="mouse-trail"
                                         type="checkbox"
                                         bind:checked={MouseTrailEnabled}
-                                    />鼠标轨迹
+                                    />{t(
+                                        plugin,
+                                        "settings.styles.mouseTrail",
+                                    )}
                                 </label>
                                 <label for="click-effect"
                                     ><input
                                         type="checkbox"
                                         bind:checked={ClickEffectEnabled}
-                                    />点击特效</label
+                                    />{t(
+                                        plugin,
+                                        "settings.styles.clickEffect",
+                                    )}</label
                                 >
                             </div>
                             {#if ClickEffectEnabled}
                                 <label for="click-effect-content">
                                     <textarea
                                         id="click-effect-content"
-                                        placeholder="输入点击特效内容（每行一个特效）"
+                                        placeholder={t(
+                                            plugin,
+                                            "settings.styles.clickEffectPlaceholder",
+                                        )}
                                         bind:value={ClickEffectContent}
                                     ></textarea>
                                 </label>
                             {/if}
                         </div>
                         <div class="background-effects-setting">
-                            <h3>背景特效设置</h3>
+                            <h3>
+                                {t(plugin, "settings.styles.fallingTitle")}
+                            </h3>
                             <div class="background-effects-setting-checkbox">
                                 <label for=""
                                     ><input
                                         type="checkbox"
                                         bind:checked={FallEffectsEnabled}
-                                    />开启飘落特效</label
+                                    />{t(
+                                        plugin,
+                                        "settings.styles.fallingEnable",
+                                    )}</label
                                 ><label for=""
                                     ><input
                                         type="checkbox"
                                         bind:checked={
                                             GlobalFallingEffectsEnabled
                                         }
-                                    />应用于全局</label
+                                    />{t(
+                                        plugin,
+                                        "settings.styles.mouseGlobal",
+                                    )}</label
                                 >
                             </div>
                             <div class="form-group">
                                 <label for="falling-icon">
-                                    飘落图形：
+                                    {t(
+                                        plugin,
+                                        "settings.styles.fallingIcon",
+                                    )}
                                     <select
                                         name="falling-icon"
                                         id="falling-icon"
                                         bind:value={FallingIcon}
                                     >
-                                        <option value="snow">雪花</option>
-                                        <option value="heart">爱心</option>
-                                        <option value="star">五角星</option>
-                                        <option value="greenery">绿叶</option>
-                                        <option value="mapleLeaf">枫叶</option>
+                                        <option value="snow"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingSnow",
+                                            )}</option
+                                        >
+                                        <option value="heart"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingHeart",
+                                            )}</option
+                                        >
+                                        <option value="star"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingStar",
+                                            )}</option
+                                        >
+                                        <option value="greenery"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingGreenery",
+                                            )}</option
+                                        >
+                                        <option value="mapleLeaf"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingMapleLeaf",
+                                            )}</option
+                                        >
                                         <option value="ginkgoLeaf"
-                                            >银杏叶</option
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingGinkgoLeaf",
+                                            )}</option
                                         >
-                                        <option value="bodhiLeaf">菩提叶</option
+                                        <option value="bodhiLeaf"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingBodhiLeaf",
+                                            )}</option
                                         >
-                                        <option value="bambooLeaf">竹叶</option>
-                                        <option value="cherry">樱花</option>
+                                        <option value="bambooLeaf"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingBambooLeaf",
+                                            )}</option
+                                        >
+                                        <option value="cherry"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingCherry",
+                                            )}</option
+                                        >
                                         <option value="cherryPetal"
-                                            >樱花瓣</option
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingCherryPetal",
+                                            )}</option
                                         >
-                                        <option value="Rinka">梨花</option>
-                                        <option value="rose">玫瑰花</option>
-                                        <option value="dandelion">蒲公英</option
+                                        <option value="Rinka"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingRinka",
+                                            )}</option
                                         >
-                                        <option value="QZHIHE">千纸鹤</option>
+                                        <option value="rose"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingRose",
+                                            )}</option
+                                        >
+                                        <option value="dandelion"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingDandelion",
+                                            )}</option
+                                        >
+                                        <option value="QZHIHE"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingPaperCrane",
+                                            )}</option
+                                        >
                                         <option value="paperPlane"
-                                            >纸飞机</option
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingPaperPlane",
+                                            )}</option
                                         >
-                                        <option value="HMBB">海绵宝宝</option>
-                                        <option value="PDX">派大星</option>
+                                        <option value="HMBB"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingSpongeBob",
+                                            )}</option
+                                        >
+                                        <option value="PDX"
+                                            >{t(
+                                                plugin,
+                                                "settings.styles.fallingPatrick",
+                                            )}</option
+                                        >
                                     </select>
                                 </label>
                                 <label for=""
-                                    >密度：
+                                    >{t(
+                                        plugin,
+                                        "settings.styles.fallingDensity",
+                                    )}
                                     <select bind:value={FallingDensity}>
-                                        <option value="low">低</option>
-                                        <option value="medium">中</option>
-                                        <option value="high">高</option>
+                                        <option value="low"
+                                            >{t(plugin, "common.low")}</option
+                                        >
+                                        <option value="medium"
+                                            >{t(
+                                                plugin,
+                                                "common.medium",
+                                            )}</option
+                                        >
+                                        <option value="high"
+                                            >{t(plugin, "common.high")}</option
+                                        >
                                     </select>
                                 </label>
                                 <label for=""
-                                    >速度:
+                                    >{t(
+                                        plugin,
+                                        "settings.styles.fallingSpeed",
+                                    )}
                                     <select bind:value={FallingSpeed}>
-                                        <option value="low">低</option>
-                                        <option value="medium">中</option>
-                                        <option value="high">高</option>
+                                        <option value="low"
+                                            >{t(plugin, "common.low")}</option
+                                        >
+                                        <option value="medium"
+                                            >{t(
+                                                plugin,
+                                                "common.medium",
+                                            )}</option
+                                        >
+                                        <option value="high"
+                                            >{t(plugin, "common.high")}</option
+                                        >
                                     </select>
                                 </label>
                             </div>
@@ -1154,22 +1573,26 @@
             <!-- 操作按钮 -->
             <div class="action-buttons">
                 <button class="btn primary no-link-style" on:click={confirmSave}
-                    >✅ 确认</button
+                    >{t(plugin, "common.confirm")}</button
                 >
-                <button class="btn" on:click={cancelSave}>❌ 取消</button>
+                <button class="btn" on:click={cancelSave}
+                    >{t(plugin, "common.cancel")}</button
+                >
             </div>
         {:else if activeTab === "about"}
             <div class="about-section">
                 <div class="about-header">
-                    <h3>🏠 思源主页插件</h3>
-                    <p class="moto">提供个性化首页布局和丰富的功能模块。</p>
+                    <h3>{t(plugin, "settings.about.pluginTitle")}</h3>
+                    <p class="moto">{t(plugin, "settings.about.motto")}</p>
                 </div>
 
                 <div class="about-grid">
                     <div class="about-card">
                         <span class="icon">🌐</span>
                         <div>
-                            <p class="label">插件主页：</p>
+                            <p class="label">
+                                {t(plugin, "settings.about.homepage")}
+                            </p>
                             <a
                                 href="https://github.com/Glaube-TY/siyuan-homepage"
                                 class="link">siyuan-homepage</a
@@ -1178,10 +1601,13 @@
                         <span class="icon">&nbsp;&nbsp;&nbsp;</span>
                         <span class="icon">📜</span>
                         <div>
-                            <p class="label">插件教程：</p>
+                            <p class="label">
+                                {t(plugin, "settings.about.tutorial")}
+                            </p>
                             <a
-                                href="https://ttl8ygt82u.feishu.cn/wiki/Skg2woe9DidYNNkQSiEcWRLrnRg?from=from_copylink"
-                                class="link">飞书文档</a
+                                href={getTutorialLink("pluginTutorial").url}
+                                class="link"
+                                >{t(plugin, "settings.about.feishuDoc")}</a
                             >
                         </div>
                     </div>
@@ -1189,21 +1615,26 @@
                     <div class="about-card">
                         <span class="icon">👨</span>
                         <div>
-                            <p class="label">开发者：Glaube-TY</p>
+                            <p class="label">
+                                {t(plugin, "settings.about.developer")}
+                            </p>
                             <a href="https://github.com/Glaube-TY" class="link"
-                                >Github 主页</a
+                                >{t(plugin, "settings.about.github")}</a
                             >
                             <p>
                                 <a
                                     href="https://ld246.com/member/GlaubeTY"
-                                    class="link">链滴主页</a
+                                    class="link"
+                                    >{t(plugin, "settings.about.ld246")}</a
                                 >
                             </p>
                         </div>
                         <span class="icon">&nbsp;&nbsp;&nbsp;</span>
                         <span class="icon">⁉</span>
                         <div>
-                            <p class="label">反馈&建议：</p>
+                            <p class="label">
+                                {t(plugin, "settings.about.feedback")}
+                            </p>
                             <p>
                                 <a
                                     href="https://github.com/Glaube-TY/siyuan-homepage/issues"
@@ -1213,7 +1644,11 @@
                             <p>
                                 <a
                                     href="https://pd.qq.com/s/2ks4079x0"
-                                    class="link">腾讯频道</a
+                                    class="link"
+                                    >{t(
+                                        plugin,
+                                        "settings.about.tencentChannel",
+                                    )}</a
                                 >
                             </p>
                         </div>
@@ -1222,14 +1657,14 @@
                     <div class="about-card support-card">
                         <div class="support-content">
                             <p class="support-description">
-                                🌹 您的支持是持续开发的动力！
+                                {t(plugin, "settings.about.supportDesc")}
                             </p>
                             <a
-                                href="https://ttl8ygt82u.feishu.cn/wiki/Skg2woe9DidYNNkQSiEcWRLrnRg#share-Ej8kdvO2iohj1dxWXEzcGZ8Xn7d"
+                                href={getTutorialLink("vipThanks").url}
                                 class="link support-link"
                             >
                                 <i class="fas fa-hand-holding-heart"></i>
-                                立即赞助
+                                {t(plugin, "settings.about.sponsorNow")}
                                 <span class="sparkle">✨</span>
                             </a>
                         </div>
@@ -1237,7 +1672,7 @@
                 </div>
 
                 <div class="about-footer">
-                    <p>❤ 感谢您使用本插件，希望您享受更高效的知识管理体验！</p>
+                    <p>{t(plugin, "settings.about.thanks")}</p>
                 </div>
             </div>
         {/if}

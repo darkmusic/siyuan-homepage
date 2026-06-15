@@ -1,34 +1,48 @@
 <script lang="ts">
+    import { pluginT } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let quickNotesTitle: string;
     export let quickNotesSort: string;
+
+    const tutorialLink = getTutorialLink("widgets.quickNotes");
+
+    function t(key: string, vars?: Record<string, string | number>) {
+        return pluginT(plugin, key, vars);
+    }
 </script>
 
 <div class="content-panel quick-notes">
     <div class="form-group quick-notes-title">
-        <label for="quick-notes-title"
-            >组件标题：
+        <label for="quick-notes-title">
+            {t("common.widgetTitle")}
             <input
                 id="quick-notes-title"
                 type="text"
                 bind:value={quickNotesTitle}
-                placeholder="输入组件标题"
+                placeholder={t("common.widgetTitleInput")}
             />
         </label>
     </div>
-    <label for="quick-notes-sort"
-        >排序方式：
+    <label for="quick-notes-sort">
+        {t("widgets.quickNotes.sort")}
         <select id="quick-notes-sort" bind:value={quickNotesSort}>
-            <option value="DOC_ASC">文档正序</option>
-            <option value="DOC_INV">文档逆序</option>
-            <option value="UPD">更新时间</option>
-            <option value="CRE">创建时间</option>
+            <option value="DOC_ASC"
+                >{t("widgets.quickNotes.sortDocAsc")}</option
+            >
+            <option value="DOC_INV"
+                >{t("widgets.quickNotes.sortDocInv")}</option
+            >
+            <option value="UPD">{t("widgets.quickNotes.sortUpdated")}</option>
+            <option value="CRE">{t("widgets.quickNotes.sortCreated")}</option>
         </select>
     </label>
     <hr />
     <div>
-        组件说明：<a
-            href="https://ttl8ygt82u.feishu.cn/wiki/XhZ7ww1PDimrZxkbxPqcvZrKnIb?from=from_copylink"
-            target="_blank">快速笔记</a
+        {t("common.componentDescription")}<a
+            href={tutorialLink.url}
+            target="_blank">{tutorialLink.label}</a
         >
     </div>
 </div>

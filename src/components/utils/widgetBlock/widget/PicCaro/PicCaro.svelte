@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { register } from "swiper/element/bundle";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
     export let contentTypeJson: string = "{}";
@@ -27,7 +28,7 @@
     async function loadImages() {
         try {
             if (!PicFolderPath) {
-                error = "请配置图片文件夹路径";
+                error = t(plugin, "widgets.picCaro.configureFolderPath");
                 return;
             }
 
@@ -78,11 +79,11 @@
             }
 
             if (images.length === 0) {
-                error = "文件夹中没有找到图片文件";
+                error = t(plugin, "widgets.picCaro.notFound");
             }
         } catch (err) {
             console.error("加载图片失败:", err);
-            error = "加载图片失败，请检查文件夹路径";
+            error = t(plugin, "widgets.picCaro.loadImagesFailed");
         } finally {
             loading = false;
         }
@@ -103,7 +104,7 @@
         {#if loading}
             <div class="loading-container">
                 <div class="loading-spinner"></div>
-                <p>正在加载图片...</p>
+                <p>{t(plugin, "widgets.picCaro.loading")}</p>
             </div>
         {:else if error}
             <div class="error-container">
@@ -145,13 +146,13 @@
             </div>
         {:else}
             <div class="empty-container">
-                <p>没有找到图片文件</p>
+                <p>{t(plugin, "widgets.picCaro.notFound")}</p>
             </div>
         {/if}
     {:else}
         <div class="content-not-advanced">
-            <h2>👑高级会员专属功能👑</h2>
-            <h3>请在"主页设置"→"会员服务"中开通高级会员后使用</h3>
+            <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+            <h3>{t(plugin, "common.vipFeatureHint")}</h3>
         </div>
     {/if}
 </div>

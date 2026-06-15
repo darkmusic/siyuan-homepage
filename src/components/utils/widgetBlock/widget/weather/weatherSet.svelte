@@ -1,56 +1,60 @@
 <script lang="ts">
+    import { pluginT as t } from "@/libs/i18n";
+    import { getTutorialLink } from "@/data/tutorialLinks";
+
+    export let plugin: any;
     export let customWeatherCityName: string = "";
     export let customWeatherCityCode: string = "";
     export let weatherStyle: string = "default";
+
+    const tutorial = getTutorialLink("widgets.weather");
 </script>
 
 <div class="weather-settings">
     <div class="setting-item">
         <div class="form-group">
-            <label for="weather-city">样式：</label>
+            <label for="weather-city">{t(plugin, "common.style")}</label>
             <select id="weather-style" bind:value={weatherStyle}>
-                <option value="default">默认</option>
-                <option value="simple1">简约1👑</option>
-                <option value="simple2">简约2👑</option>
+                <option value="default">{t(plugin, "common.default")}</option>
+                <option value="simple1">{t(plugin, "widgets.weather.simple1")}</option>
+                <option value="simple2">{t(plugin, "widgets.weather.simple2")}</option>
             </select>
         </div>
     </div>
     {#if weatherStyle === "default" || weatherStyle === "simple1" || weatherStyle === "simple2"}
         <div class="setting-item">
             <div class="form-group">
-                <label for="weather-city">城市名称：</label>
+                <label for="weather-city">{t(plugin, "widgets.weather.cityName")}</label>
                 <input
                     id="weather-city"
                     type="text"
                     bind:value={customWeatherCityName}
-                    placeholder="例如：北京"
+                    placeholder={t(plugin, "widgets.weather.cityNamePlaceholder")}
                 />
             </div>
         </div>
         <div class="setting-item">
             <div class="form-group">
-                <label for="weather-city">城市编码：</label>
+                <label for="weather-city">{t(plugin, "widgets.weather.cityCode")}</label>
                 <input
                     id="weather-city"
                     type="text"
                     bind:value={customWeatherCityCode}
-                    placeholder="例如：110000"
+                    placeholder={t(plugin, "widgets.weather.cityCodePlaceholder")}
                 />
             </div>
         </div>
         <div class="setting-item">
-            城市编码为 6 位数字，例如：110000 为北京，即当地身份证前 6 位。<br
-            />
-            若两个都填写，则优先用城市编码查询，因为这会更加精确。
+            {t(plugin, "widgets.weather.cityCodeHint")}
         </div>
     {/if}
 
     <div class="component-help">
         <hr />
         <div>
-            组件说明：<a
-                href="https://ttl8ygt82u.feishu.cn/wiki/ER44wITRDi0m8okvcsGcxtZInix?from=from_copylink"
-                target="_blank">今日天气</a
+            {t(plugin, "common.componentDescription")}<a
+                href={tutorial.url}
+                target="_blank">{tutorial.label}</a
             >
         </div>
     </div>

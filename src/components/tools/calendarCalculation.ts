@@ -221,7 +221,7 @@ export function getDogDay() {
     if (dogDay === null) {
         return {
             dogDay: dogDay, // 三伏天
-            dogDayStr: "未到", // 三伏天（中文）
+            dogDayStr: "", // display via i18n when empty
         }
     } else {
         return {
@@ -319,7 +319,7 @@ export function getNineDay() {
     if (nineDay === null) {
         return {
             nineDay: nineDay, // 九天
-            nineDayStr: "未到", // 九天（中文）
+            nineDayStr: "", // display via i18n when empty
         }
     } else {
         return {
@@ -404,7 +404,7 @@ export function getPlumRainDay() {
     if (plumRainDay === null) {
         return {
             plumRainDay: plumRainDay, // 梅雨天
-            plumRainDayStr: "未到", // 梅雨天（中文）
+            plumRainDayStr: "", // display via i18n when empty
         }
     } else {
         return {

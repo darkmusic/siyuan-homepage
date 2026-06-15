@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { pluginT as t } from "@/libs/i18n";
 
     export let contentTypeJson: string = "{}";
     export let plugin: any;
@@ -170,7 +171,7 @@
                 opacity={meritTextY > 15 ? "1" : "0"}
                 style="transition: opacity 0.1s ease-in-out;"
             >
-                功德+1
+                {t(plugin, "widgets.cybmok.meritPlusOne")}
             </text>
         {/if}
 
@@ -184,7 +185,7 @@
             fill="#e6e6e6"
             font-weight="bold"
         >
-            功德无量
+            {t(plugin, "widgets.cybmok.infiniteMerit")}
         </text>
 
         <!-- 木鱼棒 -->
@@ -211,8 +212,8 @@
     </svg>
 {:else}
     <div class="content-not-advanced">
-        <h2>👑高级会员专属功能👑</h2>
-        <h3>请在"主页设置"→"会员服务"中开通高级会员后使用</h3>
+        <h2>{t(plugin, "common.vipFeatureTitle")}</h2>
+        <h3>{t(plugin, "common.vipFeatureHint")}</h3>
     </div>
 {/if}
 
