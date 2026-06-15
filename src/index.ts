@@ -29,13 +29,16 @@ export default class PluginHomepage extends Plugin {
     ADVANCED = true;
     private docTreeMenuEventBindThis = this.handleDocTreeMenu.bind(this);
     private contentMenuEventBindThis = this.handleContentMenu.bind(this);
+    private topBarRegistered = false;
+    private dockRegistered = false;
 
     client = new sdk.Client(undefined, 'fetch');
 
     async onload() {
-        await migratePersistedConfig(this);
-        const config = await this.loadData("homepageSettingConfig.json");
         this.registerIcon();
+
+        await migratePersistedConfig(this);
+        const config = (await this.loadData("homepageSettingConfig.json")) || {};
 
         const frontEnd = getFrontend();
         this.isMobile = frontEnd === "mobile" || frontEnd === "browser-mobile";
@@ -46,13 +49,7 @@ export default class PluginHomepage extends Plugin {
         }
         this.data[STORAGE_NAME] = { readonlyText: "Readonly" };
 
-        this.registerTopBar();
         this.registerCommand();
-
-        // 在非移动端时注册 dock 侧边栏
-        if ((config.sidebarEnabled ?? false) && !this.isMobile) {
-            this.registerDock();
-        }
     }
 
     async onunload() {
@@ -61,6 +58,11 @@ export default class PluginHomepage extends Plugin {
     }
 
     async onLayoutReady() {
+        if (!this.topBarRegistered) {
+            this.registerTopBar();
+            this.topBarRegistered = true;
+        }
+
         let tabDiv = document.createElement("div");
         new Homepage({
             target: tabDiv,
@@ -77,6 +79,13 @@ export default class PluginHomepage extends Plugin {
             },
         });
 
+        const savedConfig = (await this.loadData("homepageSettingConfig.json")) || {};
+
+        if ((savedConfig.sidebarEnabled ?? false) && !this.isMobile && !this.dockRegistered) {
+            this.registerDock();
+            this.dockRegistered = true;
+        }
+
         // 检查是否在新窗口中打开
         const urlParams = new URLSearchParams(window.location.search);
         const isNewWindow = urlParams.has('json');
@@ -84,7 +93,6 @@ export default class PluginHomepage extends Plugin {
         // 只在非新窗口中自动打开主页
         if (!isNewWindow) {
             // 自动打开主页
-            const savedConfig = await this.loadData("homepageSettingConfig.json");
             if (this.isMobile && savedConfig.autoOpenMobileHomepage === true) {
                 // 移动端打开方式
                 this.currentMobileDialog = svelteDialog({

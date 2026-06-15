@@ -1,8 +1,8 @@
 {
-  "name": "siyuan-homepage",
-  "author": "Glaube-TY",
-  "url": "https://github.com/Glaube-TY/siyuan-homepage",
-  "version": "2.10.6",
+  "name": "siyuan-homepage-en",
+  "author": "darkmusic",
+  "url": "https://github.com/darkmusic/siyuan-homepage",
+  "version": "1.0.1",
   "minAppVersion": "3.3.5",
   "backends": [
     "windows",
@@ -38,9 +38,6 @@
     "zh_CN": "README_zh_CN.md"
   },
   "funding": {
-    "custom": [
-      "https://ttl8ygt82u.feishu.cn/wiki/Skg2woe9DidYNNkQSiEcWRLrnRg#share-Of80d3yVRoeAdvxOmFnc9WG9nUe"
-    ]
   },
   "keywords": [
     "homepage",

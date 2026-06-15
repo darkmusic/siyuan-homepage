@@ -1,4 +1,4 @@
-import { t, getSiyuanLang } from "@/libs/i18n";
+import { t, getSiyuanLang, getPluginI18n } from "@/libs/i18n";
 
 export const I18N_MIGRATION_VERSION = 1;
 
@@ -145,7 +145,7 @@ async function getWidgetIds(plugin: PluginLike): Promise<string[]> {
 }
 
 export async function migratePersistedConfig(plugin: PluginLike): Promise<void> {
-    const i18n = plugin.i18n ?? {};
+    const i18n = getPluginI18n(plugin);
     const config =
         (await plugin.loadData("homepageSettingConfig.json")) ?? {};
     const currentVersion =

@@ -43,11 +43,17 @@ if (!fs.existsSync(targetDir)) {
 }
 
 /**
- * 2. The dev directory, which contains the compiled plugin code
+ * 2. The compiled plugin directory (prefer dev/, fall back to dist/)
  */
-const devDir = `${process.cwd()}/dev`;
-if (!fs.existsSync(devDir)) {
-    fs.mkdirSync(devDir);
+let devDir = `${process.cwd()}/dev`;
+if (!fs.existsSync(`${devDir}/index.js`)) {
+    const distDir = `${process.cwd()}/dist`;
+    if (fs.existsSync(`${distDir}/index.js`)) {
+        devDir = distDir;
+        log(`>>> Using dist/ for plugin link (dev/index.js not found)`);
+    } else if (!fs.existsSync(devDir)) {
+        fs.mkdirSync(devDir);
+    }
 }
 
 

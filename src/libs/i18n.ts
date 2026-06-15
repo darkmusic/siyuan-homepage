@@ -1,9 +1,19 @@
+import enUS from "../../public/i18n/en_US.json";
+import zhCN from "../../public/i18n/zh_CN.json";
+
 export type SiyuanLang = "zh_CN" | "en_US";
 
 type I18nObject = Record<string, unknown>;
 
+const bundledI18n: Record<SiyuanLang, I18nObject> = {
+    en_US: enUS,
+    zh_CN: zhCN,
+};
+
 export function getSiyuanLang(): SiyuanLang {
-    const lang = window.siyuan?.config?.lang;
+    const lang =
+        window.siyuan?.config?.lang ??
+        window.siyuan?.config?.appearance?.lang;
     if (lang === "en_US" || lang === "zh_CN") {
         return lang;
     }
@@ -15,16 +25,36 @@ export function getIntlLocale(lang?: SiyuanLang): string {
     return resolved === "zh_CN" ? "zh-CN" : "en-US";
 }
 
+function hasI18nContent(i18n: I18nObject | undefined): boolean {
+    return i18n != null && Object.keys(i18n).length > 0;
+}
+
+export function getPluginI18n(
+    plugin?: { i18n?: I18nObject },
+    lang?: SiyuanLang,
+): I18nObject {
+    if (hasI18nContent(plugin?.i18n)) {
+        return plugin!.i18n!;
+    }
+    return bundledI18n[lang ?? getSiyuanLang()];
+}
+
 function resolveKey(i18n: I18nObject, key: string): string | undefined {
     const parts = key.split(".");
     let current: unknown = i18n;
     for (const part of parts) {
         if (current == null || typeof current !== "object") {
-            return undefined;
+            current = undefined;
+            break;
         }
         current = (current as I18nObject)[part];
     }
-    return typeof current === "string" ? current : undefined;
+    if (typeof current === "string") {
+        return current;
+    }
+
+    const flat = i18n[key];
+    return typeof flat === "string" ? flat : undefined;
 }
 
 export function t(
@@ -47,5 +77,5 @@ export function pluginT(
     key: string,
     vars?: Record<string, string | number>,
 ): string {
-    return t(plugin?.i18n, key, vars);
+    return t(getPluginI18n(plugin), key, vars);
 }

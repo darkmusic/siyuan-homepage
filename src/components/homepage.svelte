@@ -22,7 +22,7 @@
     } from "./utils/quickButton";
     import { MD2HTML } from "@/components/tools/MD2HTML";
     import { getImage } from "@/components/tools/getImage";
-    import { pluginT } from "@/libs/i18n";
+    import { pluginT, getPluginI18n } from "@/libs/i18n";
     import { getTutorialLink } from "@/data/tutorialLinks";
 
     import "./style/homepage.scss";
@@ -130,7 +130,7 @@
         }
 
         // 加载统计数据
-        statsData = await loadStatsData(plugin?.i18n);
+        statsData = await loadStatsData(getPluginI18n(plugin));
 
         // 初始化区块拖拽排序
         const observer = new MutationObserver(async () => {
@@ -693,7 +693,7 @@
                 parseDurationExpression(
                     expr.trim(),
                     statsData,
-                    plugin?.i18n,
+                    getPluginI18n(plugin),
                 ) || ""
             );
         });
