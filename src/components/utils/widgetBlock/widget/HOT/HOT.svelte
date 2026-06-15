@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { UapiClient } from "uapi-sdk-typescript";
+    import { getMiscHotboard } from "@/libs/uapiClient";
     import { pluginT as t } from "@/libs/i18n";
 
     export let plugin: any;
@@ -279,14 +279,9 @@
 
     async function uapisSource(source: string) {
         try {
-            const client = new UapiClient("https://uapis.cn");
-            const payload = {
-                type: source,
-            };
-            // @ts-ignore - 临时忽略类型检查
-            const response = await client.misc.getMiscHotboard(payload);
+            const response = await getMiscHotboard({ type: source });
 
-            if (response && response.list) {
+            if (response?.list) {
                 return response.list;
             }
         } catch (error) {

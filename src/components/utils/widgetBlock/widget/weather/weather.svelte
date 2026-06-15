@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { UapiClient } from "uapi-sdk-typescript";
+    import { getMiscWeather, type UapiWeatherResponse } from "@/libs/uapiClient";
     import { pluginT as t } from "@/libs/i18n";
 
     import Simple1 from "./_simple1.svelte";
@@ -21,31 +21,14 @@
     let wind_power: string = t(plugin, "common.loading");
     let humidity: string = t(plugin, "common.loading");
     let reportTime: string = t(plugin, "common.loading");
-    let result: WeatherResponse | null = null;
-
-    interface WeatherResponse {
-        province: string;
-        city: string;
-        adcode: string;
-        weather: string;
-        temperature: number;
-        wind_direction: string;
-        wind_power: string;
-        humidity: number;
-        report_time: string;
-    }
+    let result: UapiWeatherResponse | null = null;
 
     async function loadWeather() {
         try {
-            const client = new UapiClient("https://uapis.cn");
-            const payload = {
+            return await getMiscWeather({
                 city: cityName,
                 adcode: cityCode,
-            };
-            // @ts-ignore - 临时忽略类型检查
-            const response = await client.misc.getMiscWeather(payload);
-
-            return response;
+            });
         } catch (error) {
             console.error("uapis API调用失败:", error);
         }
