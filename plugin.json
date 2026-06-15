@@ -2,7 +2,7 @@
   "name": "siyuan-homepage-en",
   "author": "darkmusic",
   "url": "https://github.com/darkmusic/siyuan-homepage",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minAppVersion": "3.3.5",
   "backends": [
     "windows",

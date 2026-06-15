@@ -23,7 +23,6 @@
     import { MD2HTML } from "@/components/tools/MD2HTML";
     import { getImage } from "@/components/tools/getImage";
     import { pluginT, getPluginI18n } from "@/libs/i18n";
-    import { getTutorialLink } from "@/data/tutorialLinks";
 
     import "./style/homepage.scss";
 
