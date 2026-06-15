@@ -59,7 +59,6 @@ const entries = [
     ["common.desktopOnly", "此功能仅在桌面版可用", "This feature is only available on desktop"],
     ["common.pluginName", "🏠思源笔记主页插件", "🏠 SiYuan Homepage Plugin"],
     ["common.author", "作者: darkmusic", "Author: darkmusic"],
-    ["common.sponsor", "赞助支持 💸", "Support 💸"],
     ["common.datePlaceholder", "(日期)", "(Date)"],
     ["common.dateFormat", "YYYY年MM月DD日", "YYYY-MM-DD"],
     ["common.dateFormatDisplay", "{year}年{month}月{day}日", "{year}-{month}-{day}"],

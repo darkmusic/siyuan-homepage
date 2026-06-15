@@ -779,7 +779,7 @@
                         <img
                             src={tempTitleIconImage}
                             alt={pluginT(plugin, "homepage.iconAlt")}
-                            style="width: 32px; height: 32px; 
+                            style="width: 32px; height: 32px;
                border-radius: {tempTitleIconStyle === 'square'
                                 ? '0%'
                                 : tempTitleIconStyle === 'round'
@@ -883,13 +883,6 @@
                         <div class="plugin-author">
                             {pluginT(plugin, "common.author")}
                         </div>
-                        <div class="plugin-support">
-                            <a
-                                href={getTutorialLink("homepageFooter").url}
-                                class="support-link"
-                                >{pluginT(plugin, "common.sponsor")}</a
-                            >
-                        </div>
                     {:else}
                         {@html MD2HTML(footerContent)}
                     {/if}
@@ -904,12 +897,6 @@
                 </div>
                 <div class="plugin-author">
                     {pluginT(plugin, "common.author")}
-                </div>
-                <div class="plugin-support">
-                    <a
-                        href={getTutorialLink("homepageFooter").url}
-                        class="support-link">{pluginT(plugin, "common.sponsor")}</a
-                    >
                 </div>
             </div>
         </div>

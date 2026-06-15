@@ -50,7 +50,6 @@
         "desktopOnly": "This feature is only available on desktop",
         "pluginName": "🏠 SiYuan Homepage Plugin",
         "author": "Author: darkmusic",
-        "sponsor": "Support 💸",
         "datePlaceholder": "(Date)",
         "dateFormat": "YYYY-MM-DD",
         "dateFormatDisplay": "{year}-{month}-{day}",
